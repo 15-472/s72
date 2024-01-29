@@ -27,7 +27,7 @@ Scene'72 files are UTF8-encoded <a href="https://json.org">JSON</a>, and are gen
 The top-level value of a scene'72 file is always an array, and the first element of the array is always the string `"s72-v1"`.
 Code that writes scene'72 files should write the top-level array such that the first nine bytes of a scene'72 file are exactly `["s72-v1"` in order to make it easy for utilities to recognize the file type.
 
-**Objects.**
+### Objects
 The remainder of the array is filled with JSON objects with (at least) a `"type"` and `"name"` property:
 ```js
 /* ... */
@@ -46,7 +46,7 @@ Properties (all objects):
 When objects reference other objects in the array they do so by index in the top-level array.
 Note that `0` is always an invalid object reference (since the first element of the array is the "magic value" denoting the filetype).
 
-**Scene Objects.**
+### *Scene* Objects
 Every scene'72 file contains exactly one *scene* object, which defines global properties of the scene:
 ```js
 /* ... */
@@ -62,7 +62,7 @@ Every scene'72 file contains exactly one *scene* object, which defines global pr
 They include the following *scene*-specific properties:
 - `"roots":[...]` (required) -- array of references to *node*s at which to start drawing the scene.
 
-**Node Objects.**
+### *Node* Objects
 The structure of a *scene* is determined by a graph of transformation *node*s:
 ```js
 /* ... */
@@ -89,14 +89,14 @@ They include the following *node*-specific properties:
 
 The transformation from the local space of a <em>node</em> to the local space of its parent node is given by applying its scale, rotation, and translation values (in that order):
 ```math
-M_{\textrm_{parent_from_local}} = T * R * S
+M_{\textrm{parent-from-local}} = T * R * S
 ```
 
 *Note:* the structure of the graph on *node* objects induced by their `children` arrays is not restricted by this specification.
 Thus, e.g., there may be multiple paths from the root of the scene to a given *node*. (Effectively, instancing entire transformation sub-trees.)
 However, implementations may choose to reject files containing *cyclic* transformation graphs.
 
-**Mesh objects.**
+### *Mesh* objects
 Drawable geometry in the scene is represented by *mesh* objects:
 ```js
 /* ... */
@@ -139,7 +139,7 @@ Scene'72 loaders are not required to support any particular formats, and should 
 However, a scene'72 loader should support as many formats as possible -- ideally, every format with a check mark in the `VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT` column in the <a href="https://registry.khronos.org/vulkan/specs/1.3-extensions/html/vkspec.html#features-required-format-support">format support tables</a>.
 Our example files use the `R32G32B32_FLOAT` and `R8G8B8A8_UNORM` formats; so these are a good place to start.
 
-If a <em>mesh</em> contains an `indices` property, it is an <em>indexed</em> mesh -- its vertex stream must be constructed by reading indices from the specified data stream and using these to access the vertex stream.
+If a *mesh* contains an `indices` property, it is an <em>indexed</em> mesh -- its vertex stream must be constructed by reading indices from the specified data stream and using these to access the vertex stream.
 Otherwise its vertex stream must be drawn sequentially from the attributes array.
 (See <a href="https://registry.khronos.org/vulkan/specs/1.3-extensions/html/vkspec.html#drawing-primitive-shading">Programmable Primitive Shading</a> for the Vulkan specification's lists of indexed and non-indexed drawing commands.)
 
@@ -152,7 +152,7 @@ In index streams, the all-ones index (e.g., `0xffffffff` for `"format":"UINT32"`
 **Note about index formats:**
 An scene'72 loader must support `"UINT32"` format, and may support other formats.
 
-**Camera objects.**
+### *Camera* Objects
 *Camera* objects define projection parameters of cameras in the scene:
 ```js
 /* ... */
@@ -183,7 +183,7 @@ Scene'72 cameras look down their local -z axis with +y being upward and +x being
 If rendering through a camera that does not match the output image aspect ratio, a scene'72 viewer should letter- or pillar-box the output image.
 
 
-**Driver objects.**
+### *Driver* Objects
 *Driver* objects drive (animate) properties of other objects:
 ```js
 /* ... */
@@ -203,7 +203,7 @@ They include the following *driver*-specific properties:
 - `"node":N` (required) -- reference to the node whose property should be animated by this driver.
 - `"channel":"..."` (required) -- name of an animation channel; implies a data width (see below).
 - `"times":[...]` (required) -- array of numbers giving keyframe times.
-- `"values":[...]` (required) -- array of numbers given keyframe values.
+- `"values":[...]` (required) -- array of numbers giving keyframe values.
 - `"interpolation":"..."` (optional; default is `"LINEAR"`) -- interpolation mode for the data (see below).
 
 
@@ -228,7 +228,7 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ## Features Under Consideration
 These features are not yet standard, but are under consideration as potentially useful.
 
-**Data objects.**
+### *Data* Objects
 *Data* objects define embedded data.
 ```js
 /* ... */
