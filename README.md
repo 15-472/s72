@@ -80,12 +80,12 @@ The structure of a *scene* is determined by a graph of transformation *node*s:
 ```
 *Node* objects have their `type` property set to `"NODE"`.
 They include the following *node*-specific properties:
- - `"translation":[<var>tx</var>,<var>ty</var>,<var>tz</var>]` (optional; default is `[0,0,0]`) -- the translation part of the node's transform, as a 3-element array of numbers.
- - `"rotation":[<var>rx</var>,<var>ry</var>,<var>rz</var>,<var>rw</var>]` (optional; default is `[0,0,0,1]`) -- the rotation part of the node's transform, as a unit quaternion (where `rw` is the scalar part of the quaternion).
- - `"scale":[<var>sx</var>,<var>sy</var>,<var>sz</var>]` (optional; default is `[1,1,1]`) -- the scale part of the node's transform, as a 3-element array of axis-aligned scale factors.
- - `"children":[...]` (optional; default is `[]`) -- array of references to <em>node</em>s which should be instanced as children of this transformation.
- - `"mesh":<var>i</var>` (optional) -- reference to a *mesh* to instance at this node.
- - `"camera":<var>i</var></code>` (optional) -- reference to a *camera* to instance at this node.
+ - <code>"translation":[<var>tx</var>,<var>ty</var>,<var>tz</var>]</code> (optional; default is `[0,0,0]`) -- the translation part of the node's transform, as a 3-element array of numbers.
+ - <code>"rotation":[<var>rx</var>,<var>ry</var>,<var>rz</var>,<var>rw</var>]</code> (optional; default is `[0,0,0,1]`) -- the rotation part of the node's transform, as a unit quaternion (where `rw` is the scalar part of the quaternion).
+ - <code>"scale":[<var>sx</var>,<var>sy</var>,<var>sz</var>]</code> (optional; default is `[1,1,1]`) -- the scale part of the node's transform, as a 3-element array of axis-aligned scale factors.
+ - `"children":[...]` (optional; default is `[]`) -- array of references to *node*s which should be instanced as children of this transformation.
+ - <code>"mesh":<var>i</var></code> (optional) -- reference to a *mesh* to instance at this node.
+ - <code>"camera":<var>i</var></code> (optional) -- reference to a *camera* to instance at this node.
 
 The transformation from the local space of a <em>node</em> to the local space of its parent node is given by applying its scale, rotation, and translation values (in that order):
 ```math
@@ -118,7 +118,7 @@ Drawable geometry in the scene is represented by *mesh* objects:
 They include the following *mesh*-specific properties:
 - `"topology":"..."` (required) -- the primitive type and layout used in the mesh.
 Valid values are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkPrimitiveTopology.html">VkPrimitiveTopology</a> identifiers without the prefix (e.g., `"TRIANGLE_LIST"`).
-- `"count":<var>N</var>` (required) -- the number of vertices in the mesh.
+- <code>"count":<var>N</var></code> (required) -- the number of vertices in the mesh.
 - `"indices":{ ... }` (optional -- if specified, a data stream containing indices for indexed drawing commands.
 - `"attributes":{ ... }` (required) -- named data streams containing the mesh attributes.
 
@@ -129,8 +129,8 @@ However, stream formats are not restricted by the glTF conventions.
 
 *Attribute*s have the following properties:
 - `"src":"..."` (required) -- file to read data from. Note that the path is specified relative to the ".s72" file.
-- `"offset":<var>N</var>` (required) -- byte offset from the start of the file for the first element of this attribute stream.
-- `"stride":<var>S</var>` (required) -- bytes between the starts of subsequent elements of this attribute stream.</li>
+- <code>"offset":<var>N</var></code> (required) -- byte offset from the start of the file for the first element of this attribute stream.
+- <code>"stride":<var>S</var></code> (required) -- bytes between the starts of subsequent elements of this attribute stream.</li>
 - `"format":"..."` (required) -- format of the stored attribute. Valid strings are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFormat.html">VkFormat</a> identifiers without the prefix, e.g., `R32G32B32_SFLOAT`.
 
 **Note about attribute formats:**
@@ -171,10 +171,10 @@ An scene'72 loader must support `"UINT32"` format, and may support other formats
 *Camera* objects have their `type` property set to `"CAMERA"`.
 They include the following *camera*-specific properties:
 - `"perspective":{...}` (optional) -- defines that the camera uses perspective projection. Contains child properties:
-  - `"aspect":<var>a</var>` (required) -- image aspect ratio (width / height).
-  - `"vfov":<var>r</var>` (required) -- vertical field of view in radians.
-  - `"near":<var>z</var>` (required) -- near clipping plane distance.
-  - `"far":<var>z</var>` (optional) -- far clipping plane distance; if omitted, use an infinite perspective matrix.
+  - <code>"aspect":<var>a</var></code> (required) -- image aspect ratio (width / height).
+  - <code>"vfov":<var>r</var></code> (required) -- vertical field of view in radians.
+  - <code>"near":<var>z</var></code> (required) -- near clipping plane distance.
+  - <code>"far":<var>z</var></code> (optional) -- far clipping plane distance; if omitted, use an infinite perspective matrix.
 
 Scene'72 cameras look down their local -z axis with +y being upward and +x being rightward in the image plane.
 
@@ -200,7 +200,7 @@ If rendering through a camera that does not match the output image aspect ratio,
 ```
 *Driver* objects have their `type` property set to `"DRIVER"`.
 They include the following *driver*-specific properties:
-- `"node":N` (required) -- reference to the node whose property should be animated by this driver.
+- <code>"node":<var>i</var></code> (required) -- reference to the node whose property should be animated by this driver.
 - `"channel":"..."` (required) -- name of an animation channel; implies a data width (see below).
 - `"times":[...]` (required) -- array of numbers giving keyframe times.
 - `"values":[...]` (required) -- array of numbers giving keyframe values.
