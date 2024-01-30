@@ -74,7 +74,7 @@ The structure of a *scene* is determined by a graph of transformation *node*s:
 	"scale":[1,1,1],
 	"children":[2,3,4,5],
 	"camera":7,
-	"mesh":2,
+	"mesh":2
 },
 /* ... */
 ```
@@ -194,7 +194,7 @@ If rendering through a camera that does not match the output image aspect ratio,
 	"channel":"position",
 	"times":[0, 1, 2, 3, 4],
 	"values":[0,0,0, 0,0,1, 0,1,1, 1,1,1, 0,0,0],
-	"interpolation":"LINEAR",
+	"interpolation":"LINEAR"
 },
 /* ... */
 ```
@@ -235,7 +235,7 @@ These features are not yet standard, but are under consideration as potentially 
 {
 	"type":"DATA",
 	"name":"animation curves",
-	"data":[ 0,0, 1,0, 2,1, 3,1, 4,0 ],
+	"data":[ 0,0, 1,0, 2,1, 3,1, 4,0 ]
 }
 ```
 *Data* objects have their `type` property set to `"DATA"`.
