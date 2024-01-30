@@ -107,9 +107,9 @@ Drawable geometry in the scene is represented by *mesh* objects:
 	"count":12,
 	"indices": { "src":"cube.b72", "offset":576, "format":"UINT32" },
 	"attributes":{
-		"POSITION":{ "src":"cube.b72", "offset":0,  "stride":24, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":  { "src":"cube.b72", "offset":12, "stride":24, "format":"R32G32B32_SFLOAT" },
-		"COLOR":   { "src":"cube.b72", "offset":20, "stride":24, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"cube.b72", "offset":0,  "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":  { "src":"cube.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":   { "src":"cube.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 /* ... */
