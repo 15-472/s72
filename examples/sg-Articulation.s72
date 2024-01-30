@@ -1,0 +1,193 @@
+["s72-v1",
+{
+	"type":"MESH",
+	"name":"Foot",
+	"topology":"TRIANGLE_LIST",
+	"count":5370,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Foot.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Foot.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Foot.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Foot",
+	"translation":[8.9407e-08,2.98023e-08,1.40829],
+	"rotation":[9.31323e-09,0,0,1],
+	"scale":[1,1,1],
+	"mesh":1
+},
+{
+	"type":"MESH",
+	"name":"Link",
+	"topology":"TRIANGLE_LIST",
+	"count":864,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Link.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Link.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Link.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Distal-Link",
+	"translation":[2.23517e-08,3.72529e-08,-5.21541e-08],
+	"rotation":[0.72266,0,-1.03099e-08,0.691204],
+	"scale":[1,1,1],
+	"mesh":3,
+	"children":[2]
+},
+{
+	"type":"MESH",
+	"name":"Servo",
+	"topology":"TRIANGLE_LIST",
+	"count":504,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Servo.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Servo.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Servo.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Elbow-Servo",
+	"translation":[-1.49012e-08,2.98023e-08,0.240335],
+	"rotation":[-2.22045e-16,0,0,1],
+	"scale":[1,1,1],
+	"mesh":5,
+	"children":[4]
+},
+{
+	"type":"MESH",
+	"name":"Bracket",
+	"topology":"TRIANGLE_LIST",
+	"count":312,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Bracket.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Bracket.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Bracket.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Bracket",
+	"translation":[0,-2.23517e-08,1.40829],
+	"rotation":[-2.22045e-16,0,0,1],
+	"scale":[1,1,1],
+	"mesh":7,
+	"children":[6]
+},
+{
+	"type":"MESH",
+	"name":"Link",
+	"topology":"TRIANGLE_LIST",
+	"count":864,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Link.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Link.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Link.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Proximal-Link",
+	"translation":[0,0,1.49012e-08],
+	"rotation":[0.170476,0,0,0.985362],
+	"scale":[1,1,1],
+	"mesh":9,
+	"children":[8]
+},
+{
+	"type":"NODE",
+	"name":"Shoulder-Servo",
+	"translation":[0,0,0.18],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":5,
+	"children":[10]
+},
+{
+	"type":"MESH",
+	"name":"Turntable-Inner",
+	"topology":"TRIANGLE_LIST",
+	"count":468,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Turntable-Inner",
+	"translation":[0,0,0.12],
+	"rotation":[0,0,0.297994,0.954568],
+	"scale":[1,1,1],
+	"mesh":12,
+	"children":[11]
+},
+{
+	"type":"MESH",
+	"name":"Turntable",
+	"topology":"TRIANGLE_LIST",
+	"count":948,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Turntable.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Turntable.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Turntable.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Turntable",
+	"translation":[0,0,-0.12],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":14,
+	"children":[13]
+},
+{
+	"type":"MESH",
+	"name":"Rounded-Cube",
+	"topology":"TRIANGLE_LIST",
+	"count":1428,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Bot-Cube",
+	"translation":[1.44483,-2.12235,0.38],
+	"rotation":[0,0,0,1],
+	"scale":[0.5,0.5,0.5],
+	"mesh":16
+},
+{
+	"type":"MESH",
+	"name":"Plane.002",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"sg-Articulation.Plane.002.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Plane.002.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Plane.002.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Bot-Ground",
+	"translation":[0,0,-0.12],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":18
+},
+{
+	"type":"SCENE",
+	"name":"scene-graphs.blend:Articulation",
+	"roots":[15, 17, 19]
+}
+]

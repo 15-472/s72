@@ -47,6 +47,7 @@ import mathutils
 import struct
 import math
 import json
+import os.path
 
 #---------------------------------------------------------------------
 #Traverse scene:
@@ -63,26 +64,118 @@ else:
 
 
 out = []
+out.append('["s72-v1",\n')
+
 fresh_idx = 1
 obj_to_idx = dict()
+mesh_to_idx = dict()
 
-def write_node(obj, extra_children = []):
-	global out
-	global fresh_idx
-	global obj_to_idx
+#suggested by https://stackoverflow.com/questions/70282889/to-mesh-in-blender-3
+dg = bpy.context.evaluated_depsgraph_get()
 
-	assert obj not in obj_to_idx
+def write_mesh(obj):
+	global out, fresh_idx, mesh_to_idx
+
+	dg_obj = obj.evaluated_get(dg)
+	mesh = dg_obj.data
+
+	#this assumes same mesh always used with the same modifier stack.
+	if mesh in mesh_to_idx: return mesh_to_idx[mesh]
+
+	b72file = f"{b72base}.{obj.data.name}.b72"
+	rel_b72file = os.path.relpath(b72file, start=os.path.dirname(s72file))
+
+	print(f"Writing mesh '{obj.data.name}' to '{b72file}'...")
+
 	idx = fresh_idx
 	fresh_idx += 1
-	obj_to_idx[obj] = idx
+	mesh_to_idx[mesh] = idx
 
-	if len(obj.children):
-		print("Children: ", obj.children)
+	mesh = dg_obj.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
+
+	#compute normals (respecting face smoothing):
+	mesh.calc_normals_split()
+
+	colors = None
+	if len(mesh.vertex_colors) == 0:
+		print(f"No vertex colors on mesh '{mesh.name}', storing 0xffffffff for all vertices.")
+	else:
+		colors = mesh.vertex_colors.active.data
+		if len(mesh.vertex_colors) != 1:
+			print(f"WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
+
+	count = 0
+	attribs = []
+	for tri in mesh.loop_triangles:
+		for i in range(0,3):
+			loop = mesh.loops[tri.loops[i]]
+			assert loop.vertex_index == tri.vertices[i]
+			vertex = mesh.vertices[loop.vertex_index]
+			normal = loop.normal.x
+			if colors != None: color = colors[tri.loops[i]]
+			else: color = (1.0, 1.0, 1.0)
+
+			attribs.append(struct.pack('fff', vertex.co.x, vertex.co.y, vertex.co.z))
+			attribs.append(struct.pack('fff', loop.normal.x, loop.normal.y, loop.normal.z))
+			def c(v):
+				s = int(v * 255)
+				if s < 0: return 0
+				if s > 255: return 255
+				return s
+			attribs.append(struct.pack('BBBB', c(color[0]), c(color[1]), c(color[2]), 255))
+			count += 1
+
+	dg_obj.to_mesh_clear()
+
+	with open(b72file, 'wb') as f:
+		for b in attribs:
+			f.write(b)
+
+	out.append('{\n')
+	out.append(f'\t"type":"MESH",\n')
+	out.append(f'\t"name":{json.dumps(obj.data.name)},\n')
+	out.append(f'\t"topology":"TRIANGLE_LIST",\n')
+	out.append(f'\t"count":{count},\n')
+	out.append(f'\t"attributes":{{\n')
+	out.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
+	out.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
+	out.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }}\n')
+	out.append(f'\t}}\n')
+	out.append('},\n')
+
+	return idx
+
+
+def write_node(obj, extra_children=[]):
+	global out, fresh_idx, obj_to_idx
+
+	if obj in obj_to_idx:
+		assert obj_to_idx[obj] != None #no cycles!
+		return obj_to_idx[obj]
+
+	obj_to_idx[obj] = None
 
 	children = []
 	for child in obj.children:
 		children.append(write_node(child))
 
+	mesh = None
+	camera = None
+	if obj.type == 'MESH':
+		mesh = write_mesh(obj)
+	elif obj.type == 'CAMERA':
+		camera = write_camera(obj)
+	elif obj.type == 'LIGHT':
+		pass #TODO
+	elif obj.type == 'EMPTY' and obj.instance_collection:
+		children += write_nodes(obj.instance_collection)
+	else:
+		print(f"ignoring object data of type '{obj.type}'.")
+
+
+	idx = fresh_idx
+	fresh_idx += 1
+	obj_to_idx[obj] = idx
 
 	if obj.parent == None:
 		parent_from_world = mathutils.Matrix()
@@ -93,59 +186,52 @@ def write_node(obj, extra_children = []):
 	(t, r, s) = (parent_from_world @ obj.matrix_world).decompose()
 
 
-	out.append('{\n'
-		+ f'\t"type":"NODE",\n'
-		+ f'\t"name":{json.dumps(obj.name)}",\n'
-		+ f'\t"translation":[{t.x},{t.y},{t.z}],\n'
-		+ f'\t"rotation":[{r.x},{r.y},{r.z},{r.w}],\n'
-		+ f'\t"scale":[{s.x},{s.y},{s.z}],\n'
-		+ f'\t"children":{json.dumps(children + extra_children)},\n'
-		+ '}')
+	out.append('{')
+	out.append(f'\n\t"type":"NODE"')
+	out.append(f',\n\t"name":{json.dumps(obj.name)}')
+	out.append(f',\n\t"translation":[{t.x:.6g},{t.y:.6g},{t.z:.6g}]')
+	out.append(f',\n\t"rotation":[{r.x:.6g},{r.y:.6g},{r.z:.6g},{r.w:.6g}]')
+	out.append(f',\n\t"scale":[{s.x:.6g},{s.y:.6g},{s.z:.6g}]')
+	if mesh != None:
+		out.append(f',\n\t"mesh":{mesh}')
+	if camera != None:
+		out.append(f',\n\t"camera":{camera}')
+
+	children += extra_children
+	if len(children) > 0:
+		out.append(f',\n\t"children":{json.dumps(children + extra_children)}')
+	out.append('\n},\n')
 
 	return idx
 
-def write_nodes(from_collection, indent = ''):
-	print(f"{indent}{{ '{from_collection.name}':")
+def write_nodes(from_collection):
 	roots = []
 	global obj_to_idx
 	for obj in from_collection.objects:
 		#has a parent, will be emitted by write_node(parent)
 		if obj.parent: continue
+		roots.append( write_node(obj) )
 
-		#already written (maybe as part of an instance?)
-		if obj in obj_to_idx:
-			roots.append(obj_to_idx[obj])
-			continue
-
-		assert obj not in obj_to_idx
-
-		if obj.type == 'EMPTY' and obj.instance_collection:
-			extra_children = write_nodes(obj.instance_collection, indent + '  ')
-		else:
-			extra_children = []
-
-		idx = write_node(obj, extra_children)
-		roots.append(idx)
-
-		if obj.type == 'MESH':
-			pass #write_mesh(obj)
-		elif obj.type == 'CAMERA':
-			pass #write_camera(obj)
-		elif obj.type == 'LIGHT':
-			pass #write_light(obj)
-		elif obj.type == 'EMPTY' and obj.instance_collection:
-			pass #handled above already?
-		else:
-			print('Skipping ' + obj.type)
-			pass
-
-
+	#handle nested collections:
 	for child in from_collection.children:
-		roots += write_nodes(child, indent + '  ')
+		roots += write_nodes(child)
 	
-	print(f"{indent}}}")
 	return roots
 
 
 roots = write_nodes(collection)
 print(f"Roots: {roots}")
+
+out.append('{\n'
+	+ f'\t"type":"SCENE",\n'
+	+ f'\t"name":{json.dumps(args[0])},\n'
+	+ f'\t"roots":{json.dumps(roots)}\n'
+	+ '}\n'
+)
+
+out.append(']')
+
+print(f"Writing '{s72file}'.")
+with open(s72file, 'wb') as f:
+	for s in out:
+		f.write(s.encode('utf-8'))
