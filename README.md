@@ -109,7 +109,7 @@ Drawable geometry in the scene is represented by *mesh* objects:
 	"attributes":{
 		"POSITION":{ "src":"cube.b72", "offset":0,  "stride":24, "format":"R32G32B32_SFLOAT" },
 		"NORMAL":  { "src":"cube.b72", "offset":12, "stride":24, "format":"R32G32B32_SFLOAT" },
-		"COLOR":   { "src":"cube.b72", "offset":20, "stride":24, "format":"R8G8B8A8_UNORM" },
+		"COLOR":   { "src":"cube.b72", "offset":20, "stride":24, "format":"R8G8B8A8_UNORM" }
 	}
 },
 /* ... */
