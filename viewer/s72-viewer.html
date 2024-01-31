@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<title>Scene'72 File Viewer</title>
+<style>
+#viewer {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100vw;
+	height:100vh;
+}
+body {
+	margin:0;
+	padding:0;
+}
+</style>
+</head>
+<body>
+<canvas id="viewer"></canvas>
+<script type="module">
+import { Viewer } from './s72-viewer.mjs';
+window.VIEWER = new Viewer( document.getElementById('viewer') );
+</script>
+</body>
+</html>
