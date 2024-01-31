@@ -77,14 +77,15 @@ attribute vec3 Normal;
 attribute vec4 Color;
 
 uniform mat4 CLIP_FROM_LOCAL;
+uniform mat4 LIGHT_FROM_LOCAL;
 
 varying vec3 position;
 varying vec3 normal;
 varying vec4 color;
 
 void main() {
-	position = Position;
-	normal = Normal;
+	position = vec3(LIGHT_FROM_LOCAL * vec4(Position, 1.0));
+	normal = mat3(LIGHT_FROM_LOCAL) * Normal;
 	color = Color;
 
 	gl_Position = CLIP_FROM_LOCAL * vec4(Position, 1.0);
@@ -200,6 +201,22 @@ export class Viewer {
 		this.redraw();
 	}
 
+	load(url) {
+		const pending = this.pending = {
+			target:this,
+		};
+
+		(async () => {
+			const loaded = await Scene.from(this.gl, url);
+			if (this.pending === pending) {
+				delete this.pending;
+				this.scene.deleteBuffers(this.gl);
+				this.scene = loaded;
+				this.scene.createBuffers(this.gl);
+			}
+		})();
+	}
+
 	resize() {
 		const oldWidth = this.canvas.width;
 		const oldHeight = this.canvas.height;
@@ -242,9 +259,11 @@ export class Viewer {
 				-dot(frame.right,frame.at), -dot(frame.up,frame.at), dot(frame.forward,frame.at), 1.0
 			])
 		);
+		const LIGHT_FROM_WORLD = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 
 		const u = {
-			CLIP_FROM_LOCAL:CLIP_FROM_WORLD
+			CLIP_FROM_LOCAL:CLIP_FROM_WORLD,
+			LIGHT_FROM_LOCAL:LIGHT_FROM_WORLD,
 		};
 
 		/*helpers.setUniforms(gl, this.program, u);
@@ -252,7 +271,7 @@ export class Viewer {
 		gl.drawArrays(gl.TRIANGLES, 0, this.attributes.count);
 		*/
 
-		this.scene.traverse(gl, this.program, u, CLIP_FROM_WORLD);
+		this.scene.traverse(gl, this.program, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD);
 	}
 
 	redraw() {
@@ -311,14 +330,180 @@ class Scene {
 		}
 	}
 
-	traverse(gl, program, u, CLIP_FROM_WORLD) {
+	traverse(gl, program, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD) {
 		for (const root of this.roots) {
-			root.traverse(gl, program, u, CLIP_FROM_WORLD);
+			root.traverse(gl, program, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD);
 		}
 	}
 
-	static async from(url) {
-		console.log("LOAD ATTEMPT");
+	static async from(gl, url) {
+		console.log(`Fetching from '${url}'...`);
+		const response = await fetch(url);
+		console.log(`...getting body...`);
+		const json = await response.json();
+		console.log(`...have json!`);
+
+		console.log(json); //DEBUG
+
+		if (!Array.isArray(json)) throw new Error(`The top-level value is not an array.`);
+		if (json[0] !== "s72-v1") throw new Error(`The first element is not "s72-v1".`);
+
+		let b72s = {};
+
+		const loadB72 = (src) => {
+			if (typeof src !== "string") throw new Error(`Expecting b72 src to be a string.`);
+			console.log(`b72: '${src}'`); //DEBUG
+			//will actually trigger loads later!
+			if (!(src in b72s)) b72s[src] = { url: new URL(src, new URL(url, document.location) ) };
+			return b72s[src];
+		};
+
+		const loadMesh = (index) => {
+			const elt = json[index];
+			if (elt.type !== "MESH") throw new Error(`Trying to load a mesh from a type:"${elt.type}" element.`);
+
+			const loaded = new Mesh();
+			loaded.name = elt.name;
+
+			const TOPOLOGIES = {
+				"POINT_LIST":gl.POINTS,
+				"LINE_LIST":gl.LINES,
+				"LINE_STRIP":gl.LINE_STRIP,
+				"TRIANGLE_LIST":gl.TRIANGLES,
+				"TRIANGLE_STRIP":gl.TRIANGLE_STRIP,
+				"TRIANGLE_FAN":gl.TRIANGLE_FAN,
+			};
+
+			const FORMATS = {
+				"R32_SFLOAT":         {size:1, type:gl.FLOAT, normalized:false},
+				"R32G32_SFLOAT":      {size:2, type:gl.FLOAT, normalized:false},
+				"R32G32B32_SFLOAT":   {size:3, type:gl.FLOAT, normalized:false},
+				"R32G32B32A32_SFLOAT":{size:4, type:gl.FLOAT, normalized:false},
+				"R8_UNORM":      {size:1, type:gl.UNSIGNED_BYTE, normalized:true},
+				"R8G8_UNORM":    {size:2, type:gl.UNSIGNED_BYTE, normalized:true},
+				"R8G8B8_UNORM":  {size:3, type:gl.UNSIGNED_BYTE, normalized:true},
+				"R8G8B8A8_UNORM":{size:4, type:gl.UNSIGNED_BYTE, normalized:true},
+			};
+
+			const NAMES = {
+				"POSITION":"Position",
+				"NORMAL":"Normal",
+				"COLOR":"Color",
+			};
+
+			if (!(elt.topology in TOPOLOGIES)) throw new Error(`Unrecognized topology type '${elt.topology}'.`);
+			loaded.topology = TOPOLOGIES[elt.topology];
+			loaded.count = elt.count;
+			if (elt.indices) throw new Error(`TODO: support indices.`);
+			for (const name of Object.keys(elt.attributes)) {
+				const attr = elt.attributes[name];
+				if (!(attr.format in FORMATS)) throw new Error(`Unrecognized format '${attr.format}'.`);
+				const f = FORMATS[attr.format];
+				if (!(name in NAMES)) {
+					console.warn(`Ignoring "${name}" attribute.`);
+					continue;
+				}
+				const outName = NAMES[name];
+				loaded.attributes[outName] = {
+					src:loadB72(attr.src),
+					offset:attr.offset,
+					stride:attr.stride,
+					size:f.size,
+					type:f.type,
+					normalized:f.normalized
+				};
+			}
+
+			console.log(loaded);
+
+			return loaded;
+
+		};
+
+		const loadNode = (index) => {
+			const elt = json[index];
+			if (elt.type !== "NODE") throw new Error(`Trying to load a node from a type:"${elt.type}" element.`);
+
+			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
+
+			const loaded = elt.LOADED = new Node();
+			loaded.name = elt.name;
+
+			//do translation, rotation, scale properties:
+			for (const arr of ['translation', 'rotation', 'scale']) {
+				if (!(arr in elt)) continue;
+				const src = elt[arr];
+				if (!Array.isArray(src)) throw new Error(`Node.${arr} is not an array.`);
+				const dst = loaded[arr];
+				if (src.length !== dst.length) throw new Error(`Node.${arr} has length ${src.length}, expected ${dst.length}.`);
+				for (let i = 0; i < dst.length; ++i) {
+					if (typeof src[i] !== 'number') throw new Error(`Node.${arr}[${i}] is not of type number.`);
+					dst[i] = src[i];
+				}
+			}
+
+			if (elt.mesh) loaded.mesh = loadMesh(elt.mesh);
+			if (elt.camera) loaded.camera = loadMesh(elt.camera);
+
+			if (elt.children) {
+				for (const idx of elt.children) {
+					loaded.children.push(loadNode(elt.children));
+				}
+			}
+
+			return loaded;
+			
+		};
+
+		const loadScene = (index) => {
+			const elt = json[index];
+			if (elt.type !== "SCENE") throw new Error(`Trying to load a scene from a type:"${elt.type}" element.`);
+
+			const loaded = new Scene();
+			loaded.name = elt.name;
+
+			for (let rootIdx of elt.roots) {
+				loaded.roots.push(loadNode(rootIdx));
+			}
+
+			return loaded;
+		};
+
+		let scene = null;
+
+		//load top-level objects ("SCENE" + "DRIVER"):
+		for (let i = 1; i < json.length; ++i) {
+			const type = json[i].type;
+			if (type === "SCENE") {
+				if (scene !== null) {
+					console.warn(`Multiple "SCENE" elements found; ignoring all but the first.`);
+					continue;
+				}
+				scene = loadScene(i);
+			} else if (type === "NODE") {
+				//loaded recursively by scene and (maybe) driver?
+			} else if (type === "MESH") {
+				//loaded recursively by node
+			} else if (type === "CAMERA") {
+				//loaded recursively by node
+			} else if (type === "DRIVER") {
+				//TODO
+			} else {
+				console.warn(`Did not recognize type '${obj.type}'!`);
+			}
+		}
+
+		//record loaded b72s:
+		scene.b72s = b72s;
+
+		console.log(b72s);
+		for (const b72 of Object.values(b72s)) {
+			console.log(b72);
+			const response = await fetch(b72.url);
+			b72.arrayBuffer = await response.arrayBuffer();
+		}
+
+		return scene;
 	}
 
 	static default(gl) {
@@ -417,7 +602,7 @@ class Node {
 		//this.mesh
 		//this.camera
 	}
-	traverse(gl, program, u, CLIP_FROM_PARENT) {
+	traverse(gl, program, u, CLIP_FROM_PARENT, LIGHT_FROM_PARENT) {
 		//quat -> rotation matrix from https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 		const qi = this.rotation[0];
 		const qj = this.rotation[1];
@@ -428,23 +613,26 @@ class Node {
 			    2*(qi*qj + qk*qr), 1 - 2*(qi*qi + qk*qk),     2*(qj*qk - qi*qr),
 			    2*(qi*qk - qj*qr),     2*(qj*qk + qi*qr), 1 - 2*(qi*qi + qj*qj)
 		];
+		const scale = this.scale;
 		const PARENT_FROM_LOCAL = new Float32Array([
-			rot[0],rot[3],rot[6],0,
-			rot[1],rot[4],rot[7],0,
-			rot[2],rot[5],rot[8],0,
+			scale[0] * rot[0], scale[0] * rot[3], scale[0] * rot[6],0,
+			scale[1] * rot[1], scale[1] * rot[4], scale[1] * rot[7],0,
+			scale[2] * rot[2], scale[2] * rot[5], scale[2] * rot[8],0,
 			this.translation[0], this.translation[1],this.translation[2],1
 		]);
 
 		const CLIP_FROM_LOCAL = mul(CLIP_FROM_PARENT, PARENT_FROM_LOCAL);
+		const LIGHT_FROM_LOCAL = mul(LIGHT_FROM_PARENT, PARENT_FROM_LOCAL);
 
 		if (this.mesh) {
 			u.CLIP_FROM_LOCAL = CLIP_FROM_LOCAL;
+			u.LIGHT_FROM_LOCAL = LIGHT_FROM_LOCAL;
 			helpers.setUniforms(gl, program, u);
 			this.mesh.draw(gl, program);
 		}
 
 		for (const child of this.children) {
-			child.traverse(gl, program, u, CLIP_FROM_LOCAL);
+			child.traverse(gl, program, u, CLIP_FROM_LOCAL, LIGHT_FROM_LOCAL);
 		}
 	}
 }
