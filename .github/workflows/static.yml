@@ -36,7 +36,7 @@ jobs:
       - name: Extract Viewer
         run: |
           mkdir web
-          cp -r viewer web/
+          cp viewer/* web/
           mv web/s72-viewer.html web/index.html
           find .
       - name: Upload artifact
