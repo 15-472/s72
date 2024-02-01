@@ -16,17 +16,51 @@ for i in range(0,len(sys.argv)):
 	if sys.argv[i] == '--':
 		args = sys.argv[i+1:]
 
-if len(args) != 2:
-	print("\n\nUsage:\nblender --background --python export-s72.py -- <infile.blend>[:collection] <outfile.s72>\nExports objects and transforms in a collection (default: master collection) to a scene'72 (JSON scene) file and associated buffer'72 (raw binary data) files.\n")
+def usage():
+	print("\n\nUsage:\nblender --background --python export-s72.py -- <infile.blend> <outfile.s72> [--collection collection] [--animate <minFrame> <maxFrame>]\nExports objects and transforms in a collection (default: master collection) to a scene'72 (JSON scene) file and associated buffer'72 (raw binary data) files.\n", file=sys.stderr)
 	exit(1)
 
-infile = args[0]
+infile = None
+s72file = None
 collection_name = None
-m = re.match(r'^(.*?):(.+)$', infile)
-if m:
-	infile = m.group(1)
-	collection_name = m.group(2)
-s72file = args[1]
+frames = None
+
+i = 0
+while i < len(args):
+	arg = args[i]
+	if arg.startswith('--'):
+		if arg == '--collection':
+			if i + 1 >= len(args):
+				print(f"ERROR: --collection must be followed by a collection name.")
+				usage();
+			collection_name = args[i+1]
+			i += 1
+		elif arg == '--animate':
+			if i + 2 >= len(args):
+				print(f"ERROR: --animate must be followed by a min and max frame number.")
+				usage();
+			frames = (int(args[i+1]), int(args[i+2]))
+
+			i += 2
+		else:
+			print(f"ERROR: unrecognized argument '{arg}'.")
+			usage()
+	elif infile == None:
+		infile = arg
+	elif s72file == None:
+		s72file = arg
+	else:
+		print(f"ERROR: excess argument '{arg}'.")
+		usage()
+	i += 1
+
+if infile == None:
+	print(f"ERROR: missing input file name.")
+	usage()
+
+if s72file == None:
+	print(f"ERROR: missing output file name.")
+	usage()
 
 if not s72file.endswith(".s72"):
 	print("\n\nERROR: output filename ('" + s72file + "') does not end with '.s72'")
@@ -69,6 +103,7 @@ out.append('["s72-v1",\n')
 fresh_idx = 1
 obj_to_idx = dict()
 mesh_to_idx = dict()
+camera_to_idx = dict()
 
 #suggested by https://stackoverflow.com/questions/70282889/to-mesh-in-blender-3
 dg = bpy.context.evaluated_depsgraph_get()
@@ -146,6 +181,43 @@ def write_mesh(obj):
 	return idx
 
 
+
+def write_camera(obj):
+	global out, fresh_idx, camera_to_idx
+
+	camera = obj.data
+	if camera in camera_to_idx: return camera_to_idx[camera]
+
+	print(f"Writing camera '{obj.data.name}'...")
+
+	idx = fresh_idx
+	fresh_idx += 1
+	camera_to_idx[camera] = idx
+
+	out.append('{\n')
+	out.append(f'\n\t"type":"CAMERA"')
+	out.append(f',\n\t"name":{json.dumps(obj.data.name)}')
+
+	if obj.data.sensor_fit != 'VERTICAL':
+		print(f"WARNING: camera FOV for '{obj.data.name}' may not match in exported file because camera is not in vertical-fit mode.")
+
+	if obj.data.type == 'PERSP':
+		vfov = 2.0 * math.atan2(0.5*camera.sensor_height, camera.lens)
+		#NOTE: could also use the "sensor size" here if wanted to have some capability to make different-aspect cameras; but that isn't what blender does:
+		aspect = bpy.context.scene.render.resolution_x / bpy.context.scene.render.resolution_y
+		out.append(f',\n\t"perspective":{{\n')
+		out.append(f'\t\t"aspect":{aspect:.6g}\n')
+		out.append(f'\t\t"vfov":{vfov:.6g}\n')
+		out.append(f'\t\t"near":{camera.clip_start:.6g}\n')
+		out.append(f'\t\t"far":{camera.clip_end:.6g}\n')
+		out.append(f'\t}}\n')
+	#someday: elif obj.data.type == 'ORTHO':
+	else:
+		print("WARNING: Unsupported camera type '" + obj.data.type + "'!");
+	out.append('\n},\n')
+
+
+
 def write_node(obj, extra_children=[]):
 	global out, fresh_idx, obj_to_idx
 
@@ -218,9 +290,66 @@ def write_nodes(from_collection):
 	
 	return roots
 
+#-----------------------------------------------------
+# Actually write out the scene:
 
+#if frame range specified, put everything at starting frame:
+if frames != None: bpy.context.scene.frame_set(frames[0], subframe=0.0)
+
+#write the scene:
 roots = write_nodes(collection)
-print(f"Roots: {roots}")
+
+#handle writing "DRIVER" objects by sampling every frame:
+if frames != None:
+	node_channels = dict()
+	for node, idx in obj_to_idx.items():
+		node_channels[node] = ([], [], [])
+	
+	times = []
+	
+	for frame in range(frames[0], frames[1]+1):
+		bpy.context.scene.frame_set(frame, subframe=0.0)
+		time = (frame - frames[0]) / bpy.context.scene.render.fps
+		times.append(f'{time:.3f}')
+		for node, idx in obj_to_idx.items():
+			if node.parent == None:
+				parent_from_world = mathutils.Matrix()
+			else:
+				parent_from_world = node.parent.matrix_world.copy()
+				parent_from_world.invert()
+	
+			(t, r, s) = (parent_from_world @ node.matrix_world).decompose()
+			node_channels[node][0].append(t)
+			node_channels[node][1].append(r)
+			node_channels[node][2].append(s)
+	
+	times = '[' + ','.join(times) + ']'
+	for node, idx in obj_to_idx.items():
+		for c in range(0,2):
+			driven = False
+			for v in node_channels[node][c]:
+				if v != node_channels[node][c][0]:
+					driven = True
+			if not driven: continue
+			channel = ["translation", "rotation", "scale"][c]
+			print(f"Writing \"{channel}\" driver for '{node.name}'.")
+
+			out.append('{\n')
+			out.append(f'\t"type":"DRIVER",\n')
+			out.append(f'\t"name":{json.dumps(node.name + "-" + channel)},\n')
+			out.append(f'\t"node":{idx},\n')
+			out.append(f'\t"channel":{json.dumps(channel)},\n')
+			out.append(f'\t"times":{times},\n')
+			values = []
+			for v in node_channels[node][c]:
+				values.append(','.join(map(lambda x: f'{x:.6g}', v)))
+			values = '[' + ', '.join(values) + ']'
+			out.append(f'\t"values":{values},\n')
+			out.append(f'\t"interpolation":"LINEAR"\n')
+			out.append('},\n')
+
+
+
 
 out.append('{\n'
 	+ f'\t"type":"SCENE",\n'
