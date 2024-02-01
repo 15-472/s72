@@ -194,7 +194,7 @@ def write_camera(obj):
 	fresh_idx += 1
 	camera_to_idx[camera] = idx
 
-	out.append('{\n')
+	out.append('{')
 	out.append(f'\n\t"type":"CAMERA"')
 	out.append(f',\n\t"name":{json.dumps(obj.data.name)}')
 
@@ -206,15 +206,17 @@ def write_camera(obj):
 		#NOTE: could also use the "sensor size" here if wanted to have some capability to make different-aspect cameras; but that isn't what blender does:
 		aspect = bpy.context.scene.render.resolution_x / bpy.context.scene.render.resolution_y
 		out.append(f',\n\t"perspective":{{\n')
-		out.append(f'\t\t"aspect":{aspect:.6g}\n')
-		out.append(f'\t\t"vfov":{vfov:.6g}\n')
-		out.append(f'\t\t"near":{camera.clip_start:.6g}\n')
+		out.append(f'\t\t"aspect":{aspect:.6g},\n')
+		out.append(f'\t\t"vfov":{vfov:.6g},\n')
+		out.append(f'\t\t"near":{camera.clip_start:.6g},\n')
 		out.append(f'\t\t"far":{camera.clip_end:.6g}\n')
-		out.append(f'\t}}\n')
+		out.append(f'\t}}')
 	#someday: elif obj.data.type == 'ORTHO':
 	else:
 		print("WARNING: Unsupported camera type '" + obj.data.type + "'!");
 	out.append('\n},\n')
+	
+	return idx
 
 
 
@@ -327,9 +329,14 @@ if frames != None:
 	for node, idx in obj_to_idx.items():
 		for c in range(0,2):
 			driven = False
-			for v in node_channels[node][c]:
-				if v != node_channels[node][c][0]:
-					driven = True
+			if c == 0 or c == 2:
+				for v in node_channels[node][c]:
+					if (v - node_channels[node][c][0]).length > 0.0001:
+						driven = True
+			elif c == 1:
+				for v in node_channels[node][c]:
+					if v.rotation_difference(node_channels[node][c][0]).angle > 0.0001:
+						driven = True
 			if not driven: continue
 			channel = ["translation", "rotation", "scale"][c]
 			print(f"Writing \"{channel}\" driver for '{node.name}'.")
@@ -342,7 +349,14 @@ if frames != None:
 			out.append(f'\t"times":{times},\n')
 			values = []
 			for v in node_channels[node][c]:
-				values.append(','.join(map(lambda x: f'{x:.6g}', v)))
+				if c == 0 or c == 2:
+					assert len(v) == 3
+					values.append(f'{v.x:.6g},{v.y:.6g},{v.z:.6g}')
+				elif c == 1:
+					assert len(v) == 4
+					values.append(f'{v.x:.6g},{v.y:.6g},{v.z:.6g},{v.w:.6g}')
+				else:
+					assert c < 3
 			values = '[' + ', '.join(values) + ']'
 			out.append(f'\t"values":{values},\n')
 			out.append(f'\t"interpolation":"LINEAR"\n')

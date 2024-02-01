@@ -2,15 +2,15 @@
 
 import * as helpers from './gl-helpers.mjs';
 
-class Camera {
+class UserCamera {
 	constructor() {
 		this.target = {x:0, y:0, z:0};
 		this.radius = 2;
 		this.azimuth = 0;
 		this.elevation = 0;
 
-		this.fovy = 60.0;
-		this.aspect = 1.0; //will update layer
+		this.vfov = 60.0 / 180.0 * Math.PI;
+		this.aspect = 1.0; //will update later
 		this.near = 0.1;
 	}
 	makeFrame() {
@@ -30,6 +30,18 @@ class Camera {
 			},
 		};
 	}
+	makeLOCAL_FROM_WORLD() {
+		const frame = this.makeFrame();
+		return new Float32Array([
+			frame.right.x, frame.up.x,-frame.forward.x, 0.0,
+			frame.right.y, frame.up.y,-frame.forward.y, 0.0,
+			frame.right.z, frame.up.z,-frame.forward.z, 0.0,
+			-dot(frame.right,frame.at), -dot(frame.up,frame.at), dot(frame.forward,frame.at), 1.0
+		])
+	}
+	makeCLIP_FROM_LOCAL() {
+		return perspective(this.vfov, this.aspect, this.near);
+	}
 };
 
 
@@ -48,7 +60,7 @@ function normalize(vec) {
 	return { x:vec.x / len, y:vec.y / len, z:vec.z / len };
 }
 function perspective(fovy, aspect, zNear) {
-	var f = 1 / Math.tan(fovy/2 * Math.PI / 180.0);
+	var f = 1 / Math.tan(fovy/2);
 	return new Float32Array([
 		f / aspect, 0.0, 0.0, 0.0,
 		0.0, f, 0.0, 0.0,
@@ -107,7 +119,11 @@ void main() {
 export class Viewer {
 	constructor(canvas) {
 		this.canvas = canvas;
-		this.camera = new Camera();
+		this.userCamera = new UserCamera();
+		this.camera = this.userCamera;
+
+		this.playing = false;
+		this.time = 0.0;
 
 		const gl = this.gl = this.canvas.getContext('webgl', {
 			antialias:false,
@@ -137,6 +153,12 @@ export class Viewer {
 			return false;
 		});
 
+		window.addEventListener('keydown', (evt) => {
+			if (evt.code === "Space") {
+				this.pause();
+			}
+		});
+
 		window.addEventListener('mousedown', (evt) => {
 			var s = evt.target;
 			if (s === this.canvas) {
@@ -154,7 +176,7 @@ export class Viewer {
 			const X = evt.clientX;
 			const Y = evt.clientY;
 			if (this.panning) {
-				const move = 2.0 * Math.tan(0.5 * this.camera.fovy / 180.0 * Math.PI) * this.camera.radius;
+				const move = 2.0 * Math.tan(0.5 * this.camera.vfov) * this.camera.radius;
 				const dx = -(X - this.panning.X) / this.canvas.clientWidth * this.camera.aspect * move;
 				const dy = (Y - this.panning.Y) / this.canvas.clientHeight * move;
 
@@ -201,6 +223,15 @@ export class Viewer {
 		this.redraw();
 	}
 
+	pause() {
+		if (this.playing) {
+			this.playing = false;
+		} else {
+			this.playing = true;
+			this.redraw();
+		}
+	}
+
 	load(url) {
 		const pending = this.pending = {
 			target:this,
@@ -213,6 +244,13 @@ export class Viewer {
 				this.scene.deleteBuffers(this.gl);
 				this.scene = loaded;
 				this.scene.createBuffers(this.gl);
+
+				this.playing = false;
+				delete this.prevTs;
+				this.time = this.scene.minTime;
+				this.scene.drive(this.time);
+
+				this.redraw();
 			}
 		})();
 	}
@@ -231,12 +269,14 @@ export class Viewer {
 	}
 
 	draw() {
-		console.log("draw");
-
 		const width = parseInt(this.canvas.width);
 		const height = parseInt(this.canvas.height);
 
+		//HACK to deal with UserCamera vs Camera data layout:
 		this.camera.aspect = width / height;
+		if (this.camera.perspective) {
+			this.camera.perspective.aspect = width / height;
+		}
 
 		const gl = this.gl;
 
@@ -248,16 +288,9 @@ export class Viewer {
 		gl.useProgram(this.program);
 
 
-		const frame = this.camera.makeFrame();
-
 		const CLIP_FROM_WORLD = mul(
-			perspective(this.camera.fovy, this.camera.aspect, this.camera.near),
-			new Float32Array([
-				frame.right.x, frame.up.x,-frame.forward.x, 0.0,
-				frame.right.y, frame.up.y,-frame.forward.y, 0.0,
-				frame.right.z, frame.up.z,-frame.forward.z, 0.0,
-				-dot(frame.right,frame.at), -dot(frame.up,frame.at), dot(frame.forward,frame.at), 1.0
-			])
+			this.camera.makeCLIP_FROM_LOCAL(),
+			this.camera.makeLOCAL_FROM_WORLD()
 		);
 		const LIGHT_FROM_WORLD = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 
@@ -277,9 +310,28 @@ export class Viewer {
 	redraw() {
 		if (this.redawPending) return;
 		this.redrawPending = true;
-		window.requestAnimationFrame(() => {
+		window.requestAnimationFrame((ts) => {
+			let elapsed = 0.0;
+			if ('prevTs' in this) {
+				elapsed = (ts - this.prevTs) / 1000.0;
+				delete this.prevTs;
+			}
+
+			if (this.playing) {
+				this.time += elapsed;
+				if (this.time > this.scene.maxTime) {
+					this.time -= (this.scene.maxTime - this.scene.minTime);
+				}
+				this.scene.drive(this.time);
+			}
+
 			delete this.redrawPending;
 			this.draw();
+
+			if (this.playing) {
+				this.redraw();
+				this.prevTs = ts;
+			}
 		});
 	}
 
@@ -305,8 +357,21 @@ export class Viewer {
 class Scene {
 	constructor() {
 		this.roots = [];
+		this.cameras = []; //direct access to cameras
+		this.drivers = []; //direct access to drivers
+
+		//animation range (as per drivers):
+		this.minTime = 0.0;
+		this.maxTime = 0.0;
 		
 		this.b72s = {}; //loaded from b72 files, will be {arrayBuffer: , glBuffer:}
+	}
+
+	//drive animation to a given time:
+	drive(time) {
+		for (const driver of this.drivers) {
+			driver.drive(time);
+		}
 	}
 
 	//create gl buffers for all b72 files referenced by this scene:
@@ -343,8 +408,6 @@ class Scene {
 		const json = await response.json();
 		console.log(`...have json!`);
 
-		console.log(json); //DEBUG
-
 		if (!Array.isArray(json)) throw new Error(`The top-level value is not an array.`);
 		if (json[0] !== "s72-v1") throw new Error(`The first element is not "s72-v1".`);
 
@@ -352,7 +415,6 @@ class Scene {
 
 		const loadB72 = (src) => {
 			if (typeof src !== "string") throw new Error(`Expecting b72 src to be a string.`);
-			console.log(`b72: '${src}'`); //DEBUG
 			//will actually trigger loads later!
 			if (!(src in b72s)) b72s[src] = { url: new URL(src, new URL(url, document.location) ) };
 			return b72s[src];
@@ -413,11 +475,39 @@ class Scene {
 					normalized:f.normalized
 				};
 			}
+			return loaded;
+		};
 
-			console.log(loaded);
+		const loadCamera = (index) => {
+			const elt = json[index];
+			if (elt.type !== "CAMERA") throw new Error(`Trying to load a camera from a type:"${elt.type}" element.`);
+
+			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
+
+			const loaded = elt.LOADED = new Camera();
+			loaded.name = elt.name;
+
+			let haveProjection = false;
+			if ("perspective" in elt) {
+				haveProjection = true;
+				const persp = elt.perspective;
+				loaded.perspective = { };
+				for (const attr of ['aspect', 'vfov', 'near', 'far']) {
+					if (!(attr in persp)) {
+						if (attr === 'far') continue; //'far' not required
+						throw new Error(`Camera.perspective.${attr} is required.`);
+					}
+					if (typeof persp[attr] !== 'number') throw new Error(`Camera.perspective.${attr} should be a number, got ${JSON.stringify(persp[attr])}.`);
+					loaded.perspective[attr] = persp[attr];
+				}
+			}
+			//TODO: other projection types, once defined
+
+			if (!haveProjection) {
+				throw new Error(`Camera requires some sort of projection.`);
+			}
 
 			return loaded;
-
 		};
 
 		const loadNode = (index) => {
@@ -443,11 +533,11 @@ class Scene {
 			}
 
 			if (elt.mesh) loaded.mesh = loadMesh(elt.mesh);
-			if (elt.camera) loaded.camera = loadMesh(elt.camera);
+			if (elt.camera) loaded.camera = loadCamera(elt.camera);
 
 			if (elt.children) {
 				for (const idx of elt.children) {
-					loaded.children.push(loadNode(elt.children));
+					loaded.children.push(loadNode(idx));
 				}
 			}
 
@@ -469,7 +559,35 @@ class Scene {
 			return loaded;
 		};
 
+		const loadDriver = (index) => {
+			const elt = json[index];
+			if (elt.type !== "DRIVER") throw new Error(`Trying to load a driver from a type:"${elt.type}" element.`);
+
+			const loaded = new Driver();
+			loaded.name = elt.name;
+
+			loaded.node = loadNode(elt.node);
+
+			if (typeof elt.channel !== 'string') throw new Error(`Driver.channel should be a string; got ${typeof elt.channel}.`);
+			loaded.channel = elt.channel;
+			if (!Array.isArray(elt.times)) throw new Error(`Driver.times should be an array.`);
+			loaded.times = elt.times;
+			if (!Array.isArray(elt.values)) throw new Error(`Driver.values should be an array.`);
+			loaded.values = elt.values;
+
+			const SIZES = {
+				"translation":3,
+				"rotation":4,
+				"scale":3
+			};
+			if (!(elt.channel in SIZES)) throw new Error(`Driver.channel isn't of a supported type.`);
+			if (SIZES[loaded.channel] * elt.times.length !== elt.values.length) throw new Error(`Times/values size mis-match for ${loaded.channel} expected ${elt.times.length}*${SIZES[loaded.channel]}, got ${elt.values.length}.`);
+
+			return loaded;
+		};
+
 		let scene = null;
+		let driverIndices = [];
 
 		//load top-level objects ("SCENE" + "DRIVER"):
 		for (let i = 1; i < json.length; ++i) {
@@ -487,18 +605,65 @@ class Scene {
 			} else if (type === "CAMERA") {
 				//loaded recursively by node
 			} else if (type === "DRIVER") {
-				//TODO
+				driverIndices.push(i);
 			} else {
 				console.warn(`Did not recognize type '${obj.type}'!`);
+			}
+		}
+
+		//load drivers (now that scene has been loaded):
+		scene.minTime = Infinity;
+		scene.maxTime = -Infinity;
+		for (let i of driverIndices) {
+			const driver = loadDriver(i);
+			scene.drivers.push(driver);
+			if (driver.times.length) {
+				scene.minTime = Math.min(scene.minTime, driver.times[0]);
+				scene.maxTime = Math.max(scene.maxTime, driver.times[driver.times.length-1]);
+			}
+		}
+		if (scene.minTime > scene.maxTime) {
+			scene.minTime = scene.maxTime = 0.0;
+		}
+
+		//find cameras:
+		for (const root of scene.roots) {
+			let stack = [];
+			function push(node) {
+				if (node.MARKED) return; //avoid cycles
+				node.MARKED = true;
+				if (node.camera) {
+					if (node.camera.parents.length > 0) {
+						console.warn(`Camera ${node.camrea.name} has multiple paths to it in the graph.`);
+					} else {
+						for (const s of stack) {
+							node.camera.parents.push(s.node);
+						}
+						node.camera.parents.push(node);
+						scene.cameras.push(node.camera);
+					}
+				}
+				stack.push({node:node, nextChild:0});
+			}
+			push(root);
+			while (stack.length) {
+				let back = stack[stack.length-1];
+				if (back.nextChild < back.node.children.length) {
+					//advance to next child:
+					push(back.node.children[back.nextChild]);
+					back.nextChild += 1;
+				} else {
+					//ran out of children:
+					delete back.node.MARKED;
+					stack.pop();
+				}
 			}
 		}
 
 		//record loaded b72s:
 		scene.b72s = b72s;
 
-		console.log(b72s);
 		for (const b72 of Object.values(b72s)) {
-			console.log(b72);
 			const response = await fetch(b72.url);
 			b72.arrayBuffer = await response.arrayBuffer();
 		}
@@ -592,6 +757,33 @@ class Mesh {
 	}
 }
 
+class Camera {
+	constructor() {
+		this.perspective = {
+			vfov:60.0 / 180.0 * Math.PI,
+			aspect:1.0,
+			near:0.1,
+			far:1000.0
+		};
+
+		this.parents = []; //chain of nodes to this camera
+	}
+	makeLOCAL_FROM_WORLD() {
+		let LOCAL_FROM_WORLD = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+		for (let p of this.parents) {
+			const LOCAL_FROM_PARENT = p.makeLOCAL_FROM_PARENT();
+			LOCAL_FROM_WORLD = mul(LOCAL_FROM_PARENT, LOCAL_FROM_WORLD);
+		}
+		return LOCAL_FROM_WORLD;
+	}
+	//projection matrix:
+	makeCLIP_FROM_LOCAL() {
+		//TODO: use non-infinite if this.far is set
+		return perspective(this.perspective.vfov, this.perspective.aspect, this.perspective.near);
+	}
+}
+
+
 class Node {
 	constructor() {
 		this.name = null;
@@ -602,7 +794,7 @@ class Node {
 		//this.mesh
 		//this.camera
 	}
-	traverse(gl, program, u, CLIP_FROM_PARENT, LIGHT_FROM_PARENT) {
+	makePARENT_FROM_LOCAL() {
 		//quat -> rotation matrix from https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
 		const qi = this.rotation[0];
 		const qj = this.rotation[1];
@@ -614,12 +806,38 @@ class Node {
 			    2*(qi*qk - qj*qr),     2*(qj*qk + qi*qr), 1 - 2*(qi*qi + qj*qj)
 		];
 		const scale = this.scale;
-		const PARENT_FROM_LOCAL = new Float32Array([
+		return new Float32Array([
 			scale[0] * rot[0], scale[0] * rot[3], scale[0] * rot[6],0,
 			scale[1] * rot[1], scale[1] * rot[4], scale[1] * rot[7],0,
 			scale[2] * rot[2], scale[2] * rot[5], scale[2] * rot[8],0,
 			this.translation[0], this.translation[1],this.translation[2],1
 		]);
+	}
+	makeLOCAL_FROM_PARENT() {
+		//quat -> rotation matrix from https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+		const qi =-this.rotation[0];
+		const qj =-this.rotation[1];
+		const qk =-this.rotation[2];
+		const qr = this.rotation[3];
+		const ir = [ //note:row-major, will transpose below
+			1 - 2*(qj*qj + qk*qk),     2*(qi*qj - qk*qr),     2*(qi*qk + qj*qr),
+			    2*(qi*qj + qk*qr), 1 - 2*(qi*qi + qk*qk),     2*(qj*qk - qi*qr),
+			    2*(qi*qk - qj*qr),     2*(qj*qk + qi*qr), 1 - 2*(qi*qi + qj*qj)
+		];
+		const is = [1.0 / this.scale[0], 1.0 / this.scale[1], 1.0 / this.scale[2]];
+		const it = [-this.translation[0], -this.translation[1], -this.translation[2]];
+		return new Float32Array([
+			is[0]*ir[0], is[0]*ir[3], is[0]*ir[6], 0,
+			is[1]*ir[1], is[1]*ir[4], is[1]*ir[7], 0,
+			is[2]*ir[2], is[2]*ir[5], is[2]*ir[8], 0,
+			is[0]*(ir[0]*it[0] + ir[1]*it[1] + ir[2]*it[2]),
+				is[1]*(ir[3]*it[0] + ir[4]*it[1] + ir[5]*it[2]),
+				is[2]*(ir[6]*it[0] + ir[7]*it[1] + ir[8]*it[2]),
+				1
+		]);
+	}
+	traverse(gl, program, u, CLIP_FROM_PARENT, LIGHT_FROM_PARENT) {
+		const PARENT_FROM_LOCAL = this.makePARENT_FROM_LOCAL();
 
 		const CLIP_FROM_LOCAL = mul(CLIP_FROM_PARENT, PARENT_FROM_LOCAL);
 		const LIGHT_FROM_LOCAL = mul(LIGHT_FROM_PARENT, PARENT_FROM_LOCAL);
@@ -636,3 +854,68 @@ class Node {
 		}
 	}
 }
+
+
+class Driver {
+	constructor() {
+		this.node = null;
+		this.channel = "translation";
+		this.times = [];
+		this.values = [];
+		this.interpolation = "LINEAR";
+
+		//cached index for last drive()
+		this.index = 0;
+	}
+	drive(time) {
+		if (this.times.length === 0) return; //can't drive if no times
+		if (this.node === null) return; //can't drive if no node
+
+		let target;
+		if (this.channel === "translation") {
+			target = this.node.translation;
+		} else if (this.channel === "rotation") {
+			target = this.node.rotation;
+		} else if (this.channel === "scale") {
+			target = this.node.scale;
+		} else {
+			return; //can't drive if channel not recognized
+		}
+
+		//find the left index of a range containing 'time' (if in times):
+		while (this.index > 0 && time < this.times[this.index]) this.index -= 1;
+		while (this.index + 1 < this.times.length && this.times[this.index + 1] < time) this.index += 1;
+
+		const i0 = this.index;
+		const i1 = Math.min(this.index + 1, this.times.length-1);
+
+		const t0 = this.times[i0];
+		const t1 = this.times[i1];
+		const v0 = this.values.slice(i0 * target.length, (i0+1) * target.length);
+		const v1 = this.values.slice(i1 * target.length, (i1+1) * target.length);
+
+		//console.log(`t[${i0}] = ${t0}, t[${i1}] = ${t1}, time = ${time}, v0 = ${v0}, v1 = ${v1}`);
+
+		if (time <= t0) {
+			v0.forEach((v,i) => { target[i] = v; });
+		} else if (time >= t1) {
+			v1.forEach((v,i) => { target[i] = v; });
+		} else {
+			if (this.interpolation === "STEP") {
+				v0.forEach((v,i) => { target[i] = v; });
+			} else if (this.interpolation === "SLERP") {
+				//TODO
+			} else if (this.interpolation === "LINEAR") {
+				const amt = (time - t0) / (t1 - t0);
+				v0.forEach((v,i) => { target[i] = amt * (v1[i] - v) + v; });
+			} else {
+				//unknown interpolation type
+				v0.forEach((v,i) => { target[i] = v; });
+			}
+		}
+
+	}
+}
+
+
+
