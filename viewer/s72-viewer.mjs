@@ -2,6 +2,33 @@
 
 import * as helpers from './gl-helpers.mjs';
 
+
+const MATRIX_SLAB = new ArrayBuffer(4 * 16 * 1024);
+MATRIX_SLAB.freeList = [];
+MATRIX_SLAB.offset = 0;
+
+MATRIX_SLAB.alloc = function (from) {
+	let offset = this.offset;
+	this.offset += 4*16;
+	const mat = new Float32Array(this, offset, 16);
+	mat.offset = offset;
+	if (typeof from !== "undefined") {
+		mat.set(from);
+	}
+	return mat;
+}
+MATRIX_SLAB.free = function(mat) {
+	if (mat.offset + 4*16 === this.offset) {
+		this.offset -= 4*16;
+	} else {
+		throw new Error("out-of-order free?!");
+	}
+}
+MATRIX_SLAB.freeAll = function() {
+	this.offset = 0;
+}
+
+
 class UserCamera {
 	constructor() {
 		this.target = {x:0, y:0, z:0};
@@ -32,7 +59,7 @@ class UserCamera {
 	}
 	makeLOCAL_FROM_WORLD() {
 		const frame = this.makeFrame();
-		return new Float32Array([
+		return MATRIX_SLAB.alloc([
 			frame.right.x, frame.up.x,-frame.forward.x, 0.0,
 			frame.right.y, frame.up.y,-frame.forward.y, 0.0,
 			frame.right.z, frame.up.z,-frame.forward.z, 0.0,
@@ -43,7 +70,6 @@ class UserCamera {
 		return perspective(this.vfov, this.aspect, this.near);
 	}
 };
-
 
 function dot(a, b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -61,7 +87,7 @@ function normalize(vec) {
 }
 function perspective(fovy, aspect, zNear) {
 	var f = 1 / Math.tan(fovy/2);
-	return new Float32Array([
+	return MATRIX_SLAB.alloc([
 		f / aspect, 0.0, 0.0, 0.0,
 		0.0, f, 0.0, 0.0,
 		0.0, 0.0, -1, -1,
@@ -69,7 +95,7 @@ function perspective(fovy, aspect, zNear) {
 	]);
 }
 function mul(A, B) {
-	var out = new Float32Array(16);
+	var out = MATRIX_SLAB.alloc();
 	for (var r = 0; r < 4; ++r) {
 		for (var c = 0; c < 4; ++c) {
 			var val = 0.0;
@@ -232,25 +258,33 @@ export class Viewer {
 		}
 	}
 
-	load(url) {
+	load(url, callback) {
 		const pending = this.pending = {
 			target:this,
 		};
 
 		(async () => {
-			const loaded = await Scene.from(this.gl, url);
+			let loaded = null;
+			try {
+				loaded = await Scene.from(this.gl, url);
+			} catch (err) {
+				callback(err);
+				return;
+			}
 			if (this.pending === pending) {
 				delete this.pending;
 				this.scene.deleteBuffers(this.gl);
 				this.scene = loaded;
 				this.scene.createBuffers(this.gl);
-
+	
 				this.playing = false;
 				delete this.prevTs;
 				this.time = this.scene.minTime;
 				this.scene.drive(this.time);
-
+	
 				this.redraw();
+	
+				if (callback) callback();
 			}
 		})();
 	}
@@ -269,6 +303,8 @@ export class Viewer {
 	}
 
 	draw() {
+		MATRIX_SLAB.freeAll();
+
 		const width = parseInt(this.canvas.width);
 		const height = parseInt(this.canvas.height);
 
@@ -292,7 +328,7 @@ export class Viewer {
 			this.camera.makeCLIP_FROM_LOCAL(),
 			this.camera.makeLOCAL_FROM_WORLD()
 		);
-		const LIGHT_FROM_WORLD = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+		const LIGHT_FROM_WORLD = MATRIX_SLAB.alloc([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 
 		const u = {
 			CLIP_FROM_LOCAL:CLIP_FROM_WORLD,
@@ -305,6 +341,7 @@ export class Viewer {
 		*/
 
 		this.scene.traverse(gl, this.program, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD);
+
 	}
 
 	redraw() {
@@ -342,7 +379,7 @@ export class Viewer {
 
 		u.CLIP_FROM_LOCAL = mul(
 			perspective(this.camera.fovy, this.camera.aspect, this.camera.near),
-			new Float32Array([
+			MATRIX_SLAB.alloc([
 				frame.right.x, frame.up.x,-frame.forward.x, 0.0,
 				frame.right.y, frame.up.y,-frame.forward.y, 0.0,
 				frame.right.z, frame.up.z,-frame.forward.z, 0.0,
@@ -769,7 +806,7 @@ class Camera {
 		this.parents = []; //chain of nodes to this camera
 	}
 	makeLOCAL_FROM_WORLD() {
-		let LOCAL_FROM_WORLD = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+		let LOCAL_FROM_WORLD = MATRIX_SLAB.alloc([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
 		for (let p of this.parents) {
 			const LOCAL_FROM_PARENT = p.makeLOCAL_FROM_PARENT();
 			LOCAL_FROM_WORLD = mul(LOCAL_FROM_PARENT, LOCAL_FROM_WORLD);
@@ -806,7 +843,7 @@ class Node {
 			    2*(qi*qk - qj*qr),     2*(qj*qk + qi*qr), 1 - 2*(qi*qi + qj*qj)
 		];
 		const scale = this.scale;
-		return new Float32Array([
+		return MATRIX_SLAB.alloc([
 			scale[0] * rot[0], scale[0] * rot[3], scale[0] * rot[6],0,
 			scale[1] * rot[1], scale[1] * rot[4], scale[1] * rot[7],0,
 			scale[2] * rot[2], scale[2] * rot[5], scale[2] * rot[8],0,
@@ -826,7 +863,7 @@ class Node {
 		];
 		const is = [1.0 / this.scale[0], 1.0 / this.scale[1], 1.0 / this.scale[2]];
 		const it = [-this.translation[0], -this.translation[1], -this.translation[2]];
-		return new Float32Array([
+		return MATRIX_SLAB.alloc([
 			is[0]*ir[0], is[0]*ir[3], is[0]*ir[6], 0,
 			is[1]*ir[1], is[1]*ir[4], is[1]*ir[7], 0,
 			is[2]*ir[2], is[2]*ir[5], is[2]*ir[8], 0,
@@ -852,6 +889,10 @@ class Node {
 		for (const child of this.children) {
 			child.traverse(gl, program, u, CLIP_FROM_LOCAL, LIGHT_FROM_LOCAL);
 		}
+
+		MATRIX_SLAB.free(LIGHT_FROM_LOCAL);
+		MATRIX_SLAB.free(CLIP_FROM_LOCAL);
+		MATRIX_SLAB.free(PARENT_FROM_LOCAL);
 	}
 }
 
@@ -916,6 +957,3 @@ class Driver {
 
 	}
 }
-
-
-

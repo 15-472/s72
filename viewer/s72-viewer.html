@@ -3,26 +3,102 @@
 <head>
 <title>Scene'72 File Viewer</title>
 <style>
-#viewer {
+#controls {
+	display:flex;
+	flex-flow:row;
+	justify-content:space-between;
+
 	position:absolute;
+	width:100vw;
+	height:20px;
 	top:0;
 	left:0;
+	font-size:14px;
+	line-height:20px;
+	color:#fff;
+}
+a {
+	color:#bbb;
+}
+
+#controls > a, #controls > label {
+	display:block;
+	border-radius:4px;
+	background:#444;
+	height:20px;
+	margin:0 2px;
+	padding:0 4px;
+}
+
+#viewer {
+	display:block;
+	position:absolute;
 	width:100vw;
-	height:100vh;
+	height:calc(100vh - 20px);
+	top:20px;
+	left:0;
 }
 body {
 	margin:0;
 	padding:0;
+	background:#222;
 }
 </style>
 </head>
 <body>
+<div id="controls">
+<label for="cameras">Camera: <select id="cameras"><option>USER</option></select></label>
+<button id="play-pause">Play/Pause</button>
+<a href="https://github.com/15-472/s72">s72 format on github</a>
+</div>
 <canvas id="viewer"></canvas>
 <script type="module">
 import { Viewer } from './s72-viewer.mjs';
 window.VIEWER = new Viewer( document.getElementById('viewer') );
 
-window.VIEWER.load('../examples/sg-Articulation.s72');
+const PLAY_BUTTON = document.getElementById('play-pause');
+
+PLAY_BUTTON.addEventListener('click', () => {
+	VIEWER.pause();
+});
+
+const CAMERAS = document.getElementById('cameras');
+window.CAMERAS = CAMERAS;
+
+function afterLoading(err) {
+	if (err) {
+		document.getElementById('err').innerText = err.toString();
+		return;
+	}
+
+	CAMERAS.innerHTML = '';
+	function add(name, camera) {
+		const opt = document.createElement('option');
+		opt.innerText = name;
+		opt.camera = camera;
+		CAMERAS.appendChild(opt);
+	}
+	add('USER', VIEWER.userCamera);
+	for (const camera of VIEWER.scene.cameras) {
+		add(camera.name, camera);
+	}
+}
+
+CAMERAS.addEventListener('change', () => {
+	if (CAMERAS.selectedOptions.length) {
+		VIEWER.camera = CAMERAS.selectedOptions[0].camera;
+		VIEWER.redraw();
+	}
+});
+
+
+if (window.location.search.startsWith('?')) {
+	window.VIEWER.load(window.location.search.substr(1), afterLoading);
+} else {
+	//default example
+	window.VIEWER.load('../examples/sg-Articulation.s72', afterLoading);
+}
+
 </script>
 </body>
 </html>
