@@ -191,7 +191,7 @@ If rendering through a camera that does not match the output image aspect ratio,
 	"type":"DRIVER",
 	"name":"camera move",
 	"node":12,
-	"channel":"position",
+	"channel":"translation",
 	"times":[0, 1, 2, 3, 4],
 	"values":[0,0,0, 0,0,1, 0,1,1, 1,1,1, 0,0,0],
 	"interpolation":"LINEAR"
@@ -211,7 +211,7 @@ The values in the `values` array are grouped into 1D-4D vectors depending on the
 For example, a 3D channel with $n$ times will have $3n$ `values`, which should be considered as $n$ 3-vectors.
 
 The possible `channel` values and their meanings are as follows:
-- 3D `channel`s: `"position"`, `"scale"`. Meaning: set the associated component of the target node.
+- 3D `channel`s: `"translation"`, `"scale"`. Meaning: set the associated component of the target node.
 - 4D `channel`s: `"rotation"`. Meaning: set the `rotation` of the target node as a quaternion.
 
 The meaning of `interpolation` is as follows:
