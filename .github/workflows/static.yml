@@ -36,8 +36,8 @@ jobs:
       - name: Extract Viewer
         run: |
           mkdir web
-          echo '<html><body>nothing to see here</body></html>' > web/index.html
-          cp -r viewer web/viewer
+          cp -r viewer web/
+          mv web/s72-viewer.html web/index.html
           find .
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
