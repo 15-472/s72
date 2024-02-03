@@ -98,18 +98,13 @@ else:
 
 #set all collections as not excluded from the view:
 def make_included(lc):
-	print(f"{lc.name}: {lc.exclude}")
 	if lc.exclude:
-		print(f"Note, marking scene '{lc.collection.name}' as included.")
+		#print(f"Note, marking scene '{lc.collection.name}' as included.")
 		lc.exclude = False
 	for child in lc.children:
 		make_included(child)
 
 make_included(bpy.context.view_layer.layer_collection)
-
-for c in bpy.data.collections:
-	print(f"{c.name}: {c.hide_viewport} {c.hide_render} {c.hide_select}.")
-
 
 out = []
 out.append('["s72-v1",\n')
@@ -255,8 +250,9 @@ def write_node(obj, extra_children=[]):
 		camera = write_camera(obj)
 	elif obj.type == 'LIGHT':
 		pass #TODO
-	elif obj.type == 'EMPTY' and obj.instance_collection:
-		children += write_nodes(obj.instance_collection)
+	elif obj.type == 'EMPTY':
+		if obj.instance_collection:
+			children += write_nodes(obj.instance_collection)
 	else:
 		print(f"ignoring object data of type '{obj.type}'.")
 

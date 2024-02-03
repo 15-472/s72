@@ -1,0 +1,447 @@
+["s72-v1",
+{
+	"type":"MESH",
+	"name":"Sphere",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere",
+	"translation":[0,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":1
+},
+{
+	"type":"MESH",
+	"name":"Sphere-1",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-1.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-1.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-1.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-1",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":3
+},
+{
+	"type":"MESH",
+	"name":"Sphere-2",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-2.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-2.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-2.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-2",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":5
+},
+{
+	"type":"MESH",
+	"name":"Sphere-3",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-3.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-3.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-3.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-3",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":7
+},
+{
+	"type":"MESH",
+	"name":"Sphere-4",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-4.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-4.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-4.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-4",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":9
+},
+{
+	"type":"MESH",
+	"name":"Sphere-5",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-5.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-5.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-5.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-5",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":11
+},
+{
+	"type":"MESH",
+	"name":"Sphere-6",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-6.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-6.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-6.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-6",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":13
+},
+{
+	"type":"MESH",
+	"name":"Sphere-7",
+	"topology":"TRIANGLE_LIST",
+	"count":960,
+	"attributes":{
+		"POSITION":{ "src":"sphereflake.Sphere-7.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-7.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sphereflake.Sphere-7.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere-7",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":15
+},
+{
+	"type":"NODE",
+	"name":"R-Top-6",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[16]
+},
+{
+	"type":"NODE",
+	"name":"R-Back-6",
+	"translation":[8.42937e-08,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[16]
+},
+{
+	"type":"NODE",
+	"name":"R-Front-6",
+	"translation":[-8.42937e-08,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[16]
+},
+{
+	"type":"NODE",
+	"name":"R-Left-6",
+	"translation":[-1,0,1],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[16]
+},
+{
+	"type":"NODE",
+	"name":"R-Right-6",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[16]
+},
+{
+	"type":"NODE",
+	"name":"R-Top-5",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[14, 17, 18, 19, 20, 21]
+},
+{
+	"type":"NODE",
+	"name":"R-Back-5",
+	"translation":[8.42937e-08,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[14, 17, 18, 19, 20, 21]
+},
+{
+	"type":"NODE",
+	"name":"R-Front-5",
+	"translation":[-8.42937e-08,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[14, 17, 18, 19, 20, 21]
+},
+{
+	"type":"NODE",
+	"name":"R-Left-5",
+	"translation":[-1,0,1],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[14, 17, 18, 19, 20, 21]
+},
+{
+	"type":"NODE",
+	"name":"R-Right-5",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[14, 17, 18, 19, 20, 21]
+},
+{
+	"type":"NODE",
+	"name":"R-Top-4",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[12, 22, 23, 24, 25, 26]
+},
+{
+	"type":"NODE",
+	"name":"R-Back-4",
+	"translation":[8.42937e-08,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[12, 22, 23, 24, 25, 26]
+},
+{
+	"type":"NODE",
+	"name":"R-Front-4",
+	"translation":[-8.42937e-08,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[12, 22, 23, 24, 25, 26]
+},
+{
+	"type":"NODE",
+	"name":"R-Left-4",
+	"translation":[-1,0,1],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[12, 22, 23, 24, 25, 26]
+},
+{
+	"type":"NODE",
+	"name":"R-Right-4",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[12, 22, 23, 24, 25, 26]
+},
+{
+	"type":"NODE",
+	"name":"R-Top-3",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[10, 27, 28, 29, 30, 31]
+},
+{
+	"type":"NODE",
+	"name":"R-Back-3",
+	"translation":[8.42937e-08,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[10, 27, 28, 29, 30, 31]
+},
+{
+	"type":"NODE",
+	"name":"R-Front-3",
+	"translation":[-8.42937e-08,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[10, 27, 28, 29, 30, 31]
+},
+{
+	"type":"NODE",
+	"name":"R-Left-3",
+	"translation":[-1,0,1],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[10, 27, 28, 29, 30, 31]
+},
+{
+	"type":"NODE",
+	"name":"R-Right-3",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[10, 27, 28, 29, 30, 31]
+},
+{
+	"type":"NODE",
+	"name":"R-Top-2",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[8, 32, 33, 34, 35, 36]
+},
+{
+	"type":"NODE",
+	"name":"R-Back-2",
+	"translation":[8.42937e-08,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[8, 32, 33, 34, 35, 36]
+},
+{
+	"type":"NODE",
+	"name":"R-Front-2",
+	"translation":[-8.42937e-08,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[8, 32, 33, 34, 35, 36]
+},
+{
+	"type":"NODE",
+	"name":"R-Left-2",
+	"translation":[-1,0,1],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[8, 32, 33, 34, 35, 36]
+},
+{
+	"type":"NODE",
+	"name":"R-Right-2",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[8, 32, 33, 34, 35, 36]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.006",
+	"translation":[0,0,2],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[6, 37, 38, 39, 40, 41]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.007",
+	"translation":[0,1,1],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[6, 37, 38, 39, 40, 41]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.009",
+	"translation":[0,-1,1],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[6, 37, 38, 39, 40, 41]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.010",
+	"translation":[-1,0,1],
+	"rotation":[-0.270598,-0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[6, 37, 38, 39, 40, 41]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.011",
+	"translation":[1,0,1],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[6, 37, 38, 39, 40, 41]
+},
+{
+	"type":"NODE",
+	"name":"Level 1",
+	"translation":[4.21468e-08,1.74578e-08,1],
+	"rotation":[0,0,0.382683,0.92388],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.001",
+	"translation":[8.42937e-08,1,2.46891e-08],
+	"rotation":[-0.653282,0.270598,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.002",
+	"translation":[-4.21468e-08,1.01751e-07,-1],
+	"rotation":[-0.92388,-0.382683,2.88918e-08,6.9751e-08],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.003",
+	"translation":[-8.42937e-08,-1,-1.43898e-07],
+	"rotation":[0.653282,0.270598,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.004",
+	"translation":[-1,0,5.96046e-08],
+	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"NODE",
+	"name":"Level 1.005",
+	"translation":[1,0,5.96046e-08],
+	"rotation":[0.270598,0.653282,0.270598,0.653282],
+	"scale":[0.55,0.55,0.55],
+	"children":[4, 42, 43, 44, 45, 46]
+},
+{
+	"type":"SCENE",
+	"name":"sphereflake.blend",
+	"roots":[2, 47, 48, 49, 50, 51, 52]
+}
+]

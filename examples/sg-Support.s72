@@ -1,0 +1,103 @@
+["s72-v1",
+{
+	"type":"MESH",
+	"name":"Cylinder",
+	"topology":"TRIANGLE_LIST",
+	"count":468,
+	"attributes":{
+		"POSITION":{ "src":"sg-Support.Cylinder.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Cylinder.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Cylinder.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Cylinder",
+	"translation":[0.256557,0.181606,1.21772],
+	"rotation":[-0.676884,-0.20452,0.20452,0.676884],
+	"scale":[1,1,1],
+	"mesh":1
+},
+{
+	"type":"MESH",
+	"name":"Torus",
+	"topology":"TRIANGLE_LIST",
+	"count":11520,
+	"attributes":{
+		"POSITION":{ "src":"sg-Support.Torus.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Torus.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Torus.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Torus",
+	"translation":[-0.15316,-0.19198,1.45711],
+	"rotation":[0.0683153,-0.226098,0.281051,0.930174],
+	"scale":[1,1,1],
+	"mesh":3
+},
+{
+	"type":"MESH",
+	"name":"Rounded-Cube",
+	"topology":"TRIANGLE_LIST",
+	"count":1428,
+	"attributes":{
+		"POSITION":{ "src":"sg-Support.Rounded-Cube.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Rounded-Cube.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Rounded-Cube.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Rounded-Cube",
+	"translation":[0,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":5,
+	"children":[2, 4]
+},
+{
+	"type":"MESH",
+	"name":"Ground",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"sg-Support.Ground.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Ground.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Ground.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+	}
+},
+{
+	"type":"NODE",
+	"name":"Ground",
+	"translation":[0,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":7,
+	"children":[6]
+},
+{
+	"type":"CAMERA",
+	"name":"Long-Camera",
+	"perspective":{
+		"aspect":1.77778,
+		"vfov":0.119856,
+		"near":0.1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Long-Camera",
+	"translation":[-6.41319,-17.984,24.0639],
+	"rotation":[0.336097,-0.0491895,-0.182892,0.922589],
+	"scale":[1,1,1],
+	"camera":9
+},
+{
+	"type":"SCENE",
+	"name":"scene-graphs.blend",
+	"roots":[8, 10]
+}
+]
