@@ -96,6 +96,20 @@ if collection_name:
 else:
 	collection = bpy.context.scene.collection
 
+#set all collections as not excluded from the view:
+def make_included(lc):
+	print(f"{lc.name}: {lc.exclude}")
+	if lc.exclude:
+		print(f"Note, marking scene '{lc.collection.name}' as included.")
+		lc.exclude = False
+	for child in lc.children:
+		make_included(child)
+
+make_included(bpy.context.view_layer.layer_collection)
+
+for c in bpy.data.collections:
+	print(f"{c.name}: {c.hide_viewport} {c.hide_render} {c.hide_select}.")
+
 
 out = []
 out.append('["s72-v1",\n')
@@ -115,7 +129,7 @@ def write_mesh(obj):
 	mesh = dg_obj.data
 
 	#this assumes same mesh always used with the same modifier stack.
-	if mesh in mesh_to_idx: return mesh_to_idx[mesh]
+	if obj.data in mesh_to_idx: return mesh_to_idx[obj.data]
 
 	b72file = f"{b72base}.{obj.data.name}.b72"
 	rel_b72file = os.path.relpath(b72file, start=os.path.dirname(s72file))
@@ -124,7 +138,7 @@ def write_mesh(obj):
 
 	idx = fresh_idx
 	fresh_idx += 1
-	mesh_to_idx[mesh] = idx
+	mesh_to_idx[obj.data] = idx
 
 	mesh = dg_obj.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
 
@@ -147,7 +161,7 @@ def write_mesh(obj):
 			assert loop.vertex_index == tri.vertices[i]
 			vertex = mesh.vertices[loop.vertex_index]
 			normal = loop.normal.x
-			if colors != None: color = colors[tri.loops[i]]
+			if colors != None: color = colors[tri.loops[i]].color
 			else: color = (1.0, 1.0, 1.0)
 
 			attribs.append(struct.pack('fff', vertex.co.x, vertex.co.y, vertex.co.z))
