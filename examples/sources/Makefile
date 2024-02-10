@@ -7,6 +7,7 @@ all : \
 	../sg-Containment.s72 \
 	../sg-Grouping.s72 \
 	../sphereflake.s72 \
+	../rotation.s72 \
 
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
@@ -23,3 +24,6 @@ all : \
 
 ../sphereflake.s72 : sphereflake.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Base '$@'
+
+../rotation.s72 : rotation.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --animate 0 48 '$@'
