@@ -36,9 +36,11 @@ class UserCamera {
 		this.azimuth = 0;
 		this.elevation = 0;
 
-		this.vfov = 60.0 / 180.0 * Math.PI;
-		this.aspect = 1.0; //will update later
-		this.near = 0.1;
+		this.perspective = {
+			vfov:60.0 / 180.0 * Math.PI,
+			aspect:1.0,
+			near:0.1
+		};
 	}
 	makeFrame() {
 		const ca = Math.cos(this.azimuth); const sa = Math.sin(this.azimuth);
@@ -67,7 +69,7 @@ class UserCamera {
 		])
 	}
 	makeCLIP_FROM_LOCAL() {
-		return perspective(this.vfov, this.aspect, this.near);
+		return perspective(this.perspective.vfov, this.perspective.aspect, this.perspective.near);
 	}
 };
 
@@ -149,6 +151,7 @@ export class Viewer {
 		this.camera = this.userCamera;
 
 		this.playing = false;
+		this.playRate = 1.0;
 		this.time = 0.0;
 
 		const gl = this.gl = this.canvas.getContext('webgl', {
@@ -308,15 +311,30 @@ export class Viewer {
 		const width = parseInt(this.canvas.width);
 		const height = parseInt(this.canvas.height);
 
-		//HACK to deal with UserCamera vs Camera data layout:
-		this.camera.aspect = width / height;
-		if (this.camera.perspective) {
-			this.camera.perspective.aspect = width / height;
+		this.userCamera.perspective.aspect = width / height; //user camera always follows aspect
+
+		let drawLeft, drawTop;
+		let drawWidth, drawHeight;
+		{ //determine letter/pillar-boxing:
+			const scale = Math.min(width / this.camera.perspective.aspect, height);
+			drawWidth = Math.round(scale * this.camera.perspective.aspect);
+			drawHeight = Math.round(scale * 1.0);
+			drawLeft = Math.floor((width - drawWidth) / 2);
+			drawTop = Math.floor((height - drawHeight) / 2);
 		}
 
 		const gl = this.gl;
+		
+		if (width !== drawWidth || height !== drawHeight) {
+			gl.disable(gl.SCISSOR_TEST);
+			gl.viewport(0,0, width, height);
+			gl.clearColor(0.1, 0.1, 0.1, 1.0);
+			gl.clear(gl.COLOR_BUFFER_BIT);
+		}
 
-		gl.viewport(0,0,width,height);
+		gl.viewport(drawLeft, drawTop, drawWidth, drawHeight);
+		gl.scissor(drawLeft, drawTop, drawWidth, drawHeight);
+		gl.enable(gl.SCISSOR_TEST);
 
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
@@ -355,9 +373,17 @@ export class Viewer {
 			}
 
 			if (this.playing) {
-				this.time += elapsed;
-				if (this.time > this.scene.maxTime) {
-					this.time -= (this.scene.maxTime - this.scene.minTime);
+				this.time += this.playRate * elapsed;
+				if (this.scene.minTime == this.scene.maxTime) {
+					this.time = this.scene.minTime;
+				} else {
+					let time = this.time;
+					time -= this.scene.minTime;
+					time /= this.scene.maxTime - this.scene.minTime;
+					time -= Math.floor(time);
+					time *= this.scene.maxTime - this.scene.minTime;
+					time += this.scene.minTime;
+					this.time = time;
 				}
 				this.scene.drive(this.time);
 			}
@@ -611,6 +637,10 @@ class Scene {
 			loaded.times = elt.times;
 			if (!Array.isArray(elt.values)) throw new Error(`Driver.values should be an array.`);
 			loaded.values = elt.values;
+
+			if ("interpolation" in elt) {
+				loaded.interpolation = elt.interpolation;
+			}
 
 			const SIZES = {
 				"translation":3,
@@ -932,7 +962,7 @@ class Driver {
 
 		const t0 = this.times[i0];
 		const t1 = this.times[i1];
-		const v0 = this.values.slice(i0 * target.length, (i0+1) * target.length);
+		let v0 = this.values.slice(i0 * target.length, (i0+1) * target.length);
 		const v1 = this.values.slice(i1 * target.length, (i1+1) * target.length);
 
 		//console.log(`t[${i0}] = ${t0}, t[${i1}] = ${t1}, time = ${time}, v0 = ${v0}, v1 = ${v1}`);
@@ -945,7 +975,22 @@ class Driver {
 			if (this.interpolation === "STEP") {
 				v0.forEach((v,i) => { target[i] = v; });
 			} else if (this.interpolation === "SLERP") {
-				//TODO
+				//based on glm's quat::slerp (glm/ext/quaternion_common.inl)
+				const amt = (time - t0) / (t1 - t0);
+				let cos_theta = v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2] + v0[3] * v1[3];
+				if (cos_theta < 0) { //opposite direction
+					v0 = v0.map(x => -x);
+					cos_theta = -cos_theta;
+				}
+				if (cos_theta > 1 - 1e-7) {
+					//when very small angle, use linear:
+					v0.forEach((v,i) => { target[i] = amt * (v1[i] - v) + v; });
+				} else {
+					const theta = Math.acos(cos_theta);
+					const amt0 = Math.sin((1-amt) * theta) / Math.sin(theta);
+					const amt1 = Math.sin(amt * theta) / Math.sin(theta);
+					v0.forEach((v,i) => { target[i] = amt0 * v + amt1 * v1[i]; });
+				}
 			} else if (this.interpolation === "LINEAR") {
 				const amt = (time - t0) / (t1 - t0);
 				v0.forEach((v,i) => { target[i] = amt * (v1[i] - v) + v; });

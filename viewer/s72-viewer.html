@@ -21,6 +21,11 @@ a {
 	color:#bbb;
 }
 
+#rate {
+	width:4em;
+	height:12px;
+}
+
 #controls > a, #controls > label {
 	display:block;
 	border-radius:4px;
@@ -49,6 +54,7 @@ body {
 <div id="controls">
 <label for="cameras">Camera: <select id="cameras"><option>USER</option></select></label>
 <button id="play-pause">Play/Pause</button>
+<label for="rate">Playback Rate:<input id="rate" type="number" value="1.00" step="0.01" /></label>
 <a href="https://github.com/15-472/s72">s72 format on github</a>
 </div>
 <canvas id="viewer"></canvas>
@@ -61,6 +67,14 @@ const PLAY_BUTTON = document.getElementById('play-pause');
 PLAY_BUTTON.addEventListener('click', () => {
 	VIEWER.pause();
 });
+
+const PLAY_RATE = document.getElementById('rate');
+window.PLAY_RATE = PLAY_RATE;
+
+PLAY_RATE.addEventListener('change', () => {
+	VIEWER.playRate = parseFloat(PLAY_RATE.value);
+});
+
 
 const CAMERAS = document.getElementById('cameras');
 window.CAMERAS = CAMERAS;
