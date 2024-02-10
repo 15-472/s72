@@ -369,7 +369,10 @@ if frames != None:
 					assert c < 3
 			values = '[' + ', '.join(values) + ']'
 			out.append(f'\t"values":{values},\n')
-			out.append(f'\t"interpolation":"LINEAR"\n')
+			if c == 1:
+				out.append(f'\t"interpolation":"SLERP"\n')
+			else:
+				out.append(f'\t"interpolation":"LINEAR"\n')
 			out.append('},\n')
 
 
