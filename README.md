@@ -269,8 +269,8 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ```
 *Material* objects have their `type` property set to `"MATERIAL"`.
 They include the following *material*-specific properties:
-- <code>"normalMap":<var>T</var></code> (optional) -- reference to a texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant \( (0,0,1) \) normal map.
-- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a texture to use as a displacement map. Not specifying should be the same as specifying a constant \( 0 \) displacement map.
+- <code>"normalMap":<var>T</var></code> (optional) -- reference to a texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
+- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a texture to use as a displacement map. Not specifying should be the same as specifying a constant $0$ displacement map.
 - Exactly one of:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
@@ -289,15 +289,15 @@ The `"lambertian"` material is a basic Lambertian diffuse material, with one par
 
 The `"mirror"` material uses a perfect mirror BRDF. It has no parameters.
 
-The `"environment"` material looks up the environment in the direction of the normal. (This is a BRDF with a Dirac delta along \( n \).) It has no parameters.
+The `"environment"` material looks up the environment in the direction of the normal. (This is a BRDF with a Dirac delta along $n$.) It has no parameters.
 
 The `"simple"` material uses a hemisphere light to shade a model based on its normals and vertex colors. It has no parameters.
 
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
- - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values \( c \in [0,255] \) to texture values \( c' \).
-   - "linear" -- map linearly ( \( rgba' \gets rgba / 255 \) )
-   - "rgbe" -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( \( rgb' \gets 2^{a - 128}\frac{ rgb + 0.5 }{ 256 } \) )
+ - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$.
+   - "linear" -- map linearly ( $rgba' \gets rgba / 255$ )
+   - "rgbe" -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
 
 ### *Environment* Objects
 *Environment* objects specify light probe images used to illuminate materials:
@@ -320,7 +320,7 @@ The `"simple"` material uses a hemisphere light to shade a model based on its no
 *Environment* objects have their `type` property set to `"ENVIRONMENT"`.
 
 They include the following *environment*-specific properties:
- - <code>"faces":[<var>+X</var>,<var>-X</var>,<var>+Y</var>,<var>-Y</var>,<var>+Z</var>,<var>-Z</var>]</code> -- (required) -- textures for the \( +x \), \( -x \), \( +y \), \( -y \), \( +z \), and \( -z \) faces of the cube map (in that order).
+ - <code>"faces":[<var>+X</var>,<var>-X</var>,<var>+Y</var>,<var>-Y</var>,<var>+Z</var>,<var>-Z</var>]</code> -- (required) -- textures for the $+x$, $-x$, $+y$, $-y$, $+z$, and $-z$ faces of the cube map (in that order).
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>.
 
