@@ -231,32 +231,32 @@ The effect of applying *driver* objects should be as if the objects are applied 
 I.e., later *driver* objects may override earlier *driver* objects that drive the same properties.
 
 ### *Material* Objects
-*Material* objects specify drive (animate) properties of other objects:
+*Material* objects specify how meshes that reference them are shaded:
 ```js
 /* ... */
 {
 	"type":"MATERIAL",
 	"name":"boring blue",
-	"normalMap":{ src:"flat.png" },
-	"displacementMap":{ src:"displacement.png" },
+	"normalMap":{ "src":"normal.png" },
+	"displacementMap":{ "src":"displacement.png" },
 	"pbr":{
 		"albedo": [0.5, 0.5, 0.85],
 		/* xor */
-		"albedo": { src:"blue.png" },
+		"albedo": { "src":"blue.png" },
 
 		"roughness": 0.5,
 		/* xor */
-		"roughness": { src:"roughness-map.png" },
+		"roughness": { "src":"roughness-map.png" },
 
 		"metalness": 0.0,
 		/* xor */
-		"metalness": { src:"metalness-map.png" },
+		"metalness": { "src":"metalness-map.png" },
 	},
 	/* xor */
 	"lambertian": {
 		"baseColor": [0.5, 0.5, 0.85],
 		/* xor */
-		"baseColor": { src:"blue.png" },
+		"baseColor": { "src":"blue.png" },
 	},
 	/* xor */
 	"mirror": { /* no parameters */ },
@@ -272,21 +272,32 @@ They include the following *material*-specific properties:
 - <code>"normalMap":<var>T</var></code> (optional) -- reference to a texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant \( (0,0,1) \) normal map.
 - <code>"displacementMap":<var>T</var></code> (optional) -- reference to a texture to use as a displacement map. Not specifying should be the same as specifying a constant \( 0 \) displacement map.
 - Exactly one of:
- - `"pbr"` -- a physically-based metallic/roughness material,
- - `"lambertian"` -- a lambertian (diffuse) material,
- - `"mirror"` -- a perfect mirror material,
- - `"environment"` -- a material that copies the environment in the normal direction,
- - or `"simple"` -- a material that uses vertex colors lit by a simple hemisphere light.
+  - `"pbr"` -- a physically-based metallic/roughness material,
+  - `"lambertian"` -- a lambertian (diffuse) material,
+  - `"mirror"` -- a perfect mirror material,
+  - `"environment"` -- a material that copies the environment in the normal direction,
+  - or `"simple"` -- a material that uses vertex colors lit by a simple hemisphere light.
 
-The `"pbr"` material is a physically-based BRDF defined as per <a href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Epic Games' SIGGRAPH 2013 Talk</a> (with lambertian diffuse + ggx specular).
+The `"pbr"` material uses a physically-based BRDF defined as per <a href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Epic Games' SIGGRAPH 2013 Talk</a> (with lambertian diffuse + ggx specular).
 The available parameters for the model are:
-- `"albedo"` -- (optional, default is `[1,1,1]`) -- constant albedo value or albedo map *texture* (if a texture, value is taken from the rgb components).
-- `"roughness"` -- (optional, default is `1.0`) -- constant roughness value or roughness map *texture* (if a texture, value is taken from the r component).
-- `"metalness"` -- (optional, default is `0.0`) -- constant metalness value or metalness map *texture* (if a texture, value is taken from the r component).
+ - `"albedo"` (optional, default is `[1,1,1]`) -- constant albedo value or albedo map *texture* (if a texture, should be three-channel).
+ - `"roughness"` (optional, default is `1.0`) -- constant roughness value or roughness map *texture* (if a texture, should be one-channel).
+ - `"metalness"` (optional, default is `0.0`) -- constant metalness value or metalness map *texture* (if a texture, should be one-channel).
+
+The `"lambertian"` material is a basic Lambertian diffuse material, with one parameter:
+ - `"albedo"` -- same as in `"pbr"`.
+
+The `"mirror"` material uses a perfect mirror BRDF. It has no parameters.
+
+The `"environment"` material looks up the environment in the direction of the normal. (This is a BRDF with a Dirac delta along \( n \).) It has no parameters.
+
+The `"simple"` material uses a hemisphere light to shade a model based on its normals and vertex colors. It has no parameters.
 
 *Texture*s have the following properties:
- - `"src"` -- (required) -- location (relative to the `.s72` file) from which to load the texture.
-
+ - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
+ - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values \( c \in [0,255] \) to texture values \( c' \).
+   - "linear" -- map linearly ( \( rgba' \gets rgba / 255 \) )
+   - "rgbe" -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( \( rgb' \gets 2^{a - 128}\frac{ rgb + 0.5 }{ 256 } \) )
 
 ### *Environment* Objects
 *Environment* objects specify light probe images used to illuminate materials:
@@ -309,31 +320,9 @@ The available parameters for the model are:
 *Environment* objects have their `type` property set to `"ENVIRONMENT"`.
 
 They include the following *environment*-specific properties:
- - `"faces":[<var>+X</var>,<var>-X</var>,<var>+Y</var>,<var>-Y</var>,<var>+Z</var>,<var>-Z</var>]` -- (required) -- textures for the \(+x\), \(-x\), \(+y\), \(-y\), \(+z\), and \(-z\) faces of the cube map (in that order).
+ - <code>"faces":[<var>+X</var>,<var>-X</var>,<var>+Y</var>,<var>-Y</var>,<var>+Z</var>,<var>-Z</var>]</code> -- (required) -- textures for the \( +x \), \( -x \), \( +y \), \( -y \), \( +z \), and \( -z \) faces of the cube map (in that order).
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>.
 
 
 *Note:* the naming of the faces (`-top`, etc.) in the example above corresponds to their positions if viewed looking in the +y direction in scene'72's by-convention-z-up world.
-
-
-## Features Under Consideration
-These features are not yet standard, but are under consideration as potentially useful.
-
-### *Data* Objects
-*Data* objects define embedded data.
-```js
-/* ... */
-{
-	"type":"DATA",
-	"name":"animation curves",
-	"data":[ 0,0, 1,0, 2,1, 3,1, 4,0 ]
-}
-```
-*Data* objects have their `type` property set to `"DATA"`.
-They include the following *data*-specific properties:
-- `"data":[...]` (required) -- an array of numbers.
-
-Anywhere a `.b72` file can be referenced, one can instead use the index of a *data* object.
-This should be the same as a `.b72` file containing the bytes corresponding to the numbers in `data` array represented as system-endian 32-bit floating point numbers.
-(Notably, this makes *data* objects pretty useless for mesh indices.)
