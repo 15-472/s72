@@ -295,16 +295,16 @@ The `"simple"` material uses a hemisphere light to shade a model based on its no
 
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
- - `"type"` (optional default value is `"2D"`) -- hint about texture type
+ - `"type"` (optional default value is `"2D"`) -- the texture type
    - `"2D"` -- simple 2D texture
-   - `"cube"` -- Cube Map, stored as a vertical stack of faces (from top to bottom in the image: +x, -x, +y, -y, +z, -z)
+   - `"cube"` -- cube map texture, stored as a vertical stack of faces (from top to bottom in the image: $+x$, $-x$, $+y$, $-y$, $+z$, $-z$)
  - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$.
-   - "linear" -- map linearly ( $rgba' \gets rgba / 255$ )
-   - "rgbe" -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
+   - `"linear"` -- map linearly ( $rgba' \gets rgba / 255$ )
+   - `"rgbe"` -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
 
-*Note:* If viewing the cube faces standing at the origin and looking in the -y direction in scene'72's by-convention right-handed, z-up world, the order of the faces (top-to-bottom) is right (+x), left (-x), back (-y), front (+y), top (+z), bottom (-z).
+*Note:* If viewing the cube faces standing at the origin and looking in the $-y$ direction in scene'72's by-convention right-handed, $z$-up world, the order of the faces (top-to-bottom in the image) is right ($+x$), left ($-x$), back ($-y$), front ($+y$), top ($+z$), bottom ($-z$).
 
 ### *Environment* Objects
 *Environment* objects specify light probe images used to illuminate materials:
@@ -320,6 +320,6 @@ The sense of the faces of the cube map is as described in both <a href="https://
 *Environment* objects have their `type` property set to `"ENVIRONMENT"`.
 
 They include the following *environment*-specific properties:
- - <code>"radiance:<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter per spectral band) incoming from the environment.
+ - <code>"radiance:<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter in each spectral band) incoming from the environment.
 
 
