@@ -269,8 +269,8 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ```
 *Material* objects have their `type` property set to `"MATERIAL"`.
 They include the following *material*-specific properties:
-- <code>"normalMap":<var>T</var></code> (optional) -- reference to a texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
-- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a texture to use as a displacement map. Not specifying should be the same as specifying a constant $0$ displacement map.
+- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
+- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. Not specifying should be the same as specifying a constant $0$ displacement map.
 - Exactly one of:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
@@ -280,9 +280,9 @@ They include the following *material*-specific properties:
 
 The `"pbr"` material uses a physically-based BRDF defined as per <a href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Epic Games' SIGGRAPH 2013 Talk</a> (with lambertian diffuse + ggx specular).
 The available parameters for the model are:
- - `"albedo"` (optional, default is `[1,1,1]`) -- constant albedo value or albedo map *texture* (if a texture, should be three-channel).
- - `"roughness"` (optional, default is `1.0`) -- constant roughness value or roughness map *texture* (if a texture, should be one-channel).
- - `"metalness"` (optional, default is `0.0`) -- constant metalness value or metalness map *texture* (if a texture, should be one-channel).
+ - `"albedo"` (optional, default is `[1,1,1]`) -- constant albedo value or albedo map 2D *texture* (if a texture, should be three-channel).
+ - `"roughness"` (optional, default is `1.0`) -- constant roughness value or roughness map 2D *texture* (if a texture, should be one-channel).
+ - `"metalness"` (optional, default is `0.0`) -- constant metalness value or metalness map 2D *texture* (if a texture, should be one-channel).
 
 The `"lambertian"` material is a basic Lambertian diffuse material, with one parameter:
  - `"albedo"` -- same as in `"pbr"`.
@@ -295,9 +295,16 @@ The `"simple"` material uses a hemisphere light to shade a model based on its no
 
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
+ - `"type"` (optional default value is `"2D"`) -- hint about texture type
+   - `"2D"` -- simple 2D texture
+   - `"cube"` -- Cube Map, stored as a vertical stack of faces (from top to bottom in the image: +x, -x, +y, -y, +z, -z)
  - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$.
    - "linear" -- map linearly ( $rgba' \gets rgba / 255$ )
    - "rgbe" -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
+
+The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
+
+*Note:* If viewing the cube faces standing at the origin and looking in the -y direction in scene'72's by-convention right-handed, z-up world, the order of the faces (top-to-bottom) is right (+x), left (-x), back (-y), front (+y), top (+z), bottom (-z).
 
 ### *Environment* Objects
 *Environment* objects specify light probe images used to illuminate materials:
@@ -306,23 +313,13 @@ The `"simple"` material uses a hemisphere light to shade a model based on its no
 {
 	"type":"ENVIRONMENT",
 	"name":"sky",
-	"faces":[
-		{ src:"sky-right.png" },
-		{ src:"sky-left.png" },
-		{ src:"sky-back.png" },
-		{ src:"sky-front.png" },
-		{ src:"sky-top.png" },
-		{ src:"sky-bottom.png" }
-	]
+	"radiance": {src:"sky.png", "type":"cube", "format":"rgbe"},
 },
 /* ... */
 ```
 *Environment* objects have their `type` property set to `"ENVIRONMENT"`.
 
 They include the following *environment*-specific properties:
- - <code>"faces":[<var>+X</var>,<var>-X</var>,<var>+Y</var>,<var>-Y</var>,<var>+Z</var>,<var>-Z</var>]</code> -- (required) -- textures for the $+x$, $-x$, $+y$, $-y$, $+z$, and $-z$ faces of the cube map (in that order).
-
-The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>.
+ - <code>"radiance:<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter per spectral band) incoming from the environment.
 
 
-*Note:* the naming of the faces (`-top`, etc.) in the example above corresponds to their positions if viewed looking in the +y direction in scene'72's by-convention-z-up world.
