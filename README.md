@@ -126,7 +126,7 @@ Valid values are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensio
 - <code>"count":<var>N</var></code> (required) -- the number of vertices in the mesh.
 - `"indices":{ ... }` (optional) -- if specified, a data stream containing indices for indexed drawing commands.
 - `"attributes":{ ... }` (required) -- named data streams containing the mesh attributes.
-- `"material":<var>i</var>` (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
+- <code>"material":<var>i</var></code> (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
 
 **Mesh attributes.**
 Mesh *attribute*s are data streams used to define the mesh vertices.
