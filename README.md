@@ -293,6 +293,8 @@ The `"environment"` material looks up the environment in the direction of the no
 
 The `"simple"` material uses a hemisphere light to shade a model based on its normals and vertex colors. It has no parameters.
 
+*Note:* the "default material" (the material used for meshes that do not indicate otherwise) is a `"simple"` material with no displacement map or normal map. It does not have a name or index and cannot be otherwise referenced.
+
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
  - `"type"` (optional default value is `"2D"`) -- the texture type
