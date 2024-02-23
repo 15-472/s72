@@ -128,7 +128,7 @@ Valid values are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensio
 - <code>"count":<var>N</var></code> (required) -- the number of vertices in the mesh.
 - `"indices":{ ... }` (optional) -- if specified, a data stream containing indices for indexed drawing commands.
 - `"attributes":{ ... }` (required) -- named data streams containing the mesh attributes.
-- `"material":<var>i</var>` (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
+- <code>"material":<var>i</var></code> (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
 
 **Mesh attributes.**
 Mesh *attribute*s are data streams used to define the mesh vertices.
@@ -294,6 +294,8 @@ The `"mirror"` material uses a perfect mirror BRDF. It has no parameters.
 The `"environment"` material looks up the environment in the direction of the normal. (This is a BRDF with a Dirac delta along $n$.) It has no parameters.
 
 The `"simple"` material uses a hemisphere light to shade a model based on its normals and vertex colors. It has no parameters.
+
+*Note:* the "default material" (the material used for meshes that do not indicate otherwise) is a `"simple"` material with no displacement map or normal map. It does not have a name or index and cannot be otherwise referenced.
 
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
