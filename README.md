@@ -60,7 +60,9 @@ Every scene'72 file contains exactly one *scene* object, which defines global pr
 
 *Scene* objects must have their `type` property set to `"SCENE"`.
 They include the following *scene*-specific properties:
-- `"roots":[...]` (required) -- array of references to *node*s at which to start drawing the scene.
+- `"roots":[...]` (optional, default is `[]`) -- array of references to *node*s at which to start drawing the scene.
+
+(Note: a scene with empty `"roots"` is permitted but boring; nothing to draw!)
 
 ### *Node* Objects
 The structure of a *scene* is determined by a graph of transformation *node*s:
@@ -263,7 +265,7 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 	/* xor */
 	"environment": { /* no parameters */ },
 	/* xor */
-	"simple": { /* no parameters */ },
+	"simple": { /* no parameters */ }
 },
 /* ... */
 ```
@@ -313,7 +315,7 @@ The sense of the faces of the cube map is as described in both <a href="https://
 {
 	"type":"ENVIRONMENT",
 	"name":"sky",
-	"radiance": {src:"sky.png", "type":"cube", "format":"rgbe"},
+	"radiance": {"src":"sky.png", "type":"cube", "format":"rgbe"}
 },
 /* ... */
 ```
