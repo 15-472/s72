@@ -67,8 +67,8 @@ export function makeProgram(gl, vertexSrc, fragmentSrc) {
 }
 
 export function bindAttributes(gl, program, attributes) {
-	var warned = bindAttributes.warned || (bindAttributes.warned = {});
-	var na = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+	let warned = bindAttributes.warned || (bindAttributes.warned = {});
+	let enabled = [];
 	for (const name of Object.keys(program.attributes)) {
 		const a = program.attributes[name];
 		if (!(name in attributes)) {
@@ -78,14 +78,21 @@ export function bindAttributes(gl, program, attributes) {
 				warned[name] = true;
 			}
 			gl.disableVertexAttribArray(a.location);
-			gl.vertexAttrib4f(loc, 0.0, 0.0, 0.0, 1.0);
+			gl.vertexAttrib4f(a.location, 0.0, 0.0, 0.0, 1.0);
 		} else {
 			const value = attributes[name];
 			gl.bindBuffer(gl.ARRAY_BUFFER, value.src.glBuffer);
 			gl.vertexAttribPointer(a.location, value.size, value.type, value.normalized, value.stride, value.offset);
 			gl.enableVertexAttribArray(a.location);
+			enabled.push(a.location);
 		}
 	}
+
+	return function unbind() {
+		for (let loc of enabled) {
+			gl.disableVertexAttribArray(loc);
+		}
+	};
 }
 
 
@@ -171,7 +178,11 @@ export function setUniforms(gl, program, uniforms) {
 				throw new Error("Uniform '" + name + "' is a sampler2D, but value given is of length " + value.length);
 			}
 			gl.uniform1iv(u.location, value);
-
+		} else if (u.type === gl.SAMPLER_CUBE) {
+			if (value.length !== 1) {
+				throw new Error("Uniform '" + name + "' is a samplerCube, but value given is of length " + value.length);
+			}
+			gl.uniform1iv(u.location, value);
 		} else {
 			throw new Error("Uniform '" + name + "' has a type '" + u.type + "' not supported by this code.");
 		}

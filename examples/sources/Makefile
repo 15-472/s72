@@ -1,5 +1,6 @@
 BLENDER=~/blender-4.0.2-linux-x64/blender
 EXPORT_PY=../../exporters/blender/export-s72.py
+A72_TO_B72_JS=a72-to-b72.mjs
 
 all : \
 	../sg-Articulation.s72 \
@@ -8,6 +9,7 @@ all : \
 	../sg-Grouping.s72 \
 	../sphereflake.s72 \
 	../rotation.s72 \
+	../env-cube.b72 \
 
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
@@ -27,3 +29,6 @@ all : \
 
 ../rotation.s72 : rotation.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --animate 0 48 '$@'
+
+../env-cube.b72 : env-cube.a72 $(A72_TO_B72_JS)
+	node '$(A72_TO_B72_JS)' '$<' '$@'
