@@ -24,3 +24,10 @@ Tests animation of rotations (good for checking `"SLERP"` interpolation mode).
 
 Exported from [sources/rotation.blend](sources/rotation.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
 Blender file and exported products (c) 2024 Jim McCann; released under a [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/) license.
+
+## Environment Cube Test
+- `env-cube.s72`/`env-cube.b72`/`env-cube.png` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/env-cube.s72)
+
+A cube with the `"environment"` material and bent normals. Should display environment map stored in [`env-cube.png`](env-cube.png) clearly on its faces.
+
+Created by hand with the help of the [a72-to-b72](sources/a72-to-b72.mjs) utility by Jim McCann. The s72, b72, texture, and all filtered versions of the texture are released into the public domain. Use as you see fit.

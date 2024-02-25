@@ -520,10 +520,11 @@ export class Viewer {
 		gl.enable(gl.DEPTH_TEST);
 		gl.useProgram(this.programs.simple);
 
+		/*
 		//backface culling likely to confuse folks, though it would be a nice debug option to have:
 		gl.enable(gl.CULL_FACE);
 		gl.cullFace(gl.BACK);
-
+		*/
 
 		const CLIP_FROM_WORLD = mul(
 			this.camera.makeCLIP_FROM_LOCAL(),
