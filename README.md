@@ -252,13 +252,13 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 
 		"metalness": 0.0,
 		/* xor */
-		"metalness": { "src":"metalness-map.png" },
+		"metalness": { "src":"metalness-map.png" }
 	},
 	/* xor */
 	"lambertian": {
-		"baseColor": [0.5, 0.5, 0.85],
+		"albedo": [0.5, 0.5, 0.85],
 		/* xor */
-		"baseColor": { "src":"blue.png" },
+		"albedo": { "src":"blue.png" }
 	},
 	/* xor */
 	"mirror": { /* no parameters */ },
