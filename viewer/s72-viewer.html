@@ -48,6 +48,15 @@ body {
 	padding:0;
 	background:#222;
 }
+
+#err {
+	position:absolute;
+	bottom:0;
+	left:0;
+	right:0;
+	background:#f002;
+	color:#f88;
+}
 </style>
 </head>
 <body>
@@ -58,6 +67,7 @@ body {
 <a href="https://github.com/15-472/s72">s72 format on github</a>
 </div>
 <canvas id="viewer"></canvas>
+<div id="err"></div>
 <script type="module">
 import { Viewer } from './s72-viewer.mjs';
 window.VIEWER = new Viewer( document.getElementById('viewer') );
@@ -83,6 +93,8 @@ function afterLoading(err) {
 	if (err) {
 		document.getElementById('err').innerText = err.toString();
 		return;
+	} else {
+		document.getElementById('err').innerText = "";
 	}
 
 	CAMERAS.innerHTML = '';

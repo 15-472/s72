@@ -205,8 +205,8 @@ export class Viewer {
 			const X = evt.clientX;
 			const Y = evt.clientY;
 			if (this.panning) {
-				const move = 2.0 * Math.tan(0.5 * this.camera.vfov) * this.camera.radius;
-				const dx = -(X - this.panning.X) / this.canvas.clientWidth * this.camera.aspect * move;
+				const move = 2.0 * Math.tan(0.5 * this.camera.perspective.vfov) * this.camera.radius;
+				const dx = -(X - this.panning.X) / this.canvas.clientWidth * this.camera.perspective.aspect * move;
 				const dy = (Y - this.panning.Y) / this.canvas.clientHeight * move;
 
 				this.panning.X = X;
@@ -674,7 +674,7 @@ class Scene {
 			} else if (type === "DRIVER") {
 				driverIndices.push(i);
 			} else {
-				console.warn(`Did not recognize type '${obj.type}'!`);
+				console.warn(`Did not recognize type '${type}'!`);
 			}
 		}
 
