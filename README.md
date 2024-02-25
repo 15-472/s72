@@ -10,7 +10,7 @@ The `.s72` format is somewhat inspired by <a href="https://registry.khronos.org/
 
 ## Conventions
 
-Scene'72 scenes are **z-up**, lengths are **meters**, and times are **seconds**. The texture coordinate origin is in the **lower left** of an image.
+Scene'72 scenes are **z-up**, lengths are **meters**, and times are **seconds**. The texture coordinate origin is in the **lower left** of an image (though cube maps have a different interpretation; see the material section below).
 
 ## External Files
 
@@ -307,6 +307,9 @@ The `"simple"` material uses a hemisphere light to shade a model based on its no
    - `"rgbe"` -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
+
+For cube maps used in s72 the texture coordinate origin is in the upper-left corner of each face (this is different to regular textures in s72, which have a lower-left texture coordinate origin).
+This means that, for example, the upper-left texel in a cubemap image is at the $+x$,$+y$,$+z$ corner of the cube.
 
 *Note:* If viewing the cube faces standing at the origin and looking in the $+y$ direction in scene'72's by-convention right-handed, $z$-up world, the order of the faces (top-to-bottom in the image) is right ($+x$), left ($-x$), front ($+y$), back ($-y$), top ($+z$), bottom ($-z$).
 
