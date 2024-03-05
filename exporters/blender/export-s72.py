@@ -137,8 +137,9 @@ def write_mesh(obj):
 
 	mesh = dg_obj.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
 
-	#compute normals (respecting face smoothing):
+	#compute normals and tangent space (respecting face smoothing):
 	mesh.calc_normals_split()
+	mesh.calc_tangents()
 
 	colors = None
 	if len(mesh.vertex_colors) == 0:
@@ -161,6 +162,9 @@ def write_mesh(obj):
 
 			attribs.append(struct.pack('fff', vertex.co.x, vertex.co.y, vertex.co.z))
 			attribs.append(struct.pack('fff', loop.normal.x, loop.normal.y, loop.normal.z))
+			attribs.append(struct.pack('ffff', loop.tangent.x, loop.tangent.y, loop.tangent.z, -loop.bitangent_sign))
+			uvs = mesh.uv_layers.active.uv[tri.loops[i]].vector
+			attribs.append(struct.pack('ff', uvs.x, 1.0 - uvs.y))
 			def c(v):
 				s = int(v * 255)
 				if s < 0: return 0
@@ -181,9 +185,11 @@ def write_mesh(obj):
 	out.append(f'\t"topology":"TRIANGLE_LIST",\n')
 	out.append(f'\t"count":{count},\n')
 	out.append(f'\t"attributes":{{\n')
-	out.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
-	out.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
-	out.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }}\n')
+	out.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" }},\n')
+	out.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" }},\n')
+	out.append(f'\t\t"TANGENT":{{ "src":{json.dumps(rel_b72file)}, "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" }},\n')
+	out.append(f'\t\t"TEXCOORD":{{ "src":{json.dumps(rel_b72file)}, "offset":40, "stride":52, "format":"R32G32_SFLOAT" }},\n')
+	out.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }}\n')
 	out.append(f'\t}}\n')
 	out.append('},\n')
 
@@ -337,7 +343,7 @@ if frames != None:
 	
 	times = '[' + ','.join(times) + ']'
 	for node, idx in obj_to_idx.items():
-		for c in range(0,2):
+		for c in range(0,3):
 			driven = False
 			if c == 0 or c == 2:
 				for v in node_channels[node][c]:
