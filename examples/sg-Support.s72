@@ -5,9 +5,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":468,
 	"attributes":{
-		"POSITION":{ "src":"sg-Support.Cylinder.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Support.Cylinder.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Support.Cylinder.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Support.Cylinder.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Cylinder.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Cylinder.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -24,9 +24,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":11520,
 	"attributes":{
-		"POSITION":{ "src":"sg-Support.Torus.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Support.Torus.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Support.Torus.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Support.Torus.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Torus.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Torus.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -43,9 +43,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":1428,
 	"attributes":{
-		"POSITION":{ "src":"sg-Support.Rounded-Cube.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Support.Rounded-Cube.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Support.Rounded-Cube.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Support.Rounded-Cube.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Rounded-Cube.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Rounded-Cube.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -63,9 +63,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
-		"POSITION":{ "src":"sg-Support.Ground.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Support.Ground.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Support.Ground.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Support.Ground.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Support.Ground.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Support.Ground.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -78,6 +78,7 @@
 	"children":[6]
 },
 {
+
 	"type":"CAMERA",
 	"name":"Long-Camera",
 	"perspective":{

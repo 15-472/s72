@@ -294,13 +294,21 @@ uniform samplerCube LAMBERTIAN;
 uniform samplerCube GGX;
 uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
 
+//based on https://www.shadertoy.com/view/4tXcWr
+mediump vec3 srgb_from_linear(mediump vec3 v) {
+	bvec3 cutoff = lessThan(v, vec3(0.0031308));
+	mediump vec3 higher = vec3(1.055)*pow(v, vec3(1.0/2.4)) - vec3(0.055);
+	mediump vec3 lower = v * vec3(12.92);
+	return mix(higher, lower, vec3(cutoff));
+}
+
 void main() {
 	highp vec3 n = normalize(normal);
 	highp vec3 t = normalize(tangent);
 	highp vec3 b = normalize(bitangent);
 
 	mediump vec4 e = textureCube(RADIANCE, n);
-	gl_FragColor = vec4(e.rgb, 1.0);
+	gl_FragColor = vec4(srgb_from_linear(e.rgb), 1.0);
 }
 `
 };
@@ -318,6 +326,7 @@ export class Viewer {
 
 		const gl = this.gl = this.canvas.getContext('webgl', {
 			antialias:false,
+			colorSpace:"srgb",
 		});
 		if (!gl) {
 			throw new Error("Failed to create WebGL context.");

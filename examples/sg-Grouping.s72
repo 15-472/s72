@@ -5,9 +5,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":384,
 	"attributes":{
-		"POSITION":{ "src":"sg-Grouping.Green-Carton.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Grouping.Green-Carton.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Grouping.Green-Carton.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Grouping.Green-Carton.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Grouping.Green-Carton.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Grouping.Green-Carton.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -64,9 +64,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":384,
 	"attributes":{
-		"POSITION":{ "src":"sg-Grouping.Purple-Carton.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Grouping.Purple-Carton.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Grouping.Purple-Carton.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Grouping.Purple-Carton.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Grouping.Purple-Carton.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Grouping.Purple-Carton.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -123,9 +123,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":11520,
 	"attributes":{
-		"POSITION":{ "src":"sg-Grouping.Purple-Torus.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Grouping.Purple-Torus.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Grouping.Purple-Torus.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Grouping.Purple-Torus.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Grouping.Purple-Torus.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Grouping.Purple-Torus.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -150,9 +150,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":708,
 	"attributes":{
-		"POSITION":{ "src":"sg-Grouping.Blobby-Ground.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Grouping.Blobby-Ground.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Grouping.Blobby-Ground.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Grouping.Blobby-Ground.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Grouping.Blobby-Ground.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Grouping.Blobby-Ground.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -164,6 +164,7 @@
 	"mesh":18
 },
 {
+
 	"type":"CAMERA",
 	"name":"Close-Camera",
 	"perspective":{

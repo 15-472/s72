@@ -1,5 +1,6 @@
 ["s72-v1",
 {
+
 	"type":"CAMERA",
 	"name":"Arm-Camera",
 	"perspective":{
@@ -23,9 +24,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":5370,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Foot.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Foot.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Foot.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Foot.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Foot.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Foot.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -42,9 +43,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":864,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Link.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Link.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Link.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Link.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Link.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Link.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -62,9 +63,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":504,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Servo.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Servo.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Servo.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Servo.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Servo.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Servo.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -82,9 +83,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":312,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Bracket.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Bracket.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Bracket.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Bracket.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Bracket.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Bracket.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -120,9 +121,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":468,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Turntable-Inner.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Turntable-Inner.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Turntable-Inner.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Turntable-Inner.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -140,9 +141,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":948,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Turntable.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Turntable.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Turntable.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Turntable.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Turntable.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Turntable.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -160,9 +161,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":1428,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Rounded-Cube.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Rounded-Cube.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Rounded-Cube.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Rounded-Cube.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -179,9 +180,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
-		"POSITION":{ "src":"sg-Articulation.Plane.002.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sg-Articulation.Plane.002.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sg-Articulation.Plane.002.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sg-Articulation.Plane.002.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sg-Articulation.Plane.002.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"sg-Articulation.Plane.002.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -201,6 +202,7 @@
 	"mesh":17
 },
 {
+
 	"type":"CAMERA",
 	"name":"Moving-Camera",
 	"perspective":{
@@ -219,6 +221,7 @@
 	"camera":22
 },
 {
+
 	"type":"CAMERA",
 	"name":"Fixed-Camera",
 	"perspective":{

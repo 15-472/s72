@@ -111,34 +111,156 @@ out.append('["s72-v1",\n')
 
 fresh_idx = 1
 obj_to_idx = dict()
-mesh_to_idx = dict()
+mesh_mode_to_attributes = dict()
+attributes_mat_to_idx = dict()
 camera_to_idx = dict()
+material_to_idx = dict()
+
+#add triangulation modifiers to end of modifier stack for every mesh:
+for obj in bpy.data.objects:
+	if obj.type != "MESH": continue
+	bpy.ops.object.select_all(action='DESELECT')
+	obj.select_set(True)
+	bpy.context.view_layer.objects.active = obj
+	bpy.ops.object.modifier_add(type='TRIANGULATE')
+	mod = obj.modifiers[len(obj.modifiers)-1]
+	mod.quad_method = 'SHORTEST_DIAGONAL'
+	mod.ngon_method = 'BEAUTY'
 
 #suggested by https://stackoverflow.com/questions/70282889/to-mesh-in-blender-3
 dg = bpy.context.evaluated_depsgraph_get()
 
-def write_mesh(obj):
-	global out, fresh_idx, mesh_to_idx
+def write_material(mat):
+	global out, fresh_idx, material_to_idx
+
+	if mat == None: return 0
+
+	if mat in material_to_idx: return material_to_idx[mat]
+
+	desc = []
+	desc.append('{\n')
+	desc.append(f'\t"type":"MATERIAL",\n')
+	desc.append(f'\t"name":{json.dumps(mat.name)},\n')
+	#TODO: normal map?
+	#TODO: displacement map?
+
+	node_tree = mat.node_tree
+	def find_linked(to_node, to_socket):
+		for link in node_tree.links:
+			if link.to_node == to_node and link.to_socket == to_socket:
+				return link.from_node
+		return None
+	
+	def texture_path(tex):
+		assert tex.type == 'TEX_IMAGE'
+		image = tex.image
+
+		if image.filepath == '':
+			print(f"Material {mat.name} uses image {image} with no external path.")
+			exit(1)
+
+		path = bpy.path.abspath(image.filepath)
+		rel_path = os.path.relpath(path, start=os.path.dirname(s72file))
+		return rel_path
+	
+	def do_texture_or_constant(property, node, input, end):
+		desc.append(f'\t\t{json.dumps(property)}:')
+		if input.is_linked:
+			tex = find_linked(node, input)
+			assert tex != None
+			if tex.type != 'TEX_IMAGE':
+				print(f"Material '{mat.name}' does not have an image connected to the '{input.name}' port.")
+				exit(1)
+			path = texture_path(tex)
+			desc.append(f'{{ "src":{json.dumps(path)} }}{end}')
+		else:
+			val = input.default_value
+			if type(val) is float:
+				desc.append(f"{val}{end}")
+			else:
+				desc.append(f"[ {val[0]}, {val[1]}, {val[2]} ]{end}")
+
+	if mat.name.startswith("pbr:"):
+		desc.append('\t"pbr":{\n')
+		output = mat.node_tree.get_output_node('ALL')
+		bsdf = find_linked(output, output.inputs['Surface'])
+		if bsdf == None or bsdf.type != 'BSDF_PRINCIPLED':
+			print(f"Material '{mat.name}' claims to be a pbr material but doesn't have a principled bsdf connected to the shader output.")
+			exit(1)
+
+		assert bsdf.type == 'BSDF_PRINCIPLED'
+		do_texture_or_constant('albedo', bsdf, bsdf.inputs['Base Color'], ',\n')
+
+		do_texture_or_constant('roughness', bsdf, bsdf.inputs['Roughness'], ',\n')
+		do_texture_or_constant('metalness', bsdf, bsdf.inputs['Metallic'], '\n')
+
+		desc.append('\t}\n')
+	elif mat.name.startswith("lambertian:"):
+		desc.append('\t"lambertian":{\n')
+		output = mat.node_tree.get_output_node('ALL')
+		bsdf = find_linked(output, output.inputs['Surface'])
+		if bsdf == None or bsdf.type != 'BSDF_DIFFUSE':
+			print(f"Material '{mat.name}' claims to be a lambertian material but doesn't have a diffuse bsdf connected to the shader output.")
+			if bsdf: print(f"   has '{bsdf.type}' instead")
+			exit(1)
+
+		assert bsdf.type == 'BSDF_DIFFUSE'
+		do_texture_or_constant('albedo', bsdf, bsdf.inputs['Color'], '\n')
+
+		desc.append('\t}\n')
+	elif mat.name.startswith("mirror:"):
+		desc.append('\t"mirror":{}\n')
+	elif mat.name.startswith("environment:"):
+		desc.append('\t"environment":{}\n')
+	elif mat.name.startswith("simple:"):
+		#simple materials never get written:
+		return 0
+	else:
+		#unrecognized materials treated as simple (and not written):
+		print(f"Material '{mat.name}' doesn't start with a recognized prefix; treating as \"simple\" material.")
+		return 0
+	desc.append('},\n')
+
+	out += desc
+
+	idx = fresh_idx
+	material_to_idx[mat] = idx
+	fresh_idx += 1
+
+	return idx
+
+def write_attribs(obj, mode):
+	global mesh_mode_to_attributes
+
+	assert obj.type == 'MESH'
+
+	if (obj.data, mode) in mesh_mode_to_attributes:
+		return mesh_mode_to_attributes[(obj.data, mode)]
 
 	dg_obj = obj.evaluated_get(dg)
 	mesh = dg_obj.data
 
-	#this assumes same mesh always used with the same modifier stack.
-	if obj.data in mesh_to_idx: return mesh_to_idx[obj.data]
-
-	b72file = f"{b72base}.{obj.data.name}.b72"
+	b72file = f"{b72base}.{obj.data.name}.{mode}.b72"
 	rel_b72file = os.path.relpath(b72file, start=os.path.dirname(s72file))
 
-	print(f"Writing mesh '{obj.data.name}' to '{b72file}'...")
-
-	idx = fresh_idx
-	fresh_idx += 1
-	mesh_to_idx[obj.data] = idx
+	print(f"Writing mesh '{obj.data.name}' to '{b72file}' (mode '{mode}')...")
 
 	mesh = dg_obj.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
 
+	do_texcoord = False
+	do_tangent = False
+	if mode == 'pnc':
+		do_texcoord = False
+		do_tangent = False
+	elif mode == 'pnTtc':
+		do_texcoord = True
+		do_tangent = True
+	else:
+		raise RuntimeError(f"Invalid mode '{mode}' in write_attribs.")
+
 	#compute normals (respecting face smoothing):
-	mesh.calc_normals_split()
+	#NOT supported (or needed?) for 4.1
+	if 'calc_normals_split' in dir(mesh): mesh.calc_normals_split()
 
 	colors = None
 	if len(mesh.vertex_colors) == 0:
@@ -148,6 +270,22 @@ def write_mesh(obj):
 		if len(mesh.vertex_colors) != 1:
 			print(f"WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
 
+	uvs = None
+	if len(mesh.uv_layers) == 0 and (do_texcoord or do_tangent):
+		print(f"WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
+	else:
+		uv_layer = mesh.uv_layers.active
+		uvs = uv_layer.uv
+		if do_tangent:
+			try:
+				mesh.calc_tangents(uvmap = uv_layer.name)
+			except RuntimeError as e:
+				print(f"Failed to compute tangents for {mesh.name}. Reported error:\n{e}\nThis is often because the mesh contains n-gon faces. Remove these by hand or add a modifier like 'triangulate'.")
+				exit(1)
+		if len(mesh.uv_layers) != 1:
+			print(f"WARNING: multiple uv layers on '{mesh.name}'; using the active one ('{uv_layer.name}') for export.")
+
+
 	count = 0
 	attribs = []
 	for tri in mesh.loop_triangles:
@@ -156,11 +294,22 @@ def write_mesh(obj):
 			assert loop.vertex_index == tri.vertices[i]
 			vertex = mesh.vertices[loop.vertex_index]
 			normal = loop.normal.x
-			if colors != None: color = colors[tri.loops[i]].color
-			else: color = (1.0, 1.0, 1.0)
 
 			attribs.append(struct.pack('fff', vertex.co.x, vertex.co.y, vertex.co.z))
 			attribs.append(struct.pack('fff', loop.normal.x, loop.normal.y, loop.normal.z))
+
+			if do_tangent:
+				if uvs != None: tangent = (loop.tangent[0], loop.tangent[1], loop.tangent[2], loop.bitangent_sign)
+				else: tangent = (1.0, 0.0, 0.0, 1.0)
+				attribs.append(struct.pack('ffff', tangent[0], tangent[1], tangent[2], tangent[3]))
+				
+			if do_texcoord:
+				if uvs != None: uv = uvs[tri.loops[i]].vector
+				else: uv = (0.0, 0.0)
+				attribs.append(struct.pack('ff', uv[0], uv[1]))
+
+			if colors != None: color = colors[tri.loops[i]].color
+			else: color = (1.0, 1.0, 1.0)
 			def c(v):
 				s = int(v * 255)
 				if s < 0: return 0
@@ -175,16 +324,75 @@ def write_mesh(obj):
 		for b in attribs:
 			f.write(b)
 
+	class Attributes:
+		def __init__(self):
+			self.attributes = ""
+			self.count = 0
+
+	attributes = []
+	attributes.append('{\n')
+	stride = 4*3 + 4*3 + 4*1
+	if do_tangent: stride += 4*4
+	if do_texcoord: stride += 4*2
+
+	offset = 0
+	attributes.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }},\n')
+	offset += 4*3
+	attributes.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }},\n')
+	offset += 4*3
+	if do_tangent:
+		attributes.append(f'\t\t"TANGENT":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32A32_SFLOAT" }},\n')
+		offset += 4*4
+	if do_texcoord:
+		attributes.append(f'\t\t"TEXCOORD":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32_SFLOAT" }},\n')
+		offset += 4*2
+	attributes.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R8G8B8A8_UNORM" }}\n')
+	offset += 4*1
+
+	assert offset == stride
+
+	attributes.append('\t}')
+
+	val = Attributes()
+	val.attributes = ''.join(attributes)
+	val.count = count
+
+	mesh_mode_to_attributes[(obj.data, mode)] = val
+	return val
+
+def write_mesh(obj):
+	global out, fresh_idx, attributes_mat_to_idx
+
+	dg_obj = obj.evaluated_get(dg)
+	mesh = dg_obj.data
+
+	material_idx = write_material(obj.active_material)
+
+	if material_idx == 0:
+		attributes = write_attribs(obj, 'pnc')
+	else:
+		attributes = write_attribs(obj, 'pnTtc')
+
+	if (attributes, material_idx) in attributes_mat_to_idx:
+		return attributes_mat_to_idx[(attributes, material_idx)]
+	
+	idx = fresh_idx
+	fresh_idx += 1
+	attributes_mat_to_idx[(attributes, material_idx)] = idx
+
 	out.append('{\n')
 	out.append(f'\t"type":"MESH",\n')
 	out.append(f'\t"name":{json.dumps(obj.data.name)},\n')
 	out.append(f'\t"topology":"TRIANGLE_LIST",\n')
-	out.append(f'\t"count":{count},\n')
-	out.append(f'\t"attributes":{{\n')
-	out.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
-	out.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" }},\n')
-	out.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }}\n')
-	out.append(f'\t}}\n')
+	out.append(f'\t"count":{attributes.count},\n')
+	out.append(f'\t"attributes":{attributes.attributes}')
+
+	if material_idx == 0:
+		out.append('\n')
+	else:
+		out.append(',\n')
+		out.append(f'\t"material":{material_idx}\n')
+
 	out.append('},\n')
 
 	return idx
@@ -203,7 +411,7 @@ def write_camera(obj):
 	fresh_idx += 1
 	camera_to_idx[camera] = idx
 
-	out.append('{')
+	out.append('{\n')
 	out.append(f'\n\t"type":"CAMERA"')
 	out.append(f',\n\t"name":{json.dumps(obj.data.name)}')
 
@@ -227,7 +435,23 @@ def write_camera(obj):
 	
 	return idx
 
+def write_environment(obj):
+	global out, fresh_idx
+	
+	assert obj.name.startswith("!environment:")
 
+	src = obj.name[len("!environment:"):]
+
+	idx = fresh_idx
+	fresh_idx += 1
+
+	out.append('{\n')
+	out.append(f'\t"type":"ENVIRONMENT",\n')
+	out.append(f'\t"name":{json.dumps(obj.name)},\n')
+	out.append(f'\t"radiance":{{"src":{json.dumps(src)}, "type":"cube", "format":"rgbe"}}\n')
+	out.append('},\n')
+
+	return idx
 
 def write_node(obj, extra_children=[]):
 	global out, fresh_idx, obj_to_idx
@@ -238,24 +462,32 @@ def write_node(obj, extra_children=[]):
 
 	obj_to_idx[obj] = None
 
-	children = []
-	for child in obj.children:
-		children.append(write_node(child))
-
 	mesh = None
 	camera = None
-	if obj.type == 'MESH':
-		mesh = write_mesh(obj)
-	elif obj.type == 'CAMERA':
-		camera = write_camera(obj)
-	elif obj.type == 'LIGHT':
-		pass #TODO
-	elif obj.type == 'EMPTY':
-		if obj.instance_collection:
-			children += write_nodes(obj.instance_collection)
-	else:
-		print(f"ignoring object data of type '{obj.type}'.")
+	environment = None
+	children = []
 
+	if obj.name.startswith("!environment:"):
+		#special handling for "!environment:" object -- creates an "ENVIRONMENT" object.
+		src = obj.name[len("!environment:"):]
+		print(f"Note: interpreting object '{obj.name}' as placing an environment from cube '{src}' in the scene; will skip all children, meshes, etc!")
+		environment = write_environment(obj)
+	else:
+
+		for child in obj.children:
+			children.append(write_node(child))
+
+		if obj.type == 'MESH':
+			mesh = write_mesh(obj)
+		elif obj.type == 'CAMERA':
+			camera = write_camera(obj)
+		elif obj.type == 'LIGHT':
+			pass #TODO
+		elif obj.type == 'EMPTY':
+			if obj.instance_collection:
+				children += write_nodes(obj.instance_collection)
+		else:
+			print(f"ignoring object data of type '{obj.type}'.")
 
 	idx = fresh_idx
 	fresh_idx += 1
@@ -280,6 +512,8 @@ def write_node(obj, extra_children=[]):
 		out.append(f',\n\t"mesh":{mesh}')
 	if camera != None:
 		out.append(f',\n\t"camera":{camera}')
+	if environment != None:
+		out.append(f',\n\t"environment":{environment}')
 
 	children += extra_children
 	if len(children) > 0:
@@ -337,7 +571,7 @@ if frames != None:
 	
 	times = '[' + ','.join(times) + ']'
 	for node, idx in obj_to_idx.items():
-		for c in range(0,2):
+		for c in range(0,3):
 			driven = False
 			if c == 0 or c == 2:
 				for v in node_channels[node][c]:

@@ -1,5 +1,6 @@
 ["s72-v1",
 {
+
 	"type":"CAMERA",
 	"name":"Camera",
 	"perspective":{
@@ -23,9 +24,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":792,
 	"attributes":{
-		"POSITION":{ "src":"rotation.AroundZ.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"rotation.AroundZ.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"rotation.AroundZ.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"rotation.AroundZ.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"rotation.AroundZ.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"rotation.AroundZ.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -42,9 +43,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":792,
 	"attributes":{
-		"POSITION":{ "src":"rotation.AroundY.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"rotation.AroundY.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"rotation.AroundY.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"rotation.AroundY.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"rotation.AroundY.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"rotation.AroundY.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {
@@ -61,9 +62,9 @@
 	"topology":"TRIANGLE_LIST",
 	"count":792,
 	"attributes":{
-		"POSITION":{ "src":"rotation.AroundX.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"rotation.AroundX.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"rotation.AroundX.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"rotation.AroundX.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"rotation.AroundX.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
+		"COLOR":{ "src":"rotation.AroundX.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
 	}
 },
 {

@@ -31,3 +31,13 @@ Blender file and exported products (c) 2024 Jim McCann; released under a [CC BY-
 A cube with the `"environment"` material and bent normals. Should display environment map stored in [`env-cube.png`](env-cube.png) clearly on its faces.
 
 Created by hand with the help of the [a72-to-b72](sources/a72-to-b72.mjs) utility by Jim McCann. The s72, b72, texture, and all filtered versions of the texture are released into the public domain. Use as you see fit.
+
+## Materials Test
+- `materials.s72`/`materials.*.b72`/`ox_bridge_morning*.png`/`wood_floor_deck*.png` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/materials.s72)
+
+A scene showing some simple examples of the various material types.
+
+Created from [sources/materials.blend](sources/materials.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
+Blender file by Jim McCann. Blender file and exported products are released under a [CC0](https://creativecommons.org/publicdomain/zero/1.0/) license.
+Uses texture [Wood Floor Deck](https://polyhaven.com/a/wood_floor_deck) by Dimitrios Savva.
+Uses HDRI [Ox Bridge Morning](https://polyhaven.com/a/ox_bridge_morning) by Dimitrios Savva and Jarod Guest.
