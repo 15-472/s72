@@ -1,5 +1,5 @@
 BLENDER=~/blender-4.1.0-beta+v41.8842982dbd01-linux.x86_64-release/blender
-#~/blender-4.0.2-linux-x64/blender
+#BLENDER=~/blender-4.0.2-linux-x64/blender
 EXPORT_PY=../../exporters/blender/export-s72.py
 A72_TO_B72_JS=a72-to-b72.mjs
 CUBE_UTILITY=../../../A2-ref/bin/cube

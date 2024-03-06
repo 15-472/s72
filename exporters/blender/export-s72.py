@@ -119,13 +119,15 @@ material_to_idx = dict()
 #add triangulation modifiers to end of modifier stack for every mesh:
 for obj in bpy.data.objects:
 	if obj.type != "MESH": continue
-	bpy.ops.object.select_all(action='DESELECT')
-	obj.select_set(True)
-	bpy.context.view_layer.objects.active = obj
-	bpy.ops.object.modifier_add(type='TRIANGULATE')
-	mod = obj.modifiers[len(obj.modifiers)-1]
-	mod.quad_method = 'SHORTEST_DIAGONAL'
-	mod.ngon_method = 'BEAUTY'
+	if len(obj.modifiers) == 0 or obj.modifiers[len(obj.modifiers)-1].type != 'TRIANGULATE':
+		print(f"Adding 'triangulate' modifier to object {obj.name}.")
+		bpy.ops.object.select_all(action='DESELECT')
+		obj.select_set(True)
+		bpy.context.view_layer.objects.active = obj
+		bpy.ops.object.modifier_add(type='TRIANGULATE')
+		mod = obj.modifiers[len(obj.modifiers)-1]
+		mod.quad_method = 'SHORTEST_DIAGONAL'
+		mod.ngon_method = 'BEAUTY'
 
 #suggested by https://stackoverflow.com/questions/70282889/to-mesh-in-blender-3
 dg = bpy.context.evaluated_depsgraph_get()
@@ -237,15 +239,26 @@ def write_attribs(obj, mode):
 	if (obj.data, mode) in mesh_mode_to_attributes:
 		return mesh_mode_to_attributes[(obj.data, mode)]
 
-	dg_obj = obj.evaluated_get(dg)
-	mesh = dg_obj.data
+	
+	bpy.ops.object.select_all(action='DESELECT')
+	obj.select_set(True)
+	bpy.context.view_layer.objects.active = obj
+	bpy.ops.object.mode_set(mode = 'OBJECT')
+
+	#Alternative way to get mesh (vs evaluated_get, below)
+	#if len(obj.modifiers):
+	#	print(f"{obj.name}: applying modifiers:")
+	#	while len(obj.modifiers):
+	#		print(f"    {obj.modifiers[0].name}")
+	#		bpy.ops.object.modifier_apply(modifier=obj.modifiers[0].name, single_user=True)
+	#mesh = obj.data
+
+	mesh = obj.evaluated_get(dg).to_mesh(preserve_all_data_layers=True, depsgraph=dg)
 
 	b72file = f"{b72base}.{obj.data.name}.{mode}.b72"
 	rel_b72file = os.path.relpath(b72file, start=os.path.dirname(s72file))
 
 	print(f"Writing mesh '{obj.data.name}' to '{b72file}' (mode '{mode}')...")
-
-	mesh = dg_obj.to_mesh(preserve_all_data_layers=True, depsgraph=dg)
 
 	do_texcoord = False
 	do_tangent = False
@@ -262,11 +275,9 @@ def write_attribs(obj, mode):
 	#NOT supported (or needed?) for 4.1
 	if 'calc_normals_split' in dir(mesh): mesh.calc_normals_split()
 
-	colors = None
 	if len(mesh.vertex_colors) == 0:
 		print(f"No vertex colors on mesh '{mesh.name}', storing 0xffffffff for all vertices.")
 	else:
-		colors = mesh.vertex_colors.active.data
 		if len(mesh.vertex_colors) != 1:
 			print(f"WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
 
@@ -274,17 +285,14 @@ def write_attribs(obj, mode):
 	if len(mesh.uv_layers) == 0 and (do_texcoord or do_tangent):
 		print(f"WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
 	else:
-		uv_layer = mesh.uv_layers.active
-		uvs = uv_layer.uv
 		if do_tangent:
 			try:
-				mesh.calc_tangents(uvmap = uv_layer.name)
+				mesh.calc_tangents(uvmap = mesh.uv_layers.active.name)
 			except RuntimeError as e:
 				print(f"Failed to compute tangents for {mesh.name}. Reported error:\n{e}\nThis is often because the mesh contains n-gon faces. Remove these by hand or add a modifier like 'triangulate'.")
 				exit(1)
 		if len(mesh.uv_layers) != 1:
-			print(f"WARNING: multiple uv layers on '{mesh.name}'; using the active one ('{uv_layer.name}') for export.")
-
+			print(f"WARNING: multiple uv layers on '{mesh.name}'; using the active one ('{mesh.uv_layers.active.name}') for export.")
 
 	count = 0
 	attribs = []
@@ -304,11 +312,11 @@ def write_attribs(obj, mode):
 				attribs.append(struct.pack('ffff', tangent[0], tangent[1], tangent[2], tangent[3]))
 				
 			if do_texcoord:
-				if uvs != None: uv = uvs[tri.loops[i]].vector
+				if len(mesh.uv_layers) != 0: uv = mesh.uv_layers.active.uv[loop.index].vector
 				else: uv = (0.0, 0.0)
 				attribs.append(struct.pack('ff', uv[0], uv[1]))
 
-			if colors != None: color = colors[tri.loops[i]].color
+			if len(mesh.vertex_colors) != 0: color = mesh.vertex_colors.active.data[loop.index].color
 			else: color = (1.0, 1.0, 1.0)
 			def c(v):
 				s = int(v * 255)
@@ -318,7 +326,7 @@ def write_attribs(obj, mode):
 			attribs.append(struct.pack('BBBB', c(color[0]), c(color[1]), c(color[2]), 255))
 			count += 1
 
-	dg_obj.to_mesh_clear()
+	#dg_obj.to_mesh_clear()
 
 	with open(b72file, 'wb') as f:
 		for b in attribs:
@@ -362,9 +370,6 @@ def write_attribs(obj, mode):
 
 def write_mesh(obj):
 	global out, fresh_idx, attributes_mat_to_idx
-
-	dg_obj = obj.evaluated_get(dg)
-	mesh = dg_obj.data
 
 	material_idx = write_material(obj.active_material)
 

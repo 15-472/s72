@@ -313,6 +313,73 @@ void main() {
 `
 };
 
+SOURCES.pbr = {
+	vertex:`
+attribute vec3 Position;
+attribute vec3 Normal;
+attribute vec4 Color;
+attribute vec4 Tangent;
+attribute vec2 TexCoord;
+
+uniform mat4 CLIP_FROM_LOCAL;
+uniform mat4 LIGHT_FROM_LOCAL;
+uniform mat4 LIGHT_FROM_LOCAL_NORMAL;
+
+varying vec3 position;
+varying vec3 normal;
+varying vec4 color;
+varying vec3 tangent;
+varying vec3 bitangent;
+varying vec2 texCoord;
+
+void main() {
+	position = vec3(LIGHT_FROM_LOCAL * vec4(Position, 1.0));
+	normal = mat3(LIGHT_FROM_LOCAL_NORMAL) * Normal;
+	color = Color;
+	tangent = mat3(LIGHT_FROM_LOCAL) * vec3(Tangent);
+	bitangent = Tangent.w * cross(normal, tangent);
+	texCoord = TexCoord;
+
+	gl_Position = CLIP_FROM_LOCAL * vec4(Position, 1.0);
+}
+`,
+fragment:`
+varying highp vec3 position;
+varying highp vec3 normal;
+varying mediump vec4 color;
+varying highp vec3 tangent;
+varying highp vec3 bitangent;
+varying mediump vec2 texCoord;
+
+uniform sampler2D ALBEDO;
+uniform sampler2D ROUGHNESS;
+uniform sampler2D METALNESS;
+uniform sampler2D NORMAL;
+uniform sampler2D DISPLACEMENT;
+uniform samplerCube LAMBERTIAN;
+uniform samplerCube GGX;
+uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
+
+//based on https://www.shadertoy.com/view/4tXcWr
+mediump vec3 srgb_from_linear(mediump vec3 v) {
+	bvec3 cutoff = lessThan(v, vec3(0.0031308));
+	mediump vec3 higher = vec3(1.055)*pow(v, vec3(1.0/2.4)) - vec3(0.055);
+	mediump vec3 lower = v * vec3(12.92);
+	return mix(higher, lower, vec3(cutoff));
+}
+
+void main() {
+	highp vec3 n = normalize(normal);
+	highp vec3 t = normalize(tangent);
+	highp vec3 b = normalize(bitangent);
+
+	mediump vec4 e = textureCube(RADIANCE, n);
+	gl_FragColor = vec4(srgb_from_linear(vec3(texCoord.rg, 0.0)), 1.0);
+}
+`
+};
+
+
 
 export class Viewer {
 	constructor(canvas) {
@@ -744,7 +811,7 @@ class Scene {
 			const MATERIALS = {
 				"pbr":() => {
 					//TODO: parameters and program
-					loaded.program = programs.simple;
+					loaded.program = programs.pbr;
 				},
 				"lambertian":() => {
 					//TODO: parameters and program
