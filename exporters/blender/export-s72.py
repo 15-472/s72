@@ -281,7 +281,6 @@ def write_attribs(obj, mode):
 		if len(mesh.vertex_colors) != 1:
 			print(f"WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
 
-	uvs = None
 	if len(mesh.uv_layers) == 0 and (do_texcoord or do_tangent):
 		print(f"WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
 	else:
@@ -307,7 +306,7 @@ def write_attribs(obj, mode):
 			attribs.append(struct.pack('fff', loop.normal.x, loop.normal.y, loop.normal.z))
 
 			if do_tangent:
-				if uvs != None: tangent = (loop.tangent[0], loop.tangent[1], loop.tangent[2], loop.bitangent_sign)
+				if len(mesh.uv_layers) != 0: tangent = (loop.tangent[0], loop.tangent[1], loop.tangent[2], loop.bitangent_sign)
 				else: tangent = (1.0, 0.0, 0.0, 1.0)
 				attribs.append(struct.pack('ffff', tangent[0], tangent[1], tangent[2], tangent[3]))
 				
