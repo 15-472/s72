@@ -116,11 +116,19 @@ attributes_mat_to_idx = dict()
 camera_to_idx = dict()
 material_to_idx = dict()
 
+#attempt to take all objects out of edit mode:
+for obj in bpy.data.objects:
+	if obj.type != "MESH": continue
+	obj.select_set(True)
+	bpy.context.view_layer.objects.active = obj
+	bpy.ops.object.mode_set(mode = 'OBJECT')
+
 #add triangulation modifiers to end of modifier stack for every mesh:
 for obj in bpy.data.objects:
 	if obj.type != "MESH": continue
 	if len(obj.modifiers) == 0 or obj.modifiers[len(obj.modifiers)-1].type != 'TRIANGULATE':
 		print(f"Adding 'triangulate' modifier to object {obj.name}.")
+
 		bpy.ops.object.select_all(action='DESELECT')
 		obj.select_set(True)
 		bpy.context.view_layer.objects.active = obj
