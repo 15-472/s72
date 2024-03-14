@@ -366,11 +366,11 @@ They include the following *environment*-specific properties:
 *Light* objects have their `type` property set to `"LIGHT"`.
 They include the following *light*-specific definitions:
 - `"tint"` (optional, default is `[1,1,1]`) -- color of the light; multiplied by the energy given in the light definition.
-- `"shadow"` (optional, default is `0`) -- if non-zero, gives the resolution of the shadows to use with this light. (The meaning of this resolution is implementation-defined, but is intended to mean approximately "the side length of the shadow map.")
-- Exactly one of:
-  - `"sun"` -- a distant, directional light,
-  - `"sphere"` -- a spherical area light,
-  - `"spot"` -- a spherical area light with limited emission directions.
+- `"shadow"` (optional, default is `0`) -- if non-zero, gives the resolution of the shadows to use with this light. If zero, disables shadowing from this light. (The meaning of this resolution is implementation-defined, but is intended to mean approximately "the side length of the shadow map.")
+- Exactly one light definition:
+  - `"sun"` -- a distant, directional light;
+  - `"sphere"` -- a spherical area light;
+  - or `"spot"` -- a spherical area light with limited emission directions.
 
 
 A `"sun"` light is a distant directional light pointing along the local $-z$ axis. Properties:
@@ -391,20 +391,20 @@ A `"spot"` light is a spherical area light which emits light only in a cone arou
 - `"fov"` (required) -- field of view of the light's cone, in radians.
 - `"blend"` (required) -- factor controlling smooth falloff at edge of light cone.
 
-A point within $(fov * (1-blend))/2$ radians of a spot's $-z$ axis is fully illuminated by that spot (i.e., is illuminated as if by a sphere light with the same parameters).
-A point outside $fov/2$ radians of a spot's $-z$ axis is not illuminated by that spot.
-A point between $(fov * (1-blend))/2$ and $fov/2$ radians of a spot's $-z$ axis is lit with a linear (w.r.t. angle) blend between full and no illumination.
+A point within $(fov * (1-blend))/2$ radians of a *spot*'s $-z$ axis is fully illuminated by that *spot* (i.e., is illuminated as if by a sphere light with the same parameters).
+A point outside $fov/2$ radians of a *spot*'s $-z$ axis is not illuminated by that *spot*.
+A point between $(fov * (1-blend))/2$ and $fov/2$ radians of a *spot*'s $-z$ axis is lit with a linear (w.r.t. angle) blend between full and no illumination.
 
-NOTE: *Spot* light power is defined this way so that changing the `"fov"` and `"blend"` (or, for that matter, changing the type of the light to `"sphere"`) do not change the brightness of areas lit by the light.
+NOTE: *Spot* light power is defined as it is so that changing the `"fov"` and `"blend"` (or, for that matter, changing the type of the light to `"sphere"`) do not change the brightness of areas lit by the light.
 
 NOTE: It is recommended that s72 files not include non-uniform scales in the transformation of *Sphere* or *Spot* lights. Implementations may choose to approximate non-uniform scales by a uniform scale with the same volume change.
 
 
 #### The `"limit"` Parameter.
-Because s72 is aimed at real-time applications, its (non-distant) lights have a limit parameter that limits their influence.
+Because s72 is aimed at real-time applications, its (non-distant) lights, `"sphere"` and `"spot"`, have a limit parameter that limits their influence.
 
 How to implement this cutoff is a decision for an individual implementation.
-One method that produces a smooth transition (inspired by Real Shading in Unreal Engine 4](https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)) is to add an additional attenuation factor to the light of $ \max(0, (1 - d / limit)^4 ) $, where $d$ is the distance to the center of the light.
+One method that produces a smooth transition (inspired by [Real Shading in Unreal Engine 4](https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)) is to add an additional attenuation factor to the light of $\max(0, (1 - d / limit)^4 )$, where $d$ is the distance to the center of the light.
 
 
 
