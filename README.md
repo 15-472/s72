@@ -77,7 +77,8 @@ The structure of a *scene* is determined by a graph of transformation *node*s:
 	"children":[2,3,4,5],
 	"camera":7,
 	"mesh":2,
-	"environment":12
+	"environment":12,
+	"light":5
 },
 /* ... */
 ```
@@ -90,6 +91,7 @@ They include the following *node*-specific properties:
  - <code>"mesh":<var>i</var></code> (optional) -- reference to a *mesh* to instance at this node.
  - <code>"camera":<var>i</var></code> (optional) -- reference to a *camera* to instance at this node.
  - <code>"environment":<var>i</var></code> (optional) -- reference to an *enviroment* to instance at this node.
+ - <code>"light":<var>i</var></code> (optional) -- reference to a *light* to instance at this node.
 
 The transformation from the local space of a <em>node</em> to the local space of its parent node is given by applying its scale, rotation, and translation values (in that order):
 ```math
@@ -328,5 +330,82 @@ This means that, for example, the upper-left texel in a cubemap image is at the 
 
 They include the following *environment*-specific properties:
  - <code>"radiance:<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter in each spectral band) incoming from the environment.
+
+
+### *Light* Objects
+*Light* objects specify light sources used to illuminate (and shadow) the scene:
+```js
+/* ... */
+{
+	"type":"LIGHT",
+	"name":"yellow-sun",
+	"tint":[1.0, 1.0, 0.9],
+	"sun":{
+		"angle":0.00918,
+		"strength":10.0
+	},
+	/* xor */
+	"sphere":{
+		"radius":0.1,
+		"power":60.0,
+		"limit":4.0
+	},
+	/* xor */
+	"spot":{
+		"radius":0.5,
+		"power":60.0,
+		"fov":0.785,
+		"blend":0.15,
+		"limit":11.0
+	},
+	"shadow":256
+},
+/* ... */
+```
+
+*Light* objects have their `type` property set to `"LIGHT"`.
+They include the following *light*-specific definitions:
+- `"tint"` (optional, default is `[1,1,1]`) -- color of the light; multiplied by the energy given in the light definition.
+- `"shadow"` (optional, default is `0`) -- if non-zero, gives the resolution of the shadows to use with this light. (The meaning of this resolution is implementation-defined, but is intended to mean approximately "the side length of the shadow map.")
+- Exactly one of:
+  - `"sun"` -- a distant, directional light,
+  - `"sphere"` -- a spherical area light,
+  - `"spot"` -- a spherical area light with limited emission directions.
+
+
+A `"sun"` light is a distant directional light pointing along the local $-z$ axis. Properties:
+- `"angle"` (required) -- every surface element sees the sun light as coming from a disc of this angular diameter. (`"angle"` is in radians and will be strictly less than $\pi$. )
+- `"strength"` -- energy per area emitted by the light, in watts per square meter. (Note: multiply by the `"tint"` of the light to get actual per-primary energy.)
+
+NOTE: *Sun* lights are distant directional lights, so they look the same to all surface patches (that is to say, there is no falloff in intensity).
+
+A `"sphere"` light is a spherical area light. Points on the surface emit light uniformly in all visible directions. Properties:
+- `"radius"` (required) -- the radius of the sphere in local scene units.
+- `"power"` (required) -- the total power emitted by the light, in watts. (Note: multiply by the `"tint"` of the light to get actual per-primary power.)
+- `"limit"` (optional) -- distance at which the light's falloff is driven to zero (see equation below).
+
+A `"spot"` light is a spherical area light which emits light only in a cone around its $-z$ axis. Properties:
+- `"radius"` (required) -- the radius of the sphere in local scene units.
+- `"power"` (required) -- the total power that would be emitted by the light if it were a `"sphere"` light, in watts. (Note: multiply by the `"tint"` of the light to get actual per-primary power.)
+- `"limit"` (optional) -- distance at which the light's falloff is driven to zero (see equation below).
+- `"fov"` (required) -- field of view of the light's cone, in radians.
+- `"blend"` (required) -- factor controlling smooth falloff at edge of light cone.
+
+A point within $(fov * (1-blend))/2$ radians of a spot's $-z$ axis is fully illuminated by that spot (i.e., is illuminated as if by a sphere light with the same parameters).
+A point outside $fov/2$ radians of a spot's $-z$ axis is not illuminated by that spot.
+A point between $(fov * (1-blend))/2$ and $fov/2$ radians of a spot's $-z$ axis is lit with a linear (w.r.t. angle) blend between full and no illumination.
+
+NOTE: *Spot* light power is defined this way so that changing the `"fov"` and `"blend"` (or, for that matter, changing the type of the light to `"sphere"`) do not change the brightness of areas lit by the light.
+
+NOTE: It is recommended that s72 files not include non-uniform scales in the transformation of *Sphere* or *Spot* lights. Implementations may choose to approximate non-uniform scales by a uniform scale with the same volume change.
+
+
+#### The `"limit"` Parameter.
+Because s72 is aimed at real-time applications, its (non-distant) lights have a limit parameter that limits their influence.
+
+How to implement this cutoff is a decision for an individual implementation.
+One method that produces a smooth transition (inspired by Real Shading in Unreal Engine 4](https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)) is to add an additional attenuation factor to the light of $ \max(0, (1 - d / limit)^4 ) $, where $d$ is the distance to the center of the light.
+
+
 
 
