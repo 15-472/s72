@@ -5,6 +5,7 @@ A72_TO_B72_JS=a72-to-b72.mjs
 CUBE_UTILITY=../../../A2-ref/bin/cube
 
 all : \
+	../lights-Mix.s72 \
 	../sg-Articulation.s72 \
 	../sg-Support.s72 \
 	../sg-Containment.s72 \
@@ -15,6 +16,9 @@ all : \
 	../materials.s72 \
 	../ox_bridge_morning.png \
 
+
+../lights-Mix.s72 : lights.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Mix '$@'
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Articulation --animate 1 91 '$@'

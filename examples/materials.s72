@@ -32,11 +32,22 @@
 	"camera":3
 },
 {
+
+	"type":"LIGHT",
+	"name":"Light.001",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":0.1,
+		"power":1000
+	}
+},
+{
 	"type":"NODE",
 	"name":"Light.001",
 	"translation":[-2.1638,-1.98072,-4.3904],
 	"rotation":[0.169076,0.272171,0.75588,0.570948],
-	"scale":[1,1,1]
+	"scale":[1,1,1],
+	"light":5
 },
 {
 	"type":"MESH",
@@ -55,7 +66,7 @@
 	"translation":[-9,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":6
+	"mesh":7
 },
 {
 	"type":"MESH",
@@ -74,7 +85,7 @@
 	"translation":[-10.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":8
+	"mesh":9
 },
 {
 	"type":"MESH",
@@ -93,7 +104,7 @@
 	"translation":[-10.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":10
+	"mesh":11
 },
 {
 	"type":"MESH",
@@ -112,7 +123,7 @@
 	"translation":[0,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":12
+	"mesh":13
 },
 {
 	"type":"NODE",
@@ -120,7 +131,7 @@
 	"translation":[-11.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":8
+	"mesh":9
 },
 {
 	"type":"NODE",
@@ -128,7 +139,7 @@
 	"translation":[-11.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":10
+	"mesh":11
 },
 {
 	"type":"MESH",
@@ -147,7 +158,7 @@
 	"translation":[-10,-1.05,0.0570238],
 	"rotation":[0,0,0,1],
 	"scale":[0.49703,0.49703,0.49703],
-	"mesh":16
+	"mesh":17
 },
 {
 	"type":"MATERIAL",
@@ -166,7 +177,7 @@
 		"TEXCOORD":{ "src":"materials.Complicated.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Complicated.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":18
+	"material":19
 },
 {
 	"type":"NODE",
@@ -174,7 +185,7 @@
 	"translation":[-4,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":19
+	"mesh":20
 },
 {
 	"type":"MESH",
@@ -188,7 +199,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":18
+	"material":19
 },
 {
 	"type":"NODE",
@@ -196,7 +207,7 @@
 	"translation":[-5.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":21
+	"mesh":22
 },
 {
 	"type":"MESH",
@@ -210,7 +221,7 @@
 		"TEXCOORD":{ "src":"materials.Cube.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Cube.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":18
+	"material":19
 },
 {
 	"type":"NODE",
@@ -218,7 +229,7 @@
 	"translation":[-5.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":23
+	"mesh":24
 },
 {
 	"type":"NODE",
@@ -226,7 +237,7 @@
 	"translation":[-6.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":21
+	"mesh":22
 },
 {
 	"type":"NODE",
@@ -234,7 +245,7 @@
 	"translation":[-6.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":23
+	"mesh":24
 },
 {
 	"type":"MESH",
@@ -253,7 +264,7 @@
 	"translation":[-5,-1.05,0.0570238],
 	"rotation":[0,0,0,1],
 	"scale":[0.49703,0.49703,0.49703],
-	"mesh":27
+	"mesh":28
 },
 {
 	"type":"MATERIAL",
@@ -272,7 +283,7 @@
 		"TEXCOORD":{ "src":"materials.Complicated.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Complicated.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":29
+	"material":30
 },
 {
 	"type":"NODE",
@@ -280,7 +291,7 @@
 	"translation":[1,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":30
+	"mesh":31
 },
 {
 	"type":"MESH",
@@ -294,7 +305,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":29
+	"material":30
 },
 {
 	"type":"NODE",
@@ -302,7 +313,7 @@
 	"translation":[-0.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":32
+	"mesh":33
 },
 {
 	"type":"MESH",
@@ -316,7 +327,7 @@
 		"TEXCOORD":{ "src":"materials.Cube.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Cube.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":29
+	"material":30
 },
 {
 	"type":"NODE",
@@ -324,7 +335,7 @@
 	"translation":[-0.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":34
+	"mesh":35
 },
 {
 	"type":"NODE",
@@ -332,7 +343,7 @@
 	"translation":[-1.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":32
+	"mesh":33
 },
 {
 	"type":"NODE",
@@ -340,7 +351,7 @@
 	"translation":[-1.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":34
+	"mesh":35
 },
 {
 	"type":"MESH",
@@ -359,7 +370,7 @@
 	"translation":[0,-1.05,0.0570238],
 	"rotation":[0,0,0,1],
 	"scale":[0.49703,0.49703,0.49703],
-	"mesh":38
+	"mesh":39
 },
 {
 	"type":"MATERIAL",
@@ -380,7 +391,7 @@
 		"TEXCOORD":{ "src":"materials.Complicated.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Complicated.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":40
+	"material":41
 },
 {
 	"type":"NODE",
@@ -388,7 +399,7 @@
 	"translation":[6,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":41
+	"mesh":42
 },
 {
 	"type":"MESH",
@@ -402,7 +413,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":40
+	"material":41
 },
 {
 	"type":"NODE",
@@ -410,7 +421,7 @@
 	"translation":[4.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":43
+	"mesh":44
 },
 {
 	"type":"MESH",
@@ -424,7 +435,7 @@
 		"TEXCOORD":{ "src":"materials.Cube.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Cube.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":40
+	"material":41
 },
 {
 	"type":"NODE",
@@ -432,7 +443,7 @@
 	"translation":[4.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":45
+	"mesh":46
 },
 {
 	"type":"NODE",
@@ -440,7 +451,7 @@
 	"translation":[3.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":43
+	"mesh":44
 },
 {
 	"type":"NODE",
@@ -448,7 +459,7 @@
 	"translation":[3.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":45
+	"mesh":46
 },
 {
 	"type":"MESH",
@@ -467,7 +478,7 @@
 	"translation":[5,-1.05,0.0570238],
 	"rotation":[0,0,0,1],
 	"scale":[0.49703,0.49703,0.49703],
-	"mesh":49
+	"mesh":50
 },
 {
 	"type":"MATERIAL",
@@ -475,7 +486,7 @@
 	"pbr":{
 		"albedo":{ "src":"wood_floor_deck_diff_1k.png" },
 		"roughness":{ "src":"wood_floor_deck_rough_1k.png" },
-		"metalness":0.0
+		"metalness":0
 	}
 },
 {
@@ -490,7 +501,7 @@
 		"TEXCOORD":{ "src":"materials.Complicated.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Complicated.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":51
+	"material":52
 },
 {
 	"type":"NODE",
@@ -498,7 +509,7 @@
 	"translation":[11,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":52
+	"mesh":53
 },
 {
 	"type":"MESH",
@@ -512,7 +523,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":51
+	"material":52
 },
 {
 	"type":"NODE",
@@ -520,7 +531,7 @@
 	"translation":[9.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":54
+	"mesh":55
 },
 {
 	"type":"MESH",
@@ -534,7 +545,7 @@
 		"TEXCOORD":{ "src":"materials.Cube.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Cube.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":51
+	"material":52
 },
 {
 	"type":"NODE",
@@ -542,7 +553,7 @@
 	"translation":[9.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":56
+	"mesh":57
 },
 {
 	"type":"NODE",
@@ -550,7 +561,7 @@
 	"translation":[8.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":54
+	"mesh":55
 },
 {
 	"type":"NODE",
@@ -558,7 +569,7 @@
 	"translation":[8.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":56
+	"mesh":57
 },
 {
 	"type":"MESH",
@@ -577,15 +588,15 @@
 	"translation":[12,-1.05,0.0570238],
 	"rotation":[0,0,0,1],
 	"scale":[0.49703,0.49703,0.49703],
-	"mesh":60
+	"mesh":61
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-dielectric-roughness-0.0",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
-		"roughness":0.0,
-		"metalness":0.0
+		"albedo":[ 0, 0.167956, 0.800576 ],
+		"roughness":0,
+		"metalness":0
 	}
 },
 {
@@ -600,7 +611,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":62
+	"material":63
 },
 {
 	"type":"NODE",
@@ -608,15 +619,15 @@
 	"translation":[12.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":63
+	"mesh":64
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-dielectric-roughness-0.25",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.25,
-		"metalness":0.0
+		"metalness":0
 	}
 },
 {
@@ -631,7 +642,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":65
+	"material":66
 },
 {
 	"type":"NODE",
@@ -639,15 +650,15 @@
 	"translation":[13.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":66
+	"mesh":67
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-dielectric-roughness-0.5",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.5,
-		"metalness":0.0
+		"metalness":0
 	}
 },
 {
@@ -662,7 +673,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":68
+	"material":69
 },
 {
 	"type":"NODE",
@@ -670,15 +681,15 @@
 	"translation":[14.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":69
+	"mesh":70
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-dielectric-roughness-0.75",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.75,
-		"metalness":0.0
+		"metalness":0
 	}
 },
 {
@@ -693,7 +704,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":71
+	"material":72
 },
 {
 	"type":"NODE",
@@ -701,15 +712,15 @@
 	"translation":[15.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":72
+	"mesh":73
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-dielectric-roughness-1.0",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
-		"roughness":1.0,
-		"metalness":0.0
+		"albedo":[ 0, 0.167956, 0.800576 ],
+		"roughness":1,
+		"metalness":0
 	}
 },
 {
@@ -724,7 +735,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":74
+	"material":75
 },
 {
 	"type":"NODE",
@@ -732,15 +743,15 @@
 	"translation":[16.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":75
+	"mesh":76
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-metallic-roughness-0",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
-		"roughness":0.0,
-		"metalness":1.0
+		"albedo":[ 0, 0.167956, 0.800576 ],
+		"roughness":0,
+		"metalness":1
 	}
 },
 {
@@ -755,7 +766,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":77
+	"material":78
 },
 {
 	"type":"NODE",
@@ -763,15 +774,15 @@
 	"translation":[12.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":78
+	"mesh":79
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-metallic-roughness-0.25",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.25,
-		"metalness":1.0
+		"metalness":1
 	}
 },
 {
@@ -786,7 +797,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":80
+	"material":81
 },
 {
 	"type":"NODE",
@@ -794,15 +805,15 @@
 	"translation":[13.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":81
+	"mesh":82
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-metallic-roughness-0.5",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.5,
-		"metalness":1.0
+		"metalness":1
 	}
 },
 {
@@ -817,7 +828,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":83
+	"material":84
 },
 {
 	"type":"NODE",
@@ -825,15 +836,15 @@
 	"translation":[14.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":84
+	"mesh":85
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-metallic-roughness-0.75",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
+		"albedo":[ 0, 0.167956, 0.800576 ],
 		"roughness":0.75,
-		"metalness":1.0
+		"metalness":1
 	}
 },
 {
@@ -848,7 +859,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":86
+	"material":87
 },
 {
 	"type":"NODE",
@@ -856,15 +867,15 @@
 	"translation":[15.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":87
+	"mesh":88
 },
 {
 	"type":"MATERIAL",
 	"name":"pbr:blue-metallic-roughness-1.0",
 	"pbr":{
-		"albedo":[ 0.0, 0.16795560717582703, 0.8005756139755249 ],
-		"roughness":1.0,
-		"metalness":1.0
+		"albedo":[ 0, 0.167956, 0.800576 ],
+		"roughness":1,
+		"metalness":1
 	}
 },
 {
@@ -879,7 +890,7 @@
 		"TEXCOORD":{ "src":"materials.Icosphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
 		"COLOR":{ "src":"materials.Icosphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
 	},
-	"material":89
+	"material":90
 },
 {
 	"type":"NODE",
@@ -887,11 +898,11 @@
 	"translation":[16.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":90
+	"mesh":91
 },
 {
 	"type":"SCENE",
 	"name":"materials.blend",
-	"roots":[2, 4, 5, 7, 9, 11, 13, 14, 15, 17, 20, 22, 24, 25, 26, 28, 31, 33, 35, 36, 37, 39, 42, 44, 46, 47, 48, 50, 53, 55, 57, 58, 59, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91]
+	"roots":[2, 4, 6, 8, 10, 12, 14, 15, 16, 18, 21, 23, 25, 26, 27, 29, 32, 34, 36, 37, 38, 40, 43, 45, 47, 48, 49, 51, 54, 56, 58, 59, 60, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92]
 }
 ]

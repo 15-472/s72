@@ -115,6 +115,7 @@ mesh_mode_to_attributes = dict()
 attributes_mat_to_idx = dict()
 camera_to_idx = dict()
 material_to_idx = dict()
+light_to_idx = dict()
 
 #attempt to take all objects out of edit mode:
 for obj in bpy.data.objects:
@@ -186,9 +187,9 @@ def write_material(mat):
 		else:
 			val = input.default_value
 			if type(val) is float:
-				desc.append(f"{val}{end}")
+				desc.append(f"{val:.6g}{end}")
 			else:
-				desc.append(f"[ {val[0]}, {val[1]}, {val[2]} ]{end}")
+				desc.append(f"[ {val[0]:.6g}, {val[1]:.6g}, {val[2]:.6g} ]{end}")
 
 	if mat.name.startswith("pbr:"):
 		desc.append('\t"pbr":{\n')
@@ -277,29 +278,29 @@ def write_attribs(obj, mode):
 		do_texcoord = True
 		do_tangent = True
 	else:
-		raise RuntimeError(f"Invalid mode '{mode}' in write_attribs.")
+		raise RuntimeError(f"  Invalid mode '{mode}' in write_attribs.")
 
 	#compute normals (respecting face smoothing):
 	#NOT supported (or needed?) for 4.1
 	if 'calc_normals_split' in dir(mesh): mesh.calc_normals_split()
 
 	if len(mesh.vertex_colors) == 0:
-		print(f"No vertex colors on mesh '{mesh.name}', storing 0xffffffff for all vertices.")
+		print(f"  No vertex colors on mesh '{mesh.name}', storing 0xffffffff for all vertices.")
 	else:
 		if len(mesh.vertex_colors) != 1:
-			print(f"WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
+			print(f"  WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
 
 	if len(mesh.uv_layers) == 0 and (do_texcoord or do_tangent):
-		print(f"WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
+		print(f"  WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
 	else:
 		if do_tangent:
 			try:
 				mesh.calc_tangents(uvmap = mesh.uv_layers.active.name)
 			except RuntimeError as e:
-				print(f"Failed to compute tangents for {mesh.name}. Reported error:\n{e}\nThis is often because the mesh contains n-gon faces. Remove these by hand or add a modifier like 'triangulate'.")
+				print(f"  Failed to compute tangents for {mesh.name}. Reported error:\n{e}\nThis is often because the mesh contains n-gon faces. Remove these by hand or add a modifier like 'triangulate'.")
 				exit(1)
 		if len(mesh.uv_layers) != 1:
-			print(f"WARNING: multiple uv layers on '{mesh.name}'; using the active one ('{mesh.uv_layers.active.name}') for export.")
+			print(f"  WARNING: multiple uv layers on '{mesh.name}'; using the active one ('{mesh.uv_layers.active.name}') for export.")
 
 	count = 0
 	attribs = []
@@ -410,6 +411,51 @@ def write_mesh(obj):
 	return idx
 
 
+def write_light(obj):
+	global out, fresh_idx, light_to_idx
+
+	light = obj.data
+	if light in light_to_idx: return light_to_idx[light]
+
+	print(f"Writing light '{obj.data.name}'...")
+
+	idx = fresh_idx
+	fresh_idx += 1
+	light_to_idx[light] = idx
+
+	out.append('{\n')
+	out.append(f'\n\t"type":"LIGHT"')
+	out.append(f',\n\t"name":{json.dumps(obj.data.name)}')
+	out.append(f',\n\t"tint":[{light.color.r:.6g}, {light.color.g:.6g}, {light.color.b:.6g}]')
+
+	if light.type == 'POINT':
+		out.append(',\n\t"sphere":{')
+		out.append(f'\n\t\t"radius":{light.shadow_soft_size:.6g}')
+		out.append(f',\n\t\t"power":{light.energy:.6g}')
+		if "limit" in light: out.append(f',\n\t\t"limit":{light["limit"]:.6g}')
+		out.append('\n\t}')
+	elif light.type == 'SPOT':
+		out.append(',\n\t"spot":{')
+		out.append(f'\n\t\t"radius":{light.shadow_soft_size:.6g}')
+		out.append(f',\n\t\t"power":{light.energy:.6g}')
+		if "limit" in light: out.append(f',\n\t\t"limit":{light["limit"]:.6g}')
+		out.append(f',\n\t\t"fov":{light.spot_size:.6g}')
+		out.append(f',\n\t\t"blend":{light.spot_blend:.6g}')
+		out.append('\n\t}')
+	elif light.type == 'SUN':
+		out.append(',\n\t"sun":{')
+		out.append(f'\n\t\t"angle":{light.angle:.6g}')
+		out.append(f',\n\t\t"strength":{light.energy:.6g}')
+		out.append('\n\t}')
+	else:
+		print(f"WARNING: Unsupported light type {light.type} will result in empty \"LIGHT\" version.")
+	
+	if "shadow" in light: out.append(f',\n\t"shadow":{light["shadow"]}')
+	out.append('\n},\n')
+
+	return idx
+
+
 
 def write_camera(obj):
 	global out, fresh_idx, camera_to_idx
@@ -477,6 +523,7 @@ def write_node(obj, extra_children=[]):
 	mesh = None
 	camera = None
 	environment = None
+	light = None
 	children = []
 
 	if obj.name.startswith("!environment:"):
@@ -494,7 +541,7 @@ def write_node(obj, extra_children=[]):
 		elif obj.type == 'CAMERA':
 			camera = write_camera(obj)
 		elif obj.type == 'LIGHT':
-			pass #TODO
+			light = write_light(obj)
 		elif obj.type == 'EMPTY':
 			if obj.instance_collection:
 				children += write_nodes(obj.instance_collection)
@@ -526,6 +573,8 @@ def write_node(obj, extra_children=[]):
 		out.append(f',\n\t"camera":{camera}')
 	if environment != None:
 		out.append(f',\n\t"environment":{environment}')
+	if light != None:
+		out.append(f',\n\t"light":{light}')
 
 	children += extra_children
 	if len(children) > 0:
