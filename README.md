@@ -404,7 +404,7 @@ NOTE: It is recommended that s72 files not include non-uniform scales in the tra
 Because s72 is aimed at real-time applications, its (non-distant) lights, `"sphere"` and `"spot"`, have a limit parameter that limits their influence.
 
 How to implement this cutoff is a decision for an individual implementation.
-One method that produces a smooth transition (inspired by [Real Shading in Unreal Engine 4](https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)) is to add an additional attenuation factor to the light of $\max(0, (1 - d / limit)^4 )$, where $d$ is the distance to the center of the light.
+One method that produces a smooth transition (inspired by [Real Shading in Unreal Engine 4](https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)) is to add an additional attenuation factor to the light of $\max(0, 1 - (d / limit)^4 )$, where $d$ is the distance to the center of the light.
 
 
 
