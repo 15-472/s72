@@ -14,29 +14,51 @@ function rgbe_to_rgb(r,g,b,e) {
 	}
 }
 
-function uploadCube(gl, size, data) {
+function uploadCube(gl, size, data, mips) {
 	console.assert(typeof size === 'number', "Cube size should be a number.");
 
 	const cube = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, cube);
 
+	const internalFormat = gl.RGB9_E5;
+
 	if (data instanceof Float32Array) {
 		const pageSize = size*size*3;
 		console.assert(data.length === 6*pageSize, "RGB data is correct length for cube.");
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(0*pageSize, 1*pageSize));
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(1*pageSize, 2*pageSize));
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(2*pageSize, 3*pageSize));
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(3*pageSize, 4*pageSize));
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(4*pageSize, 5*pageSize));
-		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGB, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(5*pageSize, 6*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(0*pageSize, 1*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(1*pageSize, 2*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(2*pageSize, 3*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(3*pageSize, 4*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(4*pageSize, 5*pageSize));
+		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(5*pageSize, 6*pageSize));
+		gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAX_LEVEL, 0);
+
+		if (typeof mips !== 'undefined') {
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAX_LEVEL, mips.length);
+			let mipSize = size;
+			for (let level = 1; level <= mips.length; ++level) {
+				mipSize = Math.floor(mipSize/2);
+				const mipPageSize = mipSize*mipSize*3;
+				const mipData = mips[level-1];
+				console.assert(mipData.length === 6*mipPageSize, `Mip level ${level} has correct size (expecting ${mipPageSize*6} got ${mipData.length}).`);
+
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(0*mipPageSize, 1*mipPageSize));
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(1*mipPageSize, 2*mipPageSize));
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(2*mipPageSize, 3*mipPageSize));
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(3*mipPageSize, 4*mipPageSize));
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(4*mipPageSize, 5*mipPageSize));
+				gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(5*mipPageSize, 6*mipPageSize));
+			}
+		}
 
 		if (gl.OES_texture_float_linear) {
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 		} else {
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
 		}
+
 	} else {
 		console.log("TODO: support other texture types for cube map!");
 	}
@@ -146,6 +168,15 @@ class UserCamera {
 			},
 		};
 	}
+	makeWORLD_FROM_LOCAL() {
+		const frame = this.makeFrame();
+		return MATRIX_SLAB.alloc([
+			frame.right.x, frame.right.y, frame.right.z, 0.0,
+			frame.up.x, frame.up.y, frame.up.z, 0.0,
+			-frame.forward.x, -frame.forward.y, -frame.forward.z, 0.0,
+			frame.at.x, frame.at.y, frame.at.z, 1.0
+		]);
+	}
 	makeLOCAL_FROM_WORLD() {
 		const frame = this.makeFrame();
 		return MATRIX_SLAB.alloc([
@@ -153,7 +184,7 @@ class UserCamera {
 			frame.right.y, frame.up.y,-frame.forward.y, 0.0,
 			frame.right.z, frame.up.z,-frame.forward.z, 0.0,
 			-dot(frame.right,frame.at), -dot(frame.up,frame.at), dot(frame.forward,frame.at), 1.0
-		])
+		]);
 	}
 	makeCLIP_FROM_LOCAL() {
 		return perspective(this.perspective.vfov, this.perspective.aspect, this.perspective.near);
@@ -247,24 +278,27 @@ void main() {
 `
 };
 
-SOURCES.environment = {
-	vertex:`
-attribute vec3 Position;
-attribute vec3 Normal;
-attribute vec4 Color;
-attribute vec4 Tangent;
-attribute vec2 TexCoord;
+
+const vert_common = `#version 300 es
+in vec3 Position;
+in vec3 Normal;
+in vec4 Color;
+in vec4 Tangent;
+in vec2 TexCoord;
 
 uniform mat4 CLIP_FROM_LOCAL;
 uniform mat4 LIGHT_FROM_LOCAL;
 uniform mat4 LIGHT_FROM_LOCAL_NORMAL;
 
-varying vec3 position;
-varying vec3 normal;
-varying vec4 color;
-varying vec3 tangent;
-varying vec3 bitangent;
-varying vec2 texCoord;
+uniform vec3 EYE;
+
+out vec3 position;
+out vec3 normal;
+out vec4 color;
+out vec3 tangent;
+out vec3 bitangent;
+out vec2 texCoord;
+out vec3 view;
 
 void main() {
 	position = vec3(LIGHT_FROM_LOCAL * vec4(Position, 1.0));
@@ -274,16 +308,20 @@ void main() {
 	bitangent = Tangent.w * cross(normal, tangent);
 	texCoord = TexCoord;
 
+	view = EYE - position;
+
 	gl_Position = CLIP_FROM_LOCAL * vec4(Position, 1.0);
 }
-`,
-fragment:`
-varying highp vec3 position;
-varying highp vec3 normal;
-varying mediump vec4 color;
-varying highp vec3 tangent;
-varying highp vec3 bitangent;
-varying mediump vec2 texCoord;
+`;
+
+const frag_common = `#version 300 es
+in highp vec3 position;
+in highp vec3 view;
+in highp vec3 normal;
+in mediump vec4 color;
+in highp vec3 tangent;
+in highp vec3 bitangent;
+in mediump vec2 texCoord;
 
 uniform sampler2D ALBEDO;
 uniform sampler2D ROUGHNESS;
@@ -294,6 +332,8 @@ uniform samplerCube LAMBERTIAN;
 uniform samplerCube GGX;
 uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
 
+out mediump vec4 fragColor;
+
 //based on https://www.shadertoy.com/view/4tXcWr
 mediump vec3 srgb_from_linear(mediump vec3 v) {
 	bvec3 cutoff = lessThan(v, vec3(0.0031308));
@@ -301,80 +341,106 @@ mediump vec3 srgb_from_linear(mediump vec3 v) {
 	mediump vec3 lower = v * vec3(12.92);
 	return mix(higher, lower, vec3(cutoff));
 }
+`
+
+SOURCES.environment = {
+vertex:vert_common,
+fragment:`${frag_common}
 
 void main() {
 	highp vec3 n = normalize(normal);
 	highp vec3 t = normalize(tangent);
 	highp vec3 b = normalize(bitangent);
 
-	mediump vec4 e = textureCube(RADIANCE, n);
-	gl_FragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+	mediump vec4 e = texture(RADIANCE, n);
+	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
 }
 `
 };
 
-SOURCES.pbr = {
-	vertex:`
-attribute vec3 Position;
-attribute vec3 Normal;
-attribute vec4 Color;
-attribute vec4 Tangent;
-attribute vec2 TexCoord;
 
-uniform mat4 CLIP_FROM_LOCAL;
-uniform mat4 LIGHT_FROM_LOCAL;
-uniform mat4 LIGHT_FROM_LOCAL_NORMAL;
-
-varying vec3 position;
-varying vec3 normal;
-varying vec4 color;
-varying vec3 tangent;
-varying vec3 bitangent;
-varying vec2 texCoord;
-
-void main() {
-	position = vec3(LIGHT_FROM_LOCAL * vec4(Position, 1.0));
-	normal = mat3(LIGHT_FROM_LOCAL_NORMAL) * Normal;
-	color = Color;
-	tangent = mat3(LIGHT_FROM_LOCAL) * vec3(Tangent);
-	bitangent = Tangent.w * cross(normal, tangent);
-	texCoord = TexCoord;
-
-	gl_Position = CLIP_FROM_LOCAL * vec4(Position, 1.0);
-}
-`,
-fragment:`
-varying highp vec3 position;
-varying highp vec3 normal;
-varying mediump vec4 color;
-varying highp vec3 tangent;
-varying highp vec3 bitangent;
-varying mediump vec2 texCoord;
-
-uniform sampler2D ALBEDO;
-uniform sampler2D ROUGHNESS;
-uniform sampler2D METALNESS;
-uniform sampler2D NORMAL;
-uniform sampler2D DISPLACEMENT;
-uniform samplerCube LAMBERTIAN;
-uniform samplerCube GGX;
-uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
-
-//based on https://www.shadertoy.com/view/4tXcWr
-mediump vec3 srgb_from_linear(mediump vec3 v) {
-	bvec3 cutoff = lessThan(v, vec3(0.0031308));
-	mediump vec3 higher = vec3(1.055)*pow(v, vec3(1.0/2.4)) - vec3(0.055);
-	mediump vec3 lower = v * vec3(12.92);
-	return mix(higher, lower, vec3(cutoff));
-}
+SOURCES.environment = {
+vertex:vert_common,
+fragment:`${frag_common}
 
 void main() {
 	highp vec3 n = normalize(normal);
 	highp vec3 t = normalize(tangent);
 	highp vec3 b = normalize(bitangent);
 
-	mediump vec4 e = textureCube(RADIANCE, n);
-	gl_FragColor = vec4(srgb_from_linear(vec3(texCoord.rg, 0.0)), 1.0);
+	mediump vec4 e = texture(RADIANCE, n);
+	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+}
+`
+};
+
+
+SOURCES.mirror = {
+vertex:vert_common,
+fragment:`${frag_common}
+
+void main() {
+	highp vec3 n = normalize(normal);
+	highp vec3 t = normalize(tangent);
+	highp vec3 b = normalize(bitangent);
+	highp vec3 v = normalize(view);
+
+	mediump vec4 e = texture(RADIANCE, reflect(-v, n));
+	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+}
+`
+};
+
+
+SOURCES.lambertian = {
+vertex:vert_common,
+fragment:`${frag_common}
+
+void main() {
+	highp vec3 n = normalize(normal);
+	highp vec3 t = normalize(tangent);
+	highp vec3 b = normalize(bitangent);
+	highp vec3 v = normalize(view);
+
+	mediump vec4 e = texture(LAMBERTIAN, n);
+	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+}
+`
+};
+
+
+
+
+SOURCES.pbr = {
+	vertex:vert_common,
+fragment:`${frag_common}
+
+
+//Hammersley sample generation from:
+// https://www.shadertoy.com/view/4lscWj
+
+highp vec2 Hammersley( uint i, uint NumSamples ) {
+	//reverse the bits in b:
+	uint b = i;
+	b = (b << 16U) | (b >> 16U);
+	b = ((b & 0x55555555u) << 1U) | ((b & 0xAAAAAAAAu) >> 1U);
+	b = ((b & 0x33333333u) << 2U) | ((b & 0xCCCCCCCCu) >> 2U);
+	b = ((b & 0x0F0F0F0Fu) << 4U) | ((b & 0xF0F0F0F0u) >> 4U);
+	b = ((b & 0x00FF00FFu) << 8U) | ((b & 0xFF00FF00u) >> 8U);
+	return vec2( float(i) / float(NumSamples), float(b) * 2.3283064370807973754314699618684756481e-10);
+}
+
+
+void main() {
+	highp vec3 n = normalize(normal);
+	highp vec3 t = normalize(tangent);
+	highp vec3 b = normalize(bitangent);
+	highp vec3 v = normalize(view);
+	highp vec3 r = reflect(-v, n);
+
+	mediump vec4 e = textureLod(GGX, r, 0.5);
+	e += texture(LAMBERTIAN, n);
+	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
 }
 `
 };
@@ -391,7 +457,7 @@ export class Viewer {
 		this.playRate = 1.0;
 		this.time = 0.0;
 
-		const gl = this.gl = this.canvas.getContext('webgl', {
+		const gl = this.gl = this.canvas.getContext('webgl2', {
 			antialias:false,
 			colorSpace:"srgb",
 		});
@@ -399,15 +465,11 @@ export class Viewer {
 			throw new Error("Failed to create WebGL context.");
 		}
 
-		this.gl.WEBGL_color_buffer_float = gl.getExtension("WEBGL_color_buffer_float");
-		this.gl.OES_texture_float = gl.getExtension("OES_texture_float");
+		this.gl.EXT_color_buffer_float = gl.getExtension("EXT_color_buffer_float");
 		this.gl.OES_texture_float_linear = gl.getExtension("OES_texture_float_linear");
 
-		if (!this.gl.WEBGL_color_buffer_float) {
-			console.log("WEBGL_color_buffer_float not supported; rgbe textures will not be mipmapped.");
-		}
-		if (!this.gl.OES_texture_float) {
-			console.log("OES_texture_float not supported; rgbe textures will be clipped.");
+		if (!this.gl.EXT_color_buffer_float) {
+			console.log("EXT_color_buffer_float not supported; rgbe textures will not be mipmapped.");
 		}
 		if (!this.gl.OES_texture_float_linear) {
 			console.log("OES_texture_float_linear not supported; rgbe textures will appear blocky.");
@@ -429,7 +491,7 @@ export class Viewer {
 
 		
 		this.canvas.addEventListener('wheel', (evt) => {
-			this.camera.radius *= Math.pow(0.5, -0.005 * evt.deltaY);
+			this.camera.radius *= Math.pow(0.5, -0.002 * evt.deltaY);
 			if (this.camera.radius < 0.1) this.camera.radius = 0.1;
 
 			this.redraw();
@@ -612,10 +674,23 @@ export class Viewer {
 		const LIGHT_FROM_WORLD = environment.makeLOCAL_FROM_WORLD();
 		const LIGHT_FROM_WORLD_NORMAL = environment.makeLOCAL_FROM_WORLD_NORMAL();
 
+
+		const EYE = [0,0,0];
+		{
+			const LIGHT_FROM_CAMERA = mul(
+				LIGHT_FROM_WORLD,
+				this.camera.makeWORLD_FROM_LOCAL()
+			);
+			EYE[0] = LIGHT_FROM_CAMERA[12];
+			EYE[1] = LIGHT_FROM_CAMERA[13];
+			EYE[2] = LIGHT_FROM_CAMERA[14];
+		}
+
 		const u = {
 			CLIP_FROM_LOCAL:CLIP_FROM_WORLD,
 			LIGHT_FROM_LOCAL:LIGHT_FROM_WORLD,
 			LIGHT_FROM_LOCAL_NORMAL:LIGHT_FROM_WORLD_NORMAL,
+			EYE,
 			//2D textures:
 			ALBEDO:[0],
 			ROUGHNESS:[1],
@@ -758,7 +833,11 @@ class Scene {
 		let b72s = {};
 
 		function srcURL(src) {
-			return new URL(src, new URL(url, document.location));
+			if (typeof src === 'function') {
+				return (N) => new URL(src(N), new URL(url, document.location));
+			} else {
+				return new URL(src, new URL(url, document.location));
+			}
 		}
 
 		const loadB72 = (src) => {
@@ -771,7 +850,7 @@ class Scene {
 		let textures = {};
 
 		const loadTexture = (desc, wantedType, wantedFormat) => {
-			if (typeof desc.src !== "string") throw new Error(`Expecting "src" in texture.`);
+			if (typeof desc.src !== "string" && typeof desc.src !== 'function') throw new Error(`Expecting "src" in texture.`);
 			const src = desc.src;
 			const type = ("type" in desc ? desc.type : "2D");
 			const format = ("format" in desc ? desc.format : "linear");
@@ -785,8 +864,13 @@ class Scene {
 			}
 
 			//check cache:
-			const key = `${src}|${type}|${format}`;
-			if (!(key in textures)) textures[key] = { url: srcURL(src), type, format };
+			let key = `${src}|${type}|${format}|`;
+			if (desc.mipSrc) key += desc.mipSrc(0);
+
+			if (!(key in textures)) {
+				textures[key] = { url: srcURL(src), type, format };
+				if (desc.mipSrc) textures[key].mipUrl = srcURL(desc.mipSrc);
+			}
 			return textures[key];
 		};
 
@@ -810,16 +894,15 @@ class Scene {
 
 			const MATERIALS = {
 				"pbr":() => {
-					//TODO: parameters and program
+					//TODO: parameters
 					loaded.program = programs.pbr;
 				},
 				"lambertian":() => {
-					//TODO: parameters and program
-					loaded.program = programs.simple;
+					//TODO: parameters
+					loaded.program = programs.lambertian;
 				},
 				"mirror":() => {
-					//TODO: program
-					loaded.program = programs.simple;
+					loaded.program = programs.mirror;
 				},
 				"environment":() => { loaded.program = programs.environment },
 				"simple":() => { loaded.program = programs.simple; }
@@ -948,11 +1031,18 @@ class Scene {
 			loaded.name = elt.name;
 
 			if (!("radiance" in elt)) throw new Error(`Environment must have a radiance.`);
-			loaded.radiance = loadTexture(elt.radiance, "cube");
+			const idx = elt.radiance.src.lastIndexOf('.');
+			if (idx === -1) {
+				console.log(`Failed to cleverly deduce labertian/ggx filenames from '${elt.radiance.src}'.`);
+			} else {
+				const lambertianSrc = elt.radiance.src.substr(0,idx) + '.lambertian' + elt.radiance.src.substr(idx);
+				const GGXSrc = (N) => `${elt.radiance.src.substr(0,idx)}.ggx-${N}${elt.radiance.src.substr(idx)}`;
 
-			//TODO: kick off texture loads with "well known names" for processed cubes
-			loaded.lambertian = placeholderLambertianCube(gl);
-			loaded.ggx = placeholderGGXCube(gl);
+				loaded.lambertian = loadTexture({src:lambertianSrc, type:'cube', format:'rgbe'});
+				loaded.ggx = loadTexture({src:elt.radiance.src, mipSrc:GGXSrc, type:'cube', format:'rgbe'});
+			}
+
+			loaded.radiance = loadTexture(elt.radiance, "cube");
 
 			return loaded;
 		};
@@ -1181,14 +1271,51 @@ class Scene {
 				throw new Error(`Unknown texture format "${texture.format}".`);
 			}
 
+			if ("mipUrl" in texture) {
+				texture.mips = [];
+				for (let level = 1; ; ++level) {
+					try {
+						const response = await fetch(texture.mipUrl(level));
+						const blob = await response.blob();
+						const bitmap = await createImageBitmap(blob, {colorSpaceConversion:"none"});
+						const width = bitmap.width;
+						const height = bitmap.height;
+
+						const canvas = new OffscreenCanvas(width,height);
+						const ctx = canvas.getContext('2d');
+						ctx.drawImage(bitmap, 0, 0);
+						let rgba = ctx.getImageData(0,0, width, height).data;
+
+						if (texture.format === "rgbe") {
+							//convert data to rgb:
+							const rgb = new Float32Array(width*height*3);
+							for (let px = 0; px < width * height; ++px) {
+								let [r,g,b] = rgbe_to_rgb(rgba[4*px+0], rgba[4*px+1], rgba[4*px+2], rgba[4*px+3]);
+								rgb[3*px+0] = r;
+								rgb[3*px+1] = g;
+								rgb[3*px+2] = b;
+							}
+							texture.mips.push(rgb);
+						} else if (texture.format === "linear") {
+							//leave data as-is
+							texture.mips.push(data);
+						}
+					} catch (e) {
+						if (level === 1) console.error(`FAILED to read any mip levels:\n${e}`);
+						else console.log(`Read ${level-1} mip levels.`);
+						break;
+					}
+				}
+			}
+
 			if (texture.type === "cube") {
 				if (width * 6 !== height) throw new Error(`Cube texture from ${texture.url} has dimensions ${width}x${height} (height is not 6*width).`);
 
 				texture.size = width;
 				if ("rgb" in texture) {
-					texture.cube = uploadCube(gl, texture.size, texture.rgb);
+					texture.cube = uploadCube(gl, texture.size, texture.rgb, texture.mips);
 				} else {
-					texture.cube = uploadCube(gl, texture.size, texture.rgba);
+					texture.cube = uploadCube(gl, texture.size, texture.rgba, texture.mips);
 				}
 
 			} else if (texture.type === "2D") {
@@ -1313,6 +1440,15 @@ class Camera {
 		};
 
 		this.parents = []; //chain of nodes to this camera
+	}
+	makeWORLD_FROM_LOCAL() {
+		let WORLD_FROM_LOCAL = MATRIX_SLAB.alloc([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+		for (let i = this.parents.length-1; i >= 0; --i) {
+			const p = this.parents[i];
+			const PARENT_FROM_LOCAL = p.makePARENT_FROM_LOCAL();
+			WORLD_FROM_LOCAL = mul(PARENT_FROM_LOCAL, WORLD_FROM_LOCAL);
+		}
+		return WORLD_FROM_LOCAL;
 	}
 	makeLOCAL_FROM_WORLD() {
 		let LOCAL_FROM_WORLD = MATRIX_SLAB.alloc([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
