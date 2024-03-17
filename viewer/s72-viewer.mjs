@@ -67,6 +67,32 @@ function uploadCube(gl, size, data, mips) {
 	return cube;
 }
 
+function uploadTex(gl, width, height, data, mips) {
+	console.assert(typeof width === 'number', "Texture width should be a number.");
+	console.assert(typeof height === 'number', "Texture height should be a number.");
+
+	const tex = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, tex);
+
+	const internalFormat = gl.RGBA8;
+
+	if (data instanceof Uint8ClampedArray) {
+		console.assert(data.length === 4*width*height, "RGBA data is correct length for texture.");
+		gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+		gl.generateMipmap(gl.TEXTURE_2D); //ignore mips(!)
+	} else {
+		console.log("TODO: support other texture types for texture map!");
+	}
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	return tex;
+}
+
+
 function placeholderRadianceCube(gl) {
 	if (!(gl.placeholderRadianceCube)) {
 		gl.placeholderRadianceCube = uploadCube(gl, 1, new Float32Array([
@@ -334,6 +360,7 @@ uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
 
 out mediump vec4 fragColor;
 
+//srgb <-> linear conversion routines
 //based on https://www.shadertoy.com/view/4tXcWr
 mediump vec3 srgb_from_linear(mediump vec3 v) {
 	bvec3 cutoff = lessThan(v, vec3(0.0031308));
@@ -341,6 +368,13 @@ mediump vec3 srgb_from_linear(mediump vec3 v) {
 	mediump vec3 lower = v * vec3(12.92);
 	return mix(higher, lower, vec3(cutoff));
 }
+mediump vec3 linear_from_srgb(mediump vec3 v) {
+	bvec3 cutoff = lessThan(v, vec3(0.04045));
+	mediump vec3 higher = pow((v + vec3(0.055))/vec3(1.055), vec3(2.4));
+	mediump vec3 lower = v / vec3(12.92);
+	return mix(higher, lower, vec3(cutoff));
+}
+
 `
 
 SOURCES.environment = {
@@ -402,8 +436,10 @@ void main() {
 	highp vec3 b = normalize(bitangent);
 	highp vec3 v = normalize(view);
 
+	mediump vec3 albedo = linear_from_srgb(texture(ALBEDO, texCoord).rgb);
+
 	mediump vec4 e = texture(LAMBERTIAN, n);
-	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+	fragColor = vec4(srgb_from_linear(e.rgb * albedo), 1.0);
 }
 `
 };
@@ -438,9 +474,14 @@ void main() {
 	highp vec3 v = normalize(view);
 	highp vec3 r = reflect(-v, n);
 
-	mediump vec4 e = textureLod(GGX, r, 0.5);
-	e += texture(LAMBERTIAN, n);
-	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
+	mediump vec3 albedo = linear_from_srgb(texture(ALBEDO, texCoord).rgb);
+	mediump float roughness = texture(ROUGHNESS, texCoord).r;
+	mediump float metalness = texture(METALNESS, texCoord).r;
+
+	mediump vec3 e = textureLod(GGX, r, roughness*5.0).rgb;
+	e += albedo * texture(LAMBERTIAN, n).rgb;
+	fragColor = vec4(srgb_from_linear(e), 1.0);
+	//fragColor = vec4(srgb_from_linear(vec3(roughness,metalness,0.0)), 1.0);
 }
 `
 };
@@ -585,12 +626,12 @@ export class Viewer {
 
 		(async () => {
 			let loaded = null;
-			try {
+			//try { //DEBUG -- don't catch!
 				loaded = await Scene.from(this.gl, url, {programs: this.programs} );
-			} catch (err) {
-				callback(err);
-				return;
-			}
+			//} catch (err) {
+			//	callback(err);
+			//	return;
+			//}
 			if (this.pending === pending) {
 				delete this.pending;
 				this.scene.deleteBuffers(this.gl);
@@ -850,7 +891,7 @@ class Scene {
 		let textures = {};
 
 		const loadTexture = (desc, wantedType, wantedFormat) => {
-			if (typeof desc.src !== "string" && typeof desc.src !== 'function') throw new Error(`Expecting "src" in texture.`);
+			if (typeof desc.src !== "string") throw new Error(`Expecting "src" in texture.`);
 			const src = desc.src;
 			const type = ("type" in desc ? desc.type : "2D");
 			const format = ("format" in desc ? desc.format : "linear");
@@ -874,6 +915,23 @@ class Scene {
 			return textures[key];
 		};
 
+		const makeTexture = (val) => {
+			if (typeof val === "number") val = [val];
+			for (let i = val.length; i < 4; ++i) {
+				val.push(i === 3);
+			}
+			console.assert(val.length === 4, "padding worked right");
+			for (let i = 0; i < 4; ++i) {
+				val[i] = 255 * val[i];
+			}
+
+			let key = JSON.stringify(val);
+			if (!(key in textures)) {
+				textures[key] = { rgba:new Uint8ClampedArray(val), type:"2D", format:"linear", width:1, height:1 };
+			}
+			return textures[key];
+		}
+
 		const defaultMaterial = new Material();
 		defaultMaterial.program = programs.simple;
 
@@ -886,20 +944,37 @@ class Scene {
 			loaded.name = elt.name;
 
 			if ("normalMap" in elt) {
-				loaded.normalMap = loadTexture(elt.normalMap.src, "2D");
+				loaded.normalMap = loadTexture(elt.normalMap, "2D");
 			}
 			if ("displacementMap" in elt) {
-				loaded.displacementMap = loadTexture(elt.displacementMap.src, "2D");
+				loaded.displacementMap = loadTexture(elt.displacementMap, "2D");
 			}
 
 			const MATERIALS = {
 				"pbr":() => {
-					//TODO: parameters
 					loaded.program = programs.pbr;
+
+					//defaults:
+					if (!("albedo" in elt.pbr)) elt.pbr.albedo = [1,1,1];
+					if (!("roughness" in elt.pbr)) elt.pbr.roughness = 1.0;
+					if (!("metalness" in elt.pbr)) elt.pbr.metalness = 0.0;
+
+					if (Array.isArray(elt.pbr.albedo)) loaded.albedo = makeTexture(elt.pbr.albedo);
+					else loaded.albedo = loadTexture(elt.pbr.albedo, "2D");
+
+					if (typeof elt.pbr.roughness === 'number') loaded.roughness = makeTexture(elt.pbr.roughness);
+					else loaded.roughness = loadTexture(elt.pbr.roughness, "2D");
+
+					if (typeof elt.pbr.metalness === 'number') loaded.metalness = makeTexture(elt.pbr.metalness);
+					else loaded.metalness = loadTexture(elt.pbr.metalness, "2D");
 				},
 				"lambertian":() => {
-					//TODO: parameters
 					loaded.program = programs.lambertian;
+
+					if (!("albedo" in elt.lambertian)) elt.lambertian.albedo = [1,1,1];
+
+					if (Array.isArray(elt.lambertian.albedo)) loaded.albedo = makeTexture(elt.lambertian.albedo);
+					else loaded.albedo = loadTexture(elt.lambertian.albedo, "2D");
 				},
 				"mirror":() => {
 					loaded.program = programs.mirror;
@@ -1243,32 +1318,35 @@ class Scene {
 		scene.textures = textures;
 
 		for (const texture of Object.values(textures)) {
-			const response = await fetch(texture.url);
-			const blob = await response.blob();
-			const bitmap = await createImageBitmap(blob, {colorSpaceConversion:"none"});
-			const width = bitmap.width;
-			const height = bitmap.height;
+			//fetch texture if it has a url to fetch:
+			if ("url" in texture) {
+				const response = await fetch(texture.url);
+				const blob = await response.blob();
+				const bitmap = await createImageBitmap(blob, {colorSpaceConversion:"none"});
+				const width = texture.width = bitmap.width;
+				const height = texture.height = bitmap.height;
 
-			const canvas = new OffscreenCanvas(width,height);
-			const ctx = canvas.getContext('2d');
-			ctx.drawImage(bitmap, 0, 0);
-			let rgba = ctx.getImageData(0,0, width, height).data;
+				const canvas = new OffscreenCanvas(width,height);
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(bitmap, 0, 0);
+				let rgba = ctx.getImageData(0,0, width, height).data;
 
-			if (texture.format === "rgbe") {
-				//convert data to rgb:
-				const rgb = new Float32Array(width*height*3);
-				for (let px = 0; px < width * height; ++px) {
-					let [r,g,b] = rgbe_to_rgb(rgba[4*px+0], rgba[4*px+1], rgba[4*px+2], rgba[4*px+3]);
-					rgb[3*px+0] = r;
-					rgb[3*px+1] = g;
-					rgb[3*px+2] = b;
+				if (texture.format === "rgbe") {
+					//convert data to rgb:
+					const rgb = new Float32Array(width*height*3);
+					for (let px = 0; px < width * height; ++px) {
+						let [r,g,b] = rgbe_to_rgb(rgba[4*px+0], rgba[4*px+1], rgba[4*px+2], rgba[4*px+3]);
+						rgb[3*px+0] = r;
+						rgb[3*px+1] = g;
+						rgb[3*px+2] = b;
+					}
+					texture.rgb = rgb;
+				} else if (texture.format === "linear") {
+					//leave data as-is
+					texture.rgba = rgba;
+				} else {
+					throw new Error(`Unknown texture format "${texture.format}".`);
 				}
-				texture.rgb = rgb;
-			} else if (texture.format === "linear") {
-				//leave data as-is
-				texture.rgba = data;
-			} else {
-				throw new Error(`Unknown texture format "${texture.format}".`);
 			}
 
 			if ("mipUrl" in texture) {
@@ -1309,9 +1387,12 @@ class Scene {
 			}
 
 			if (texture.type === "cube") {
-				if (width * 6 !== height) throw new Error(`Cube texture from ${texture.url} has dimensions ${width}x${height} (height is not 6*width).`);
+				if (texture.width * 6 !== texture.height) throw new Error(`Cube texture from ${texture.url} has dimensions ${texture.width}x${texture.height} (height is not 6*width).`);
 
-				texture.size = width;
+				texture.size = texture.width;
+				delete texture.width;
+				delete texture.height;
+
 				if ("rgb" in texture) {
 					texture.cube = uploadCube(gl, texture.size, texture.rgb, texture.mips);
 				} else {
@@ -1319,8 +1400,11 @@ class Scene {
 				}
 
 			} else if (texture.type === "2D") {
-				texture.width = width;
-				texture.height = height;
+				if ("rgb" in texture) {
+					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgb, texture.mips);
+				} else {
+					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgba, texture.mips);
+				}
 			} else {
 				throw new Error(`Unknown texture type "${texture.type}".`);
 			}
@@ -1423,6 +1507,20 @@ class Mesh {
 	draw(gl, u) {
 		if (this.count === 0) return;
 		gl.useProgram(this.material.program);
+
+		if (this.material.albedo) {
+			gl.activeTexture(gl.TEXTURE0 + u.ALBEDO[0]);
+			gl.bindTexture(gl.TEXTURE_2D, this.material.albedo.tex);
+		}
+		if (this.material.roughness) {
+			gl.activeTexture(gl.TEXTURE0 + u.ROUGHNESS[0]);
+			gl.bindTexture(gl.TEXTURE_2D, this.material.roughness.tex);
+		}
+		if (this.material.metalness) {
+			gl.activeTexture(gl.TEXTURE0 + u.METALNESS[0]);
+			gl.bindTexture(gl.TEXTURE_2D, this.material.metalness.tex);
+		}
+
 		helpers.setUniforms(gl, this.material.program, u);
 		const unbind = helpers.bindAttributes(gl, this.material.program, this.attributes);
 		gl.drawArrays(this.topology, 0, this.count);
