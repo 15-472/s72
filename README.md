@@ -24,8 +24,8 @@ These files have no fixed layout -- the data is accessed with the offsets and fo
 
 Scene'72 files are UTF8-encoded <a href="https://json.org">JSON</a>, and are generally named with a <code>.s72</code> extension.
 
-The top-level value of a scene'72 file is always an array, and the first element of the array is always the string `"s72-v1"`.
-Code that writes scene'72 files should write the top-level array such that the first nine bytes of a scene'72 file are exactly `["s72-v1"` in order to make it easy for utilities to recognize the file type.
+The top-level value of a scene'72 file is always an array, and the first element of the array is always the string `"s72-v2"`.
+Code that writes scene'72 files should write the top-level array such that the first nine bytes of a scene'72 file are exactly `["s72-v2"` in order to make it easy for utilities to recognize the file type.
 
 ### Objects
 The remainder of the array is filled with JSON objects with (at least) a `"type"` and `"name"` property:
@@ -40,11 +40,10 @@ The remainder of the array is filled with JSON objects with (at least) a `"type"
 
 Properties (all objects):
 - `"type":"..."` gives the object type as a string; specific object types are documented below. A scene'72 loader that finds an object with an unrecognized `type` should emit a warning and may emit an error.
-- `"name":"..."` gives the object name as a string; object names must be unique within their type. However, scene'72 loaders are not required to check for uniqueness (nor does any aspect of the file format require uniqueness).
+- `"name":"..."` gives the object name as a string; object names must be unique within their type.
 
 **Referencing objects:**
-When objects reference other objects in the array they do so by index in the top-level array.
-Note that `0` is always an invalid object reference (since the first element of the array is the "magic value" denoting the filetype).
+When objects reference other objects in the array they do so by name.
 
 ### *Scene* Objects
 Every scene'72 file contains exactly one *scene* object, which defines global properties of the scene:
@@ -53,7 +52,7 @@ Every scene'72 file contains exactly one *scene* object, which defines global pr
 {
 	"type":"SCENE",
 	"name":"Cube Pyramid",
-	"roots":[2,3]
+	"roots":["node A","node B"]
 },
 /* ... */
 ```
@@ -74,11 +73,11 @@ The structure of a *scene* is determined by a graph of transformation *node*s:
 	"translation":[0,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"children":[2,3,4,5],
-	"camera":7,
-	"mesh":2,
-	"environment":12,
-	"light":5
+	"children":["rug","chair","table","carton"],
+	"camera":"main-camera",
+	"mesh":"room",
+	"environment":"outdoors",
+	"light":"lamp1"
 },
 /* ... */
 ```
@@ -88,10 +87,10 @@ They include the following *node*-specific properties:
  - <code>"rotation":[<var>rx</var>,<var>ry</var>,<var>rz</var>,<var>rw</var>]</code> (optional; default is `[0,0,0,1]`) -- the rotation part of the node's transform, as a unit quaternion (where `rw` is the scalar part of the quaternion).
  - <code>"scale":[<var>sx</var>,<var>sy</var>,<var>sz</var>]</code> (optional; default is `[1,1,1]`) -- the scale part of the node's transform, as a 3-element array of axis-aligned scale factors.
  - `"children":[...]` (optional; default is `[]`) -- array of references to *node*s which should be instanced as children of this transformation.
- - <code>"mesh":<var>i</var></code> (optional) -- reference to a *mesh* to instance at this node.
- - <code>"camera":<var>i</var></code> (optional) -- reference to a *camera* to instance at this node.
- - <code>"environment":<var>i</var></code> (optional) -- reference to an *enviroment* to instance at this node.
- - <code>"light":<var>i</var></code> (optional) -- reference to a *light* to instance at this node.
+ - <code>"mesh":<var>name</var></code> (optional) -- reference to a *mesh* to instance at this node.
+ - <code>"camera":<var>name</var></code> (optional) -- reference to a *camera* to instance at this node.
+ - <code>"environment":<var>name</var></code> (optional) -- reference to an *enviroment* to instance at this node.
+ - <code>"light":<var>name</var></code> (optional) -- reference to a *light* to instance at this node.
 
 The transformation from the local space of a <em>node</em> to the local space of its parent node is given by applying its scale, rotation, and translation values (in that order):
 ```math
@@ -113,13 +112,12 @@ Drawable geometry in the scene is represented by *mesh* objects:
 	"count":12,
 	"indices": { "src":"cube.b72", "offset":576, "format":"UINT32" },
 	"attributes":{
-		"POSITION": { "src":"cube.b72", "offset":0,  "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":   { "src":"cube.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":  { "src":"cube.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD": { "src":"cube.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":    { "src":"cube.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" },
+		"POSITION": { "src":"cube.b72", "offset":0,  "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":   { "src":"cube.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":  { "src":"cube.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD": { "src":"cube.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" },
 	},
-	"material":5,
+	"material":"dull-red",
 },
 /* ... */
 ```
@@ -130,7 +128,7 @@ Valid values are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensio
 - <code>"count":<var>N</var></code> (required) -- the number of vertices in the mesh.
 - `"indices":{ ... }` (optional) -- if specified, a data stream containing indices for indexed drawing commands.
 - `"attributes":{ ... }` (required) -- named data streams containing the mesh attributes.
-- <code>"material":<var>i</var></code> (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
+- <code>"material":<var>name</var></code> (optional) -- reference to a material to use for this mesh. If not specified, the mesh should be drawn with the default material.
 
 **Mesh attributes.**
 Mesh *attribute*s are data streams used to define the mesh vertices.
@@ -200,7 +198,7 @@ If rendering through a camera that does not match the output image aspect ratio,
 {
 	"type":"DRIVER",
 	"name":"camera move",
-	"node":12,
+	"node":"camera transform",
 	"channel":"translation",
 	"times":[0, 1, 2, 3, 4],
 	"values":[0,0,0, 0,0,1, 0,1,1, 1,1,1, 0,0,0],
@@ -266,8 +264,6 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 	"mirror": { /* no parameters */ },
 	/* xor */
 	"environment": { /* no parameters */ },
-	/* xor */
-	"simple": { /* no parameters */ }
 },
 /* ... */
 ```
@@ -279,8 +275,7 @@ They include the following *material*-specific properties:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
   - `"mirror"` -- a perfect mirror material,
-  - `"environment"` -- a material that copies the environment in the normal direction,
-  - or `"simple"` -- a material that uses vertex colors lit by a simple hemisphere light.
+  - or `"environment"` -- a material that copies the environment in the normal direction.
 
 The `"pbr"` material uses a physically-based BRDF defined as per <a href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Epic Games' SIGGRAPH 2013 Talk</a> (with lambertian diffuse + ggx specular).
 The available parameters for the model are:
@@ -295,17 +290,16 @@ The `"mirror"` material uses a perfect mirror BRDF. It has no parameters.
 
 The `"environment"` material looks up the environment in the direction of the normal. (This is a BRDF with a Dirac delta along $n$.) It has no parameters.
 
-The `"simple"` material uses a hemisphere light to shade a model based on its normals and vertex colors. It has no parameters.
-
-*Note:* the "default material" (the material used for meshes that do not indicate otherwise) is a `"simple"` material with no displacement map or normal map. It does not have a name or index and cannot be otherwise referenced.
+*Note:* the "default material" (the material used for meshes that do not indicate otherwise) is a `"lambertian"` material with albedo `[0.8, 0.8, 0.8]` and no displacement map or normal map. It does not have a name or index and cannot be otherwise referenced.
 
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
  - `"type"` (optional default value is `"2D"`) -- the texture type
    - `"2D"` -- simple 2D texture
    - `"cube"` -- cube map texture, stored as a vertical stack of faces (from top to bottom in the image: $+x$, $-x$, $+y$, $-y$, $+z$, $-z$)
- - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$.
+ - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$ (note that `"format"` has priority over any metadata present in an image file)
    - `"linear"` -- map linearly ( $rgba' \gets rgba / 255$ )
+   - `"srgb"` -- map via the <a href="https://registry.khronos.org/DataFormat/specs/1.3/dataformat.1.3.html#TRANSFER_SRGB">SRGB EOTF</a>
    - `"rgbe"` -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
@@ -329,7 +323,7 @@ This means that, for example, the upper-left texel in a cubemap image is at the 
 *Environment* objects have their `type` property set to `"ENVIRONMENT"`.
 
 They include the following *environment*-specific properties:
- - <code>"radiance:<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter in each spectral band) incoming from the environment.
+ - <code>"radiance":<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter in each spectral band) incoming from the environment.
 
 
 ### *Light* Objects
@@ -374,7 +368,7 @@ They include the following *light*-specific definitions:
 
 
 A `"sun"` light is a distant directional light pointing along the local $-z$ axis. Properties:
-- `"angle"` (required) -- every surface element sees the sun light as coming from a disc of this angular diameter. (`"angle"` is in radians and will be strictly less than $\pi$. )
+- `"angle"` (required) -- every surface element sees the sun light as coming from a disc of this angular diameter. (`"angle"` is in radians and will be at most $\pi$. )
 - `"strength"` -- energy per area emitted by the light, in watts per square meter. (Note: multiply by the `"tint"` of the light to get actual per-primary energy.)
 
 NOTE: *Sun* lights are distant directional lights, so they look the same to all surface patches (that is to say, there is no falloff in intensity).
