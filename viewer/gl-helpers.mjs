@@ -96,7 +96,37 @@ export function bindAttributes(gl, program, attributes) {
 }
 
 
+//make a table of uniform types to assist in compact-ish uniform-setting code:
+const UNIFORM_TYPES_STR = {
+	"FLOAT":       { per:1, name:"float", func:(gl,u,value) => { gl.uniform1fv(u.location, value); } },
+	"FLOAT_VEC2":  { per:2, name:"vec2",  func:(gl,u,value) => { gl.uniform2fv(u.location, value); } },
+	"FLOAT_VEC3":  { per:3, name:"vec3",  func:(gl,u,value) => { gl.uniform3fv(u.location, value); } },
+	"FLOAT_VEC4":  { per:4, name:"vec4",  func:(gl,u,value) => { gl.uniform4fv(u.location, value); } },
+	"INT":      { per:1, name:"int",   func:(gl,u,value) => { gl.uniform1iv(u.location, value); } },
+	"INT_VEC2": { per:2, name:"ivec2", func:(gl,u,value) => { gl.uniform2iv(u.location, value); } },
+	"INT_VEC3": { per:3, name:"ivec3", func:(gl,u,value) => { gl.uniform3iv(u.location, value); } },
+	"INT_VEC4": { per:4, name:"ivec4", func:(gl,u,value) => { gl.uniform4iv(u.location, value); } },
+	"UNSIGNED_INT":      { per:1, name:"uint",  func:(gl,u,value) => { gl.uniform1uiv(u.location, value); } },
+	"UNSIGNED_INT_VEC2": { per:2, name:"uvec2", func:(gl,u,value) => { gl.uniform2uiv(u.location, value); } },
+	"UNSIGNED_INT_VEC3": { per:3, name:"uvec3", func:(gl,u,value) => { gl.uniform3uiv(u.location, value); } },
+	"UNSIGNED_INT_VEC4": { per:4, name:"uvec4", func:(gl,u,value) => { gl.uniform4uiv(u.location, value); } },
+	"FLOAT_MAT2":  { per:2*2, name:"mat2", func:(gl,u,value) => { gl.uniformMatrix2fv(u.location, false, value); } },
+	"FLOAT_MAT3":  { per:3*3, name:"mat3", func:(gl,u,value) => { gl.uniformMatrix3fv(u.location, false, value); } },
+	"FLOAT_MAT4":  { per:4*4, name:"mat4", func:(gl,u,value) => { gl.uniformMatrix4fv(u.location, false, value); } },
+	"SAMPLER_2D":  { per:1,   name:"sampler2D",   func:(gl,u,value) => { gl.uniform1iv(u.location, value); } },
+	"SAMPLER_CUBE":{ per:1,   name:"samplerCube", func:(gl,u,value) => { gl.uniform1iv(u.location, value); } },
+};
+
+//the above, but fixed up with gl.* constants
+const UNIFORM_TYPES = { };
+
 export function setUniforms(gl, program, uniforms) {
+	if (Object.keys(UNIFORM_TYPES).length == 0) {
+		for (const key of Object.keys(UNIFORM_TYPES_STR)) {
+			UNIFORM_TYPES[gl[key]] = UNIFORM_TYPES_STR[key];
+		}
+	}
+
 	gl.useProgram(program);
 
 	var warned = setUniforms.warned || (setUniforms.warned = {});
@@ -118,71 +148,20 @@ export function setUniforms(gl, program, uniforms) {
 			throw new Error("Uniform '" + name + "' used in shaders but not specified.");
 		}
 		const value = uniforms[name];
-		if (u.type === gl.FLOAT) {
-			if (value.length !== 1) {
-				throw new Error("Uniform '" + name + "' is a float, but value given is of length " + value.length);
+
+		if (u.type in UNIFORM_TYPES) {
+			const ut = UNIFORM_TYPES[u.type];
+
+			if (u.size === 1) {
+				if (value.length != ut.per) {
+					throw new Error(`Uniform '${name}' is a ${ut.name}, but value given is of length ${value.length}.`);
+				}
+			} else {
+				if (value.length % ut.per !== 0 || value.length > ut.per * u.size) {
+					throw new Error(`Uniform '${name}' is a ${ut.name}[${u.size}], but value given is of length ${value.length}.`);
+				}
 			}
-			gl.uniform1fv(u.location, value);
-		} else if (u.type === gl.FLOAT_VEC2) {
-			if (value.length !== 2) {
-				throw new Error("Uniform '" + name + "' is a vec2, but value given is of length " + value.length);
-			}
-			gl.uniform2fv(u.location, value);
-		} else if (u.type === gl.FLOAT_VEC3) {
-			if (value.length !== 3) {
-				throw new Error("Uniform '" + name + "' is a vec3, but value given is of length " + value.length);
-			}
-			gl.uniform3fv(u.location, value);
-		} else if (u.type === gl.FLOAT_VEC4) {
-			if (value.length !== 4) {
-				throw new Error("Uniform '" + name + "' is a vec4, but value given is of length " + value.length);
-			}
-			gl.uniform4fv(u.location, value);
-		} else if (u.type === gl.INT) {
-			if (value.length !== 1) {
-				throw new Error("Uniform '" + name + "' is a int, but value given is of length " + value.length);
-			}
-			gl.uniform1iv(u.location, value);
-		} else if (u.type === gl.INT_VEC2) {
-			if (value.length !== 2) {
-				throw new Error("Uniform '" + name + "' is a ivec2, but value given is of length " + value.length);
-			}
-			gl.uniform2iv(u.location, value);
-		} else if (u.type === gl.INT_VEC3) {
-			if (value.length !== 3) {
-				throw new Error("Uniform '" + name + "' is a ivec3, but value given is of length " + value.length);
-			}
-			gl.uniform3iv(u.location, value);
-		} else if (u.type === gl.INT_VEC4) {
-			if (value.length !== 4) {
-				throw new Error("Uniform '" + name + "' is a ivec4, but value given is of length " + value.length);
-			}
-			gl.uniform4iv(u.location, value);
-		} else if (u.type === gl.FLOAT_MAT2) {
-			if (value.length !== 2*2) {
-				throw new Error("Uniform '" + name + "' is a mat2, but value given is of length " + value.length);
-			}
-			gl.uniformMatrix2fv(u.location, false, value);
-		} else if (u.type === gl.FLOAT_MAT3) {
-			if (value.length !== 3*3) {
-				throw new Error("Uniform '" + name + "' is a mat3, but value given is of length " + value.length);
-			}
-			gl.uniformMatrix3fv(u.location, false, value);
-		} else if (u.type === gl.FLOAT_MAT4) {
-			if (value.length !== 4*4) {
-				throw new Error("Uniform '" + name + "' is a mat4, but value given is of length " + value.length);
-			}
-			gl.uniformMatrix4fv(u.location, false, value);
-		} else if (u.type === gl.SAMPLER_2D) {
-			if (value.length !== 1) {
-				throw new Error("Uniform '" + name + "' is a sampler2D, but value given is of length " + value.length);
-			}
-			gl.uniform1iv(u.location, value);
-		} else if (u.type === gl.SAMPLER_CUBE) {
-			if (value.length !== 1) {
-				throw new Error("Uniform '" + name + "' is a samplerCube, but value given is of length " + value.length);
-			}
-			gl.uniform1iv(u.location, value);
+			ut.func(gl, u, value);
 		} else {
 			throw new Error("Uniform '" + name + "' has a type '" + u.type + "' not supported by this code.");
 		}

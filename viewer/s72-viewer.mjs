@@ -96,12 +96,15 @@ function uploadTex(gl, width, height, data, mips) {
 function placeholderRadianceCube(gl) {
 	if (!(gl.placeholderRadianceCube)) {
 		gl.placeholderRadianceCube = uploadCube(gl, 1, new Float32Array([
+			0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,
+		/* for DEBUG:
 			1,0,0,
 			0.5,0,0,
 			0,1,0,
 			0,0.5,0,
 			0,0,1,
 			0,0,0.5
+		*/
 		]));
 	}
 	return gl.placeholderRadianceCube;
@@ -111,27 +114,33 @@ function placeholderRadianceCube(gl) {
 function placeholderLambertianCube(gl) {
 	if (!(gl.placeholderLambertainCube)) {
 		gl.placeholderLambertianCube = uploadCube(gl, 1, new Float32Array([
+			0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,
+		/* for DEBUG:
 			1,0,1,
 			0.5,0,0.5,
 			1,0,1,
 			0.5,0,0.5,
 			1,0,1,
 			0.5,0,0.5
+		*/
 		]));
 	}
-	return gl.placeholderGGXCube;
+	return gl.placeholderLambertianCube;
 
 }
 
 function placeholderGGXCube(gl) {
 	if (!(gl.placeholderGGXCube)) {
 		gl.placeholderGGXCube = uploadCube(gl, 1, new Float32Array([
+			0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,
+		/* for DEBUG:
 			1,1,0,
 			0.5,0.5,0,
 			1,1,0,
 			0.5,0.5,0,
 			1,1,0,
 			0.5,0.5,0
+		*/
 		]));
 	}
 	return gl.placeholderGGXCube;
@@ -340,6 +349,8 @@ void main() {
 }
 `;
 
+const MAX_LIGHTS = 20;
+
 const frag_common = `#version 300 es
 in highp vec3 position;
 in highp vec3 view;
@@ -354,9 +365,19 @@ uniform sampler2D ROUGHNESS;
 uniform sampler2D METALNESS;
 uniform sampler2D NORMAL;
 uniform sampler2D DISPLACEMENT;
+
+//lighting environment:
 uniform samplerCube LAMBERTIAN;
 uniform samplerCube GGX;
 uniform samplerCube RADIANCE; //redundant with ggx but useful for debugging
+
+//discrete lights:
+uniform uint LIGHTS;
+uniform lowp int LIGHT_TYPE[${MAX_LIGHTS}]; //0: sun, 1: sphere, 2: spot
+uniform highp vec3 LIGHT_POSITION[${MAX_LIGHTS}];
+uniform highp vec3 LIGHT_DIRECTION[${MAX_LIGHTS}];
+uniform highp vec3 LIGHT_ENERGY[${MAX_LIGHTS}];
+uniform highp vec4 LIGHT_PARAMS[${MAX_LIGHTS}]; //sun: angle, sphere: radius, limit; spot: radius, fov, blend, limit
 
 out mediump vec4 fragColor;
 
@@ -436,10 +457,26 @@ void main() {
 	highp vec3 b = normalize(bitangent);
 	highp vec3 v = normalize(view);
 
-	mediump vec3 albedo = linear_from_srgb(texture(ALBEDO, texCoord).rgb);
+	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb;
 
-	mediump vec4 e = texture(LAMBERTIAN, n);
-	fragColor = vec4(srgb_from_linear(e.rgb * albedo), 1.0);
+	mediump vec3 e = texture(LAMBERTIAN, n).rgb;
+	for (uint i = 0u; i < LIGHTS; ++i) {
+		if (LIGHT_TYPE[i] == 0) { //sun
+			mediump float amt = dot(LIGHT_DIRECTION[i], n);
+			//this approximation is correct only for lights with zero and pi angular diameter:
+			mediump float e0 = max(0.0, amt); //distant point light
+			mediump float ePI = 0.5 * amt + 0.5; //hemisphere light
+			e += LIGHT_ENERGY[i] * mix(e0, ePI, LIGHT_PARAMS[i].x / 3.1415926);
+		} else if (LIGHT_TYPE[i] == 1) { //sphere
+			//TODO
+		} else if (LIGHT_TYPE[i] == 2) { //spot
+			//TODO
+		}
+	}
+
+	fragColor = vec4(srgb_from_linear(e * albedo), 1.0);
+	//fragColor = vec4(1.0, 0.0, 1.0, 1.0);
+	//fragColor = vec4(albedo, 1.0);
 }
 `
 };
@@ -530,7 +567,6 @@ export class Viewer {
 
 		window.addEventListener('resize', () => { this.resize(); });
 
-		
 		this.canvas.addEventListener('wheel', (evt) => {
 			this.camera.radius *= Math.pow(0.5, -0.002 * evt.deltaY);
 			if (this.camera.radius < 0.1) this.camera.radius = 0.1;
@@ -628,6 +664,7 @@ export class Viewer {
 			let loaded = null;
 			//try { //DEBUG -- don't catch!
 				loaded = await Scene.from(this.gl, url, {programs: this.programs} );
+				window.SCENE = loaded;
 			//} catch (err) {
 			//	callback(err);
 			//	return;
@@ -727,6 +764,7 @@ export class Viewer {
 			EYE[2] = LIGHT_FROM_CAMERA[14];
 		}
 
+	
 		const u = {
 			CLIP_FROM_LOCAL:CLIP_FROM_WORLD,
 			LIGHT_FROM_LOCAL:LIGHT_FROM_WORLD,
@@ -743,6 +781,44 @@ export class Viewer {
 			LAMBERTIAN:[6],
 			GGX:[7],
 		};
+
+		//TODO: read lights from scene instead of using default values:
+		const LIGHT_TYPE = [];
+		const LIGHT_POSITION = [];
+		const LIGHT_DIRECTION = [];
+		const LIGHT_ENERGY = [];
+		const LIGHT_PARAMS = [];
+
+		this.scene.gatherLights({LIGHT_TYPE, LIGHT_POSITION, LIGHT_DIRECTION, LIGHT_ENERGY, LIGHT_PARAMS}, LIGHT_FROM_WORLD);
+
+		if (LIGHT_TYPE.length === 0) {
+			LIGHT_TYPE.push(0);
+			LIGHT_POSITION.push(0,0,0);
+			LIGHT_DIRECTION.push(0,0,1);
+			LIGHT_ENERGY.push(1,1,1);
+			LIGHT_PARAMS.push(3.1415926,0,0,0);
+			if (!this.scene.noLightsWarning) {
+				this.scene.noLightsWarning = true;
+				console.warn("Scene has no lights; will draw with a hemisphere in the +z direction.");
+			}
+		} else {
+			console.log(LIGHT_TYPE.length + " lights"); //DEBUG
+		}
+
+		console.assert(LIGHT_TYPE.length * 3 === LIGHT_POSITION.length, "Correct number of light position entries.");
+		console.assert(LIGHT_TYPE.length * 3 === LIGHT_DIRECTION.length, "Correct number of light direction entries.");
+		console.assert(LIGHT_TYPE.length * 3 === LIGHT_ENERGY.length, "Correct number of light energy entries.");
+		console.assert(LIGHT_TYPE.length * 4 === LIGHT_PARAMS.length, "Correct number of light params entries.");
+
+		u.LIGHTS = [LIGHT_TYPE.length];
+
+		//pad everything else out to 20? or upload partial? hmm
+
+		u["LIGHT_TYPE[0]"] = LIGHT_TYPE;
+		u["LIGHT_POSITION[0]"] = LIGHT_POSITION;
+		u["LIGHT_DIRECTION[0]"] = LIGHT_DIRECTION;
+		u["LIGHT_ENERGY[0]"] = LIGHT_ENERGY;
+		u["LIGHT_PARAMS[0]"] = LIGHT_PARAMS;
 
 		gl.activeTexture(gl.TEXTURE0 + u.GGX[0]);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, environment.ggx.cube);
@@ -855,6 +931,12 @@ class Scene {
 		}
 	}
 
+	gatherLights(lu, LIGHT_FROM_WORLD) {
+		for (const root of this.roots) {
+			root.gatherLights(lu, LIGHT_FROM_WORLD);
+		}
+	}
+
 	traverse(gl, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD, LIGHT_FROM_WORLD_NORMAL) {
 		for (const root of this.roots) {
 			root.traverse(gl, u, CLIP_FROM_WORLD, LIGHT_FROM_WORLD, LIGHT_FROM_WORLD_NORMAL);
@@ -869,7 +951,32 @@ class Scene {
 		console.log(`...have json!`);
 
 		if (!Array.isArray(json)) throw new Error(`The top-level value is not an array.`);
-		if (json[0] !== "s72-v1") throw new Error(`The first element is not "s72-v1".`);
+		if (json[0] !== "s72-v2") throw new Error(`The first element is not "s72-v2".`);
+
+		//make index into json by type:name keys:
+		const byTypeName = {};
+
+		//skipping 0 -- not indexing magic value:
+		for (let i = 1; i < json.length; ++i) {
+			const object = json[i];
+			if (typeof(object) === "object" && "name" in object && "type" in object) {
+				const key = `${object.type}:${object.name}`;
+				if (key in byTypeName) {
+					console.warn(`Two '${object.type}'s with name '${object.name}'.`);
+				} else {
+					byTypeName[key] = object;
+				}
+			}
+		}
+
+		function resolveReference(type, name) {
+			const key = `${type}:${name}`;
+			if (!(key in byTypeName)) {
+				throw new Error(`No '${type}' with name '${name}'.`);
+			}
+			return byTypeName[key];
+		}
+
 
 		let b72s = {};
 
@@ -933,11 +1040,13 @@ class Scene {
 		}
 
 		const defaultMaterial = new Material();
-		defaultMaterial.program = programs.simple;
+		defaultMaterial.program = programs.lambertian;
+		defaultMaterial.lambertian = { albedo: [0.8, 0.8, 0.8] };
+		defaultMaterial.albedo = makeTexture(defaultMaterial.lambertian.albedo);
 
-		const loadMaterial = (index) => {
-			const elt = json[index];
-			if (elt.type !== "MATERIAL") throw new Error(`Trying to load a material from a type:"${elt.type}" element.`);
+		const loadMaterial = (ref) => {
+			const elt = resolveReference('MATERIAL', ref);
+
 			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
 
 			const loaded = elt.LOADED = new Material();
@@ -998,9 +1107,9 @@ class Scene {
 			return loaded;
 		};
 
-		const loadMesh = (index) => {
-			const elt = json[index];
-			if (elt.type !== "MESH") throw new Error(`Trying to load a mesh from a type:"${elt.type}" element.`);
+		const loadMesh = (ref) => {
+			const elt = resolveReference('MESH', ref);
+
 			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
 
 			const loaded = elt.LOADED = new Mesh();
@@ -1064,9 +1173,8 @@ class Scene {
 			return loaded;
 		};
 
-		const loadCamera = (index) => {
-			const elt = json[index];
-			if (elt.type !== "CAMERA") throw new Error(`Trying to load a camera from a type:"${elt.type}" element.`);
+		const loadCamera = (ref) => {
+			const elt = resolveReference('CAMERA', ref);
 
 			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
 
@@ -1096,9 +1204,8 @@ class Scene {
 			return loaded;
 		};
 
-		const loadEnvironment = (index) => {
-			const elt = json[index];
-			if (elt.type !== "ENVIRONMENT") throw new Error(`Trying to load an environment from a type:"${elt.type}" element.`);
+		const loadEnvironment = (ref) => {
+			const elt = resolveReference('ENVIRONMENT', ref);
 
 			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
 
@@ -1122,12 +1229,72 @@ class Scene {
 			return loaded;
 		};
 
+		const loadLight = (ref) => {
+			const elt = resolveReference('LIGHT', ref);
+
+			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
+
+			const loaded = elt.LOADED = new Light();
+			loaded.name = elt.name;
+
+			if (!("tint" in elt)) elt.tint = [1,1,1];
+
+			if (!("shadow" in elt)) elt.shadow = 0;
+
+			if (Array.isArray(elt.tint)) loaded.tint = elt.tint;
+			else throw new Error(`${elt.name}.tint is not an array.`);
+
+			//HERE
+
+			const LIGHTS = {
+				"sun":() => {
+					loaded.sun = {};
+					for (const key of ["angle", "strength"]) {
+						if (typeof elt.sun[key] === "number") loaded.sun[key] = elt.sun[key];
+						else throw new Error(`${elt.name}.sun.${key} should be a number.`);
+					}
+				},
+				"sphere":() => {
+					loaded.sphere = {};
+					for (const key of ["radius", "power"]) {
+						if (typeof elt.sphere[key] === "number") loaded.sphere[key] = elt.sphere[key];
+						else throw new Error(`${elt.name}.sphere.${key} should be a number.`);
+					}
+					if ("limit" in elt.sphere) {
+						if (typeof elt.sphere.limit === "number") loaded.sphere.limit = elt.sphere.limit;
+						else throw new Error(`${elt.name}.sphere.limit should be a number.`);
+					}
+				},
+				"spot":() => {
+					loaded.spot = {};
+					for (const key of ["radius", "power", "fov", "blend", "limit"]) {
+						if (typeof elt.spot[key] === "number") loaded.spot[key] = elt.spot[key];
+						else throw new Error(`${elt.name}.spot.${key} should be a number.`);
+					}
+					if ("limit" in elt.spot) {
+						if (typeof elt.spot.limit === "number") loaded.spot.limit = elt.spot.limit;
+						else throw new Error(`${elt.name}.spot.limit should be a number.`);
+					}
+				},
+			};
+
+			let def;
+			for (let n of Object.keys(LIGHTS)) {
+				if (n in elt) {
+					if (!(typeof def === "undefined")) throw new Error(`Light can't have both "${def}" and "${n}".`);
+					def = n;
+					LIGHTS[n]();
+				}
+			}
+			if (typeof def === "undefined") throw new Error(`Light has no recognized definition (among: {${Object.keys(LIGHTS).join(", ")}}).`);
+
+			return loaded;
+		};
+
+
 		
-
-
-		const loadNode = (index) => {
-			const elt = json[index];
-			if (elt.type !== "NODE") throw new Error(`Trying to load a node from a type:"${elt.type}" element.`);
+		const loadNode = (ref) => {
+			const elt = resolveReference('NODE', ref);
 
 			if (elt.LOADED) return elt.LOADED; //could use a Symbol() here
 
@@ -1150,6 +1317,7 @@ class Scene {
 			if (elt.mesh) loaded.mesh = loadMesh(elt.mesh);
 			if (elt.camera) loaded.camera = loadCamera(elt.camera);
 			if (elt.environment) loaded.environment = loadEnvironment(elt.environment);
+			if (elt.light) loaded.light = loadLight(elt.light);
 
 			if (elt.children) {
 				for (const idx of elt.children) {
@@ -1168,8 +1336,8 @@ class Scene {
 			const loaded = new Scene();
 			loaded.name = elt.name;
 
-			for (let rootIdx of elt.roots) {
-				loaded.roots.push(loadNode(rootIdx));
+			for (let root of elt.roots) {
+				loaded.roots.push(loadNode(root));
 			}
 
 			return loaded;
@@ -1227,6 +1395,8 @@ class Scene {
 			} else if (type === "MATERIAL") {
 				//loaded recursively by mesh
 			} else if (type === "ENVIRONMENT") {
+				//loaded recursively by node
+			} else if (type === "LIGHT") {
 				//loaded recursively by node
 			} else if (type === "DRIVER") {
 				driverIndices.push(i);
@@ -1595,6 +1765,37 @@ class Environment {
 }
 
 
+class Light {
+	constructor() {
+		//this.sun, this.sphere, or this.spot will be set
+	}
+	addUniforms(lu, LIGHT_FROM_LOCAL) {
+		if (this.sun) {
+			const dir = normalize({
+				x:LIGHT_FROM_LOCAL[4*2+0],
+				y:LIGHT_FROM_LOCAL[4*2+1],
+				z:LIGHT_FROM_LOCAL[4*2+2]
+			});
+
+			lu.LIGHT_TYPE.push(0);
+			lu.LIGHT_DIRECTION.push(dir.x, dir.y, dir.z);
+			lu.LIGHT_POSITION.push(0, 0, 0);
+			lu.LIGHT_ENERGY.push(
+				this.tint[0] * this.sun.strength,
+				this.tint[1] * this.sun.strength,
+				this.tint[2] * this.sun.strength
+			);
+			lu.LIGHT_PARAMS.push( this.sun.angle, 0, 0, 0 );
+		}
+		if (this.sphere) {
+			//TODO
+		}
+		if (this.spot) {
+			//TODO
+		}
+	}
+}
+
 
 class Node {
 	constructor() {
@@ -1605,6 +1806,8 @@ class Node {
 		this.children = [];
 		//this.mesh
 		//this.camera
+		//this.environment
+		//this.light
 	}
 	makePARENT_FROM_LOCAL() {
 		//quat -> rotation matrix from https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
@@ -1647,6 +1850,19 @@ class Node {
 				is[2]*(ir[6]*it[0] + ir[7]*it[1] + ir[8]*it[2]),
 				1
 		]);
+	}
+	gatherLights(lu, LIGHT_FROM_PARENT) {
+		const PARENT_FROM_LOCAL = this.makePARENT_FROM_LOCAL();
+		const LIGHT_FROM_LOCAL = mul(LIGHT_FROM_PARENT, PARENT_FROM_LOCAL);
+		if (this.light) {
+			this.light.addUniforms(lu, LIGHT_FROM_LOCAL);
+		}
+		for (const child of this.children) {
+			child.gatherLights(lu, LIGHT_FROM_LOCAL);
+		}
+
+		MATRIX_SLAB.free(LIGHT_FROM_LOCAL);
+		MATRIX_SLAB.free(PARENT_FROM_LOCAL);
 	}
 	traverse(gl, u, CLIP_FROM_PARENT, LIGHT_FROM_PARENT, LIGHT_FROM_PARENT_NORMAL) {
 		const PARENT_FROM_LOCAL = this.makePARENT_FROM_LOCAL();

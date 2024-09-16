@@ -1,4 +1,4 @@
-["s72-v1",
+["s72-v2",
 {
 	"type":"MATERIAL",
 	"name":"lambertian:Light Grey",
@@ -12,13 +12,12 @@
 	"topology":"TRIANGLE_LIST",
 	"count":6516,
 	"attributes":{
-		"POSITION":{ "src":"lights-Mix.Twist-Pillar.pnTtc.b72", "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"lights-Mix.Twist-Pillar.pnTtc.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":{ "src":"lights-Mix.Twist-Pillar.pnTtc.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD":{ "src":"lights-Mix.Twist-Pillar.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":{ "src":"lights-Mix.Twist-Pillar.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"lights-Mix.Twist-Pillar.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Mix.Twist-Pillar.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Mix.Twist-Pillar.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Mix.Twist-Pillar.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":1
+	"material":"lambertian:Light Grey"
 },
 {
 	"type":"NODE",
@@ -26,7 +25,7 @@
 	"translation":[-2,0,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":2
+	"mesh":"Twist-Pillar"
 },
 {
 	"type":"MATERIAL",
@@ -41,13 +40,12 @@
 	"topology":"TRIANGLE_LIST",
 	"count":372,
 	"attributes":{
-		"POSITION":{ "src":"lights-Mix.Steps.pnTtc.b72", "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"lights-Mix.Steps.pnTtc.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":{ "src":"lights-Mix.Steps.pnTtc.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD":{ "src":"lights-Mix.Steps.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":{ "src":"lights-Mix.Steps.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"lights-Mix.Steps.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Mix.Steps.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Mix.Steps.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Mix.Steps.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":4
+	"material":"lambertian:White"
 },
 {
 	"type":"NODE",
@@ -55,7 +53,7 @@
 	"translation":[0,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":5
+	"mesh":"Steps"
 },
 {
 	"type":"NODE",
@@ -63,7 +61,7 @@
 	"translation":[0,-1,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":2
+	"mesh":"Twist-Pillar"
 },
 {
 	"type":"NODE",
@@ -71,7 +69,7 @@
 	"translation":[2,0,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":2
+	"mesh":"Twist-Pillar"
 },
 {
 	"type":"NODE",
@@ -79,7 +77,7 @@
 	"translation":[0,1,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":2
+	"mesh":"Twist-Pillar"
 },
 {
 	"type":"MESH",
@@ -87,13 +85,12 @@
 	"topology":"TRIANGLE_LIST",
 	"count":192,
 	"attributes":{
-		"POSITION":{ "src":"lights-Mix.Cap.pnTtc.b72", "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"lights-Mix.Cap.pnTtc.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":{ "src":"lights-Mix.Cap.pnTtc.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD":{ "src":"lights-Mix.Cap.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":{ "src":"lights-Mix.Cap.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"lights-Mix.Cap.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Mix.Cap.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Mix.Cap.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Mix.Cap.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":4
+	"material":"lambertian:White"
 },
 {
 	"type":"NODE",
@@ -101,7 +98,7 @@
 	"translation":[0,0,3],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":10
+	"mesh":"Cap"
 },
 {
 	"type":"MATERIAL",
@@ -116,13 +113,12 @@
 	"topology":"TRIANGLE_LIST",
 	"count":3066,
 	"attributes":{
-		"POSITION":{ "src":"lights-Mix.Stick-Sphere.pnTtc.b72", "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"lights-Mix.Stick-Sphere.pnTtc.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":{ "src":"lights-Mix.Stick-Sphere.pnTtc.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD":{ "src":"lights-Mix.Stick-Sphere.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":{ "src":"lights-Mix.Stick-Sphere.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"lights-Mix.Stick-Sphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Mix.Stick-Sphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Mix.Stick-Sphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Mix.Stick-Sphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":12
+	"material":"lambertian:Gray"
 },
 {
 	"type":"NODE",
@@ -130,7 +126,7 @@
 	"translation":[-2.7,-3.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -138,7 +134,7 @@
 	"translation":[2.7,-3.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -146,7 +142,7 @@
 	"translation":[4.7,-1.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -154,7 +150,7 @@
 	"translation":[-4.7,-1.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -162,7 +158,7 @@
 	"translation":[-4.7,1.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -170,7 +166,7 @@
 	"translation":[-2.7,3.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -178,7 +174,7 @@
 	"translation":[2.7,3.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -186,7 +182,7 @@
 	"translation":[4.7,1.7,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -194,7 +190,7 @@
 	"translation":[1.7,-1.2,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -202,7 +198,7 @@
 	"translation":[1.7,1.2,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -210,7 +206,7 @@
 	"translation":[-1.7,1.2,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -218,7 +214,7 @@
 	"translation":[-1.7,-1.2,1.2],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Stick-Sphere"
 },
 {
 	"type":"NODE",
@@ -226,7 +222,7 @@
 	"translation":[0,0,0.4],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"children":[3, 6, 7, 8, 9, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+	"children":["Twist-Pillar", "Steps", "Twist-Pillar.001", "Twist-Pillar.002", "Twist-Pillar.003", "Cap", "Stick-Sphere", "Stick-Sphere.001", "Stick-Sphere.002", "Stick-Sphere.003", "Stick-Sphere.004", "Stick-Sphere.005", "Stick-Sphere.006", "Stick-Sphere.007", "Stick-Sphere.008", "Stick-Sphere.009", "Stick-Sphere.010", "Stick-Sphere.011"]
 },
 {
 	"type":"MESH",
@@ -234,13 +230,12 @@
 	"topology":"TRIANGLE_LIST",
 	"count":372,
 	"attributes":{
-		"POSITION":{ "src":"lights-Mix.Ground.pnTtc.b72", "offset":0, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"lights-Mix.Ground.pnTtc.b72", "offset":12, "stride":52, "format":"R32G32B32_SFLOAT" },
-		"TANGENT":{ "src":"lights-Mix.Ground.pnTtc.b72", "offset":24, "stride":52, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD":{ "src":"lights-Mix.Ground.pnTtc.b72", "offset":40, "stride":52, "format":"R32G32_SFLOAT" },
-		"COLOR":{ "src":"lights-Mix.Ground.pnTtc.b72", "offset":48, "stride":52, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"lights-Mix.Ground.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Mix.Ground.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Mix.Ground.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Mix.Ground.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":12
+	"material":"lambertian:Gray"
 },
 {
 	"type":"NODE",
@@ -248,7 +243,7 @@
 	"translation":[0,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":27
+	"mesh":"Ground"
 },
 {
 
@@ -268,7 +263,7 @@
 	"translation":[0,0,2.98638],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"light":29
+	"light":"Middle-Sphere"
 },
 {
 
@@ -289,7 +284,7 @@
 	"translation":[-1.72268,-1.24481,4.53215],
 	"rotation":[-0.124451,0.140511,3.7927e-09,0.982226],
 	"scale":[1,1,1],
-	"light":31
+	"light":"Corner-Spot"
 },
 {
 	"type":"NODE",
@@ -297,7 +292,7 @@
 	"translation":[1.72268,1.24481,4.53215],
 	"rotation":[-0.140511,-0.124451,0.982226,2.84452e-08],
 	"scale":[1,1,1],
-	"light":31
+	"light":"Corner-Spot"
 },
 {
 	"type":"NODE",
@@ -305,7 +300,7 @@
 	"translation":[1.64826,-1.3418,4.53215],
 	"rotation":[-0.187235,-0.0131958,0.779253,0.597942],
 	"scale":[1,1,1],
-	"light":31
+	"light":"Corner-Spot"
 },
 {
 	"type":"NODE",
@@ -313,7 +308,7 @@
 	"translation":[-1.65019,1.33942,4.53215],
 	"rotation":[-0.013331,0.187226,-0.597379,0.779684],
 	"scale":[1,1,1],
-	"light":31
+	"light":"Corner-Spot"
 },
 {
 
@@ -332,7 +327,7 @@
 	"translation":[0,-3.91797,6.96206],
 	"rotation":[0.354237,-0.104162,4.00855e-09,0.929336],
 	"scale":[1,1,1],
-	"light":36
+	"light":"Sun"
 },
 {
 
@@ -351,11 +346,11 @@
 	"translation":[-6.77367,-6.763,6.22249],
 	"rotation":[0.478484,-0.196913,-0.325665,0.791341],
 	"scale":[1,1,1],
-	"camera":38
+	"camera":"Camera"
 },
 {
 	"type":"SCENE",
 	"name":"lights.blend",
-	"roots":[26, 28, 30, 32, 33, 34, 35, 37, 39]
+	"roots":["Platform", "Ground", "Middle-Sphere", "Corner-Spot.001", "Corner-Spot.002", "Corner-Spot.003", "Corner-Spot", "Sun", "Camera"]
 }
 ]

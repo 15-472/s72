@@ -1,13 +1,14 @@
-["s72-v1",
+["s72-v2",
 {
 	"type":"MESH",
 	"name":"Sphere",
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -16,7 +17,7 @@
 	"translation":[0,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":1
+	"mesh":"Sphere"
 },
 {
 	"type":"MESH",
@@ -24,9 +25,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-1.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-1.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-1.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-1.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-1.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-1.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-1.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -35,7 +37,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":3
+	"mesh":"Sphere-1"
 },
 {
 	"type":"MESH",
@@ -43,9 +45,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-2.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-2.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-2.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-2.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-2.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-2.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-2.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -54,7 +57,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":5
+	"mesh":"Sphere-2"
 },
 {
 	"type":"MESH",
@@ -62,9 +65,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-3.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-3.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-3.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-3.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-3.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-3.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-3.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -73,7 +77,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":7
+	"mesh":"Sphere-3"
 },
 {
 	"type":"MESH",
@@ -81,9 +85,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-4.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-4.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-4.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-4.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-4.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-4.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-4.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -92,7 +97,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":9
+	"mesh":"Sphere-4"
 },
 {
 	"type":"MESH",
@@ -100,9 +105,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-5.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-5.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-5.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-5.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-5.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-5.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-5.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -111,7 +117,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":11
+	"mesh":"Sphere-5"
 },
 {
 	"type":"MESH",
@@ -119,9 +125,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-6.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-6.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-6.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-6.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-6.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-6.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-6.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -130,7 +137,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":13
+	"mesh":"Sphere-6"
 },
 {
 	"type":"MESH",
@@ -138,9 +145,10 @@
 	"topology":"TRIANGLE_LIST",
 	"count":960,
 	"attributes":{
-		"POSITION":{ "src":"sphereflake.Sphere-7.pnc.b72", "offset":0, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"NORMAL":{ "src":"sphereflake.Sphere-7.pnc.b72", "offset":12, "stride":28, "format":"R32G32B32_SFLOAT" },
-		"COLOR":{ "src":"sphereflake.Sphere-7.pnc.b72", "offset":24, "stride":28, "format":"R8G8B8A8_UNORM" }
+		"POSITION":{ "src":"sphereflake.Sphere-7.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"sphereflake.Sphere-7.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"sphereflake.Sphere-7.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"sphereflake.Sphere-7.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	}
 },
 {
@@ -149,7 +157,7 @@
 	"translation":[0,0,1],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":15
+	"mesh":"Sphere-7"
 },
 {
 	"type":"NODE",
@@ -157,7 +165,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[16]
+	"children":["Sphere-7"]
 },
 {
 	"type":"NODE",
@@ -165,7 +173,7 @@
 	"translation":[8.42937e-08,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[16]
+	"children":["Sphere-7"]
 },
 {
 	"type":"NODE",
@@ -173,7 +181,7 @@
 	"translation":[-8.42937e-08,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[16]
+	"children":["Sphere-7"]
 },
 {
 	"type":"NODE",
@@ -181,7 +189,7 @@
 	"translation":[-1,0,1],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[16]
+	"children":["Sphere-7"]
 },
 {
 	"type":"NODE",
@@ -189,7 +197,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[16]
+	"children":["Sphere-7"]
 },
 {
 	"type":"NODE",
@@ -197,7 +205,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[14, 17, 18, 19, 20, 21]
+	"children":["Sphere-6", "R-Top-6", "R-Back-6", "R-Front-6", "R-Left-6", "R-Right-6"]
 },
 {
 	"type":"NODE",
@@ -205,7 +213,7 @@
 	"translation":[8.42937e-08,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[14, 17, 18, 19, 20, 21]
+	"children":["Sphere-6", "R-Top-6", "R-Back-6", "R-Front-6", "R-Left-6", "R-Right-6"]
 },
 {
 	"type":"NODE",
@@ -213,7 +221,7 @@
 	"translation":[-8.42937e-08,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[14, 17, 18, 19, 20, 21]
+	"children":["Sphere-6", "R-Top-6", "R-Back-6", "R-Front-6", "R-Left-6", "R-Right-6"]
 },
 {
 	"type":"NODE",
@@ -221,7 +229,7 @@
 	"translation":[-1,0,1],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[14, 17, 18, 19, 20, 21]
+	"children":["Sphere-6", "R-Top-6", "R-Back-6", "R-Front-6", "R-Left-6", "R-Right-6"]
 },
 {
 	"type":"NODE",
@@ -229,7 +237,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[14, 17, 18, 19, 20, 21]
+	"children":["Sphere-6", "R-Top-6", "R-Back-6", "R-Front-6", "R-Left-6", "R-Right-6"]
 },
 {
 	"type":"NODE",
@@ -237,7 +245,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[12, 22, 23, 24, 25, 26]
+	"children":["Sphere-5", "R-Top-5", "R-Back-5", "R-Front-5", "R-Left-5", "R-Right-5"]
 },
 {
 	"type":"NODE",
@@ -245,7 +253,7 @@
 	"translation":[8.42937e-08,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[12, 22, 23, 24, 25, 26]
+	"children":["Sphere-5", "R-Top-5", "R-Back-5", "R-Front-5", "R-Left-5", "R-Right-5"]
 },
 {
 	"type":"NODE",
@@ -253,7 +261,7 @@
 	"translation":[-8.42937e-08,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[12, 22, 23, 24, 25, 26]
+	"children":["Sphere-5", "R-Top-5", "R-Back-5", "R-Front-5", "R-Left-5", "R-Right-5"]
 },
 {
 	"type":"NODE",
@@ -261,7 +269,7 @@
 	"translation":[-1,0,1],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[12, 22, 23, 24, 25, 26]
+	"children":["Sphere-5", "R-Top-5", "R-Back-5", "R-Front-5", "R-Left-5", "R-Right-5"]
 },
 {
 	"type":"NODE",
@@ -269,7 +277,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[12, 22, 23, 24, 25, 26]
+	"children":["Sphere-5", "R-Top-5", "R-Back-5", "R-Front-5", "R-Left-5", "R-Right-5"]
 },
 {
 	"type":"NODE",
@@ -277,7 +285,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[10, 27, 28, 29, 30, 31]
+	"children":["Sphere-4", "R-Top-4", "R-Back-4", "R-Front-4", "R-Left-4", "R-Right-4"]
 },
 {
 	"type":"NODE",
@@ -285,7 +293,7 @@
 	"translation":[8.42937e-08,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[10, 27, 28, 29, 30, 31]
+	"children":["Sphere-4", "R-Top-4", "R-Back-4", "R-Front-4", "R-Left-4", "R-Right-4"]
 },
 {
 	"type":"NODE",
@@ -293,7 +301,7 @@
 	"translation":[-8.42937e-08,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[10, 27, 28, 29, 30, 31]
+	"children":["Sphere-4", "R-Top-4", "R-Back-4", "R-Front-4", "R-Left-4", "R-Right-4"]
 },
 {
 	"type":"NODE",
@@ -301,7 +309,7 @@
 	"translation":[-1,0,1],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[10, 27, 28, 29, 30, 31]
+	"children":["Sphere-4", "R-Top-4", "R-Back-4", "R-Front-4", "R-Left-4", "R-Right-4"]
 },
 {
 	"type":"NODE",
@@ -309,7 +317,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[10, 27, 28, 29, 30, 31]
+	"children":["Sphere-4", "R-Top-4", "R-Back-4", "R-Front-4", "R-Left-4", "R-Right-4"]
 },
 {
 	"type":"NODE",
@@ -317,7 +325,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[8, 32, 33, 34, 35, 36]
+	"children":["Sphere-3", "R-Top-3", "R-Back-3", "R-Front-3", "R-Left-3", "R-Right-3"]
 },
 {
 	"type":"NODE",
@@ -325,7 +333,7 @@
 	"translation":[8.42937e-08,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[8, 32, 33, 34, 35, 36]
+	"children":["Sphere-3", "R-Top-3", "R-Back-3", "R-Front-3", "R-Left-3", "R-Right-3"]
 },
 {
 	"type":"NODE",
@@ -333,7 +341,7 @@
 	"translation":[-8.42937e-08,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[8, 32, 33, 34, 35, 36]
+	"children":["Sphere-3", "R-Top-3", "R-Back-3", "R-Front-3", "R-Left-3", "R-Right-3"]
 },
 {
 	"type":"NODE",
@@ -341,7 +349,7 @@
 	"translation":[-1,0,1],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[8, 32, 33, 34, 35, 36]
+	"children":["Sphere-3", "R-Top-3", "R-Back-3", "R-Front-3", "R-Left-3", "R-Right-3"]
 },
 {
 	"type":"NODE",
@@ -349,7 +357,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[8, 32, 33, 34, 35, 36]
+	"children":["Sphere-3", "R-Top-3", "R-Back-3", "R-Front-3", "R-Left-3", "R-Right-3"]
 },
 {
 	"type":"NODE",
@@ -357,7 +365,7 @@
 	"translation":[0,0,2],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[6, 37, 38, 39, 40, 41]
+	"children":["Sphere-2", "R-Top-2", "R-Back-2", "R-Front-2", "R-Left-2", "R-Right-2"]
 },
 {
 	"type":"NODE",
@@ -365,7 +373,7 @@
 	"translation":[0,1,1],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[6, 37, 38, 39, 40, 41]
+	"children":["Sphere-2", "R-Top-2", "R-Back-2", "R-Front-2", "R-Left-2", "R-Right-2"]
 },
 {
 	"type":"NODE",
@@ -373,7 +381,7 @@
 	"translation":[0,-1,1],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[6, 37, 38, 39, 40, 41]
+	"children":["Sphere-2", "R-Top-2", "R-Back-2", "R-Front-2", "R-Left-2", "R-Right-2"]
 },
 {
 	"type":"NODE",
@@ -381,7 +389,7 @@
 	"translation":[-1,0,1],
 	"rotation":[-0.270598,-0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[6, 37, 38, 39, 40, 41]
+	"children":["Sphere-2", "R-Top-2", "R-Back-2", "R-Front-2", "R-Left-2", "R-Right-2"]
 },
 {
 	"type":"NODE",
@@ -389,7 +397,7 @@
 	"translation":[1,0,1],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[6, 37, 38, 39, 40, 41]
+	"children":["Sphere-2", "R-Top-2", "R-Back-2", "R-Front-2", "R-Left-2", "R-Right-2"]
 },
 {
 	"type":"NODE",
@@ -397,7 +405,7 @@
 	"translation":[4.21468e-08,1.74578e-08,1],
 	"rotation":[0,0,0.382683,0.92388],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"NODE",
@@ -405,7 +413,7 @@
 	"translation":[8.42937e-08,1,2.46891e-08],
 	"rotation":[-0.653282,0.270598,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"NODE",
@@ -413,7 +421,7 @@
 	"translation":[-4.21468e-08,1.01751e-07,-1],
 	"rotation":[-0.92388,-0.382683,2.88918e-08,6.9751e-08],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"NODE",
@@ -421,7 +429,7 @@
 	"translation":[-8.42937e-08,-1,-1.43898e-07],
 	"rotation":[0.653282,0.270598,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"NODE",
@@ -429,7 +437,7 @@
 	"translation":[-1,0,5.96046e-08],
 	"rotation":[0.270598,-0.653282,-0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"NODE",
@@ -437,11 +445,11 @@
 	"translation":[1,0,5.96046e-08],
 	"rotation":[0.270598,0.653282,0.270598,0.653282],
 	"scale":[0.55,0.55,0.55],
-	"children":[4, 42, 43, 44, 45, 46]
+	"children":["Sphere-1", "Level 1.006", "Level 1.007", "Level 1.009", "Level 1.010", "Level 1.011"]
 },
 {
 	"type":"SCENE",
 	"name":"sphereflake.blend",
-	"roots":[2, 47, 48, 49, 50, 51, 52]
+	"roots":["Sphere", "Level 1", "Level 1.001", "Level 1.002", "Level 1.003", "Level 1.004", "Level 1.005"]
 }
 ]

@@ -5,7 +5,7 @@
 #which are, in turn, based on 'export-sprites.py' and 'glsprite.py' from TCHOW Rainbow.
 #some reference also made to `export-mat-anim.py` from TCHOW Cubeship.
 
-#Note: script meant to be run from blender 4.x, as:
+#Note: script meant to be run from blender 4.2.1, as:
 # blender --background --python export-s72.py -- [...see below...]
 
 
@@ -107,15 +107,14 @@ def make_included(lc):
 make_included(bpy.context.view_layer.layer_collection)
 
 out = []
-out.append('["s72-v1",\n')
+out.append('["s72-v2",\n')
 
-fresh_idx = 1
-obj_to_idx = dict()
+obj_to_ref = dict()
 mesh_mode_to_attributes = dict()
-attributes_mat_to_idx = dict()
-camera_to_idx = dict()
-material_to_idx = dict()
-light_to_idx = dict()
+attributes_mat_to_ref = dict()
+camera_to_ref = dict()
+material_to_ref = dict()
+light_to_ref = dict()
 
 #attempt to take all objects out of edit mode:
 for obj in bpy.data.objects:
@@ -142,11 +141,11 @@ for obj in bpy.data.objects:
 dg = bpy.context.evaluated_depsgraph_get()
 
 def write_material(mat):
-	global out, fresh_idx, material_to_idx
+	global out, material_to_ref
 
-	if mat == None: return 0
+	if mat == None: return None
 
-	if mat in material_to_idx: return material_to_idx[mat]
+	if mat in material_to_ref: return material_to_ref[mat]
 
 	desc = []
 	desc.append('{\n')
@@ -223,22 +222,16 @@ def write_material(mat):
 		desc.append('\t"mirror":{}\n')
 	elif mat.name.startswith("environment:"):
 		desc.append('\t"environment":{}\n')
-	elif mat.name.startswith("simple:"):
-		#simple materials never get written:
-		return 0
 	else:
 		#unrecognized materials treated as simple (and not written):
-		print(f"Material '{mat.name}' doesn't start with a recognized prefix; treating as \"simple\" material.")
-		return 0
+		print(f"Material '{mat.name}' doesn't start with a recognized prefix; treating as default material.")
+		return None
 	desc.append('},\n')
 
 	out += desc
 
-	idx = fresh_idx
-	material_to_idx[mat] = idx
-	fresh_idx += 1
-
-	return idx
+	material_to_ref[mat] = mat.name
+	return mat.name
 
 def write_attribs(obj, mode):
 	global mesh_mode_to_attributes
@@ -271,10 +264,7 @@ def write_attribs(obj, mode):
 
 	do_texcoord = False
 	do_tangent = False
-	if mode == 'pnc':
-		do_texcoord = False
-		do_tangent = False
-	elif mode == 'pnTtc':
+	if mode == 'pnTt':
 		do_texcoord = True
 		do_tangent = True
 	else:
@@ -284,11 +274,23 @@ def write_attribs(obj, mode):
 	#NOT supported (or needed?) for 4.1
 	if 'calc_normals_split' in dir(mesh): mesh.calc_normals_split()
 
-	if len(mesh.vertex_colors) == 0:
-		print(f"  No vertex colors on mesh '{mesh.name}', storing 0xffffffff for all vertices.")
-	else:
-		if len(mesh.vertex_colors) != 1:
-			print(f"  WARNING: multiple vertex color layers on '{mesh.name}'; using the active one ('{mesh.vertex_colors.active.name}') in export.")
+	#Color export not being used, but if it were brought back it should use color_attributes, as per this code for 15-466-f24-base2:
+	#colors = None
+	#if len(obj.data.color_attributes) == 0:
+	#	print("WARNING: trying to export color data, but object '" + name + "' does not have color data; will output 0xffffffff")
+	#else:
+	#	colors = obj.data.color_attributes.active_color;
+	#	if len(obj.data.color_attributes) != 1:
+	#		print("WARNING: object '" + name + "' has multiple vertex color layers; only exporting '" + colors.name + "'")
+
+	#and also use something like this for lookup:
+	# col = None
+	# if colors != None and colors.domain == 'POINT':
+	#	col = colors.data[poly.vertices[i]].color
+	#elif colors != None and colors.domain == 'CORNER':
+	#	col = colors.data[poly.loop_indices[i]].color
+	#else:
+	#	col = (1.0, 1.0, 1.0, 1.0)
 
 	if len(mesh.uv_layers) == 0 and (do_texcoord or do_tangent):
 		print(f"  WARNING: '{mesh.name}' has no texture uv layer, but tangents and/or texture coordinates were requested. Using (1,0,0) tangents and/or (0,0) texcoords.")
@@ -324,14 +326,15 @@ def write_attribs(obj, mode):
 				else: uv = (0.0, 0.0)
 				attribs.append(struct.pack('ff', uv[0], uv[1]))
 
-			if len(mesh.vertex_colors) != 0: color = mesh.vertex_colors.active.data[loop.index].color
-			else: color = (1.0, 1.0, 1.0)
-			def c(v):
-				s = int(v * 255)
-				if s < 0: return 0
-				if s > 255: return 255
-				return s
-			attribs.append(struct.pack('BBBB', c(color[0]), c(color[1]), c(color[2]), 255))
+			#if len(mesh.vertex_colors) != 0: color = mesh.vertex_colors.active.data[loop.index].color
+			#else: color = (1.0, 1.0, 1.0)
+			#def c(v):
+			#	s = int(v * 255)
+			#	if s < 0: return 0
+			#	if s > 255: return 255
+			#	return s
+			#attribs.append(struct.pack('BBBB', c(color[0]), c(color[1]), c(color[2]), 255))
+
 			count += 1
 
 	#dg_obj.to_mesh_clear()
@@ -347,27 +350,28 @@ def write_attribs(obj, mode):
 
 	attributes = []
 	attributes.append('{\n')
-	stride = 4*3 + 4*3 + 4*1
+	stride = 4*3 + 4*3
 	if do_tangent: stride += 4*4
 	if do_texcoord: stride += 4*2
+	#if do_color: stride += 4*1
 
 	offset = 0
-	attributes.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }},\n')
+	attributes.append(f'\t\t"POSITION":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }}')
 	offset += 4*3
-	attributes.append(f'\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }},\n')
+	attributes.append(f',\n\t\t"NORMAL":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32_SFLOAT" }}')
 	offset += 4*3
 	if do_tangent:
-		attributes.append(f'\t\t"TANGENT":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32A32_SFLOAT" }},\n')
+		attributes.append(f',\n\t\t"TANGENT":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32B32A32_SFLOAT" }}')
 		offset += 4*4
 	if do_texcoord:
-		attributes.append(f'\t\t"TEXCOORD":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32_SFLOAT" }},\n')
+		attributes.append(f',\n\t\t"TEXCOORD":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R32G32_SFLOAT" }}')
 		offset += 4*2
-	attributes.append(f'\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R8G8B8A8_UNORM" }}\n')
-	offset += 4*1
+	#attributes.append(f',\n\t\t"COLOR":{{ "src":{json.dumps(rel_b72file)}, "offset":{offset}, "stride":{stride}, "format":"R8G8B8A8_UNORM" }}')
+	#offset += 4*1
 
 	assert offset == stride
 
-	attributes.append('\t}')
+	attributes.append('\n\t}')
 
 	val = Attributes()
 	val.attributes = ''.join(attributes)
@@ -377,21 +381,16 @@ def write_attribs(obj, mode):
 	return val
 
 def write_mesh(obj):
-	global out, fresh_idx, attributes_mat_to_idx
+	global out, attributes_mat_to_ref
 
-	material_idx = write_material(obj.active_material)
+	material_ref = write_material(obj.active_material)
 
-	if material_idx == 0:
-		attributes = write_attribs(obj, 'pnc')
-	else:
-		attributes = write_attribs(obj, 'pnTtc')
+	attributes = write_attribs(obj, 'pnTt')
 
-	if (attributes, material_idx) in attributes_mat_to_idx:
-		return attributes_mat_to_idx[(attributes, material_idx)]
+	if (attributes, material_ref) in attributes_mat_to_ref:
+		return attributes_mat_to_ref[(attributes, material_ref)]
 	
-	idx = fresh_idx
-	fresh_idx += 1
-	attributes_mat_to_idx[(attributes, material_idx)] = idx
+	attributes_mat_to_ref[(attributes, material_ref)] = obj.data.name
 
 	out.append('{\n')
 	out.append(f'\t"type":"MESH",\n')
@@ -400,28 +399,26 @@ def write_mesh(obj):
 	out.append(f'\t"count":{attributes.count},\n')
 	out.append(f'\t"attributes":{attributes.attributes}')
 
-	if material_idx == 0:
+	if material_ref == None:
 		out.append('\n')
 	else:
 		out.append(',\n')
-		out.append(f'\t"material":{material_idx}\n')
+		out.append(f'\t"material":{json.dumps(material_ref)}\n')
 
 	out.append('},\n')
 
-	return idx
+	return obj.data.name
 
 
 def write_light(obj):
-	global out, fresh_idx, light_to_idx
+	global out, light_to_ref
 
 	light = obj.data
-	if light in light_to_idx: return light_to_idx[light]
+	if light in light_to_ref: return light_to_ref[light]
 
 	print(f"Writing light '{obj.data.name}'...")
 
-	idx = fresh_idx
-	fresh_idx += 1
-	light_to_idx[light] = idx
+	light_to_ref[light] = light.name
 
 	out.append('{\n')
 	out.append(f'\n\t"type":"LIGHT"')
@@ -453,21 +450,19 @@ def write_light(obj):
 	if "shadow" in light: out.append(f',\n\t"shadow":{light["shadow"]}')
 	out.append('\n},\n')
 
-	return idx
+	return obj.data.name
 
 
 
 def write_camera(obj):
-	global out, fresh_idx, camera_to_idx
+	global out, camera_to_ref
 
 	camera = obj.data
-	if camera in camera_to_idx: return camera_to_idx[camera]
+	if camera in camera_to_ref: return camera_to_ref[camera]
 
 	print(f"Writing camera '{obj.data.name}'...")
 
-	idx = fresh_idx
-	fresh_idx += 1
-	camera_to_idx[camera] = idx
+	camera_to_ref[camera] = obj.data.name
 
 	out.append('{\n')
 	out.append(f'\n\t"type":"CAMERA"')
@@ -491,34 +486,31 @@ def write_camera(obj):
 		print("WARNING: Unsupported camera type '" + obj.data.type + "'!");
 	out.append('\n},\n')
 	
-	return idx
+	return obj.data.name
 
 def write_environment(obj):
-	global out, fresh_idx
+	global out
 	
 	assert obj.name.startswith("!environment:")
 
 	src = obj.name[len("!environment:"):]
 
-	idx = fresh_idx
-	fresh_idx += 1
-
 	out.append('{\n')
 	out.append(f'\t"type":"ENVIRONMENT",\n')
-	out.append(f'\t"name":{json.dumps(obj.name)},\n')
+	out.append(f'\t"name":{json.dumps(src)},\n')
 	out.append(f'\t"radiance":{{"src":{json.dumps(src)}, "type":"cube", "format":"rgbe"}}\n')
 	out.append('},\n')
 
-	return idx
+	return src
 
 def write_node(obj, extra_children=[]):
-	global out, fresh_idx, obj_to_idx
+	global out, obj_to_ref
 
-	if obj in obj_to_idx:
-		assert obj_to_idx[obj] != None #no cycles!
-		return obj_to_idx[obj]
+	if obj in obj_to_ref:
+		assert obj_to_ref[obj] != None #no cycles!
+		return obj_to_ref[obj]
 
-	obj_to_idx[obj] = None
+	obj_to_ref[obj] = None
 
 	mesh = None
 	camera = None
@@ -548,9 +540,7 @@ def write_node(obj, extra_children=[]):
 		else:
 			print(f"ignoring object data of type '{obj.type}'.")
 
-	idx = fresh_idx
-	fresh_idx += 1
-	obj_to_idx[obj] = idx
+	obj_to_ref[obj] = obj.name
 
 	if obj.parent == None:
 		parent_from_world = mathutils.Matrix()
@@ -568,24 +558,23 @@ def write_node(obj, extra_children=[]):
 	out.append(f',\n\t"rotation":[{r.x:.6g},{r.y:.6g},{r.z:.6g},{r.w:.6g}]')
 	out.append(f',\n\t"scale":[{s.x:.6g},{s.y:.6g},{s.z:.6g}]')
 	if mesh != None:
-		out.append(f',\n\t"mesh":{mesh}')
+		out.append(f',\n\t"mesh":{json.dumps(mesh)}')
 	if camera != None:
-		out.append(f',\n\t"camera":{camera}')
+		out.append(f',\n\t"camera":{json.dumps(camera)}')
 	if environment != None:
-		out.append(f',\n\t"environment":{environment}')
+		out.append(f',\n\t"environment":{json.dumps(environment)}')
 	if light != None:
-		out.append(f',\n\t"light":{light}')
+		out.append(f',\n\t"light":{json.dumps(light)}')
 
 	children += extra_children
 	if len(children) > 0:
-		out.append(f',\n\t"children":{json.dumps(children + extra_children)}')
+		out.append(f',\n\t"children":{json.dumps(children)}')
 	out.append('\n},\n')
 
-	return idx
+	return obj.name
 
 def write_nodes(from_collection):
 	roots = []
-	global obj_to_idx
 	for obj in from_collection.objects:
 		#has a parent, will be emitted by write_node(parent)
 		if obj.parent: continue
@@ -609,7 +598,7 @@ roots = write_nodes(collection)
 #handle writing "DRIVER" objects by sampling every frame:
 if frames != None:
 	node_channels = dict()
-	for node, idx in obj_to_idx.items():
+	for node, ref in obj_to_ref.items():
 		node_channels[node] = ([], [], [])
 	
 	times = []
@@ -618,7 +607,7 @@ if frames != None:
 		bpy.context.scene.frame_set(frame, subframe=0.0)
 		time = (frame - frames[0]) / bpy.context.scene.render.fps
 		times.append(f'{time:.3f}')
-		for node, idx in obj_to_idx.items():
+		for node, ref in obj_to_ref.items():
 			if node.parent == None:
 				parent_from_world = mathutils.Matrix()
 			else:
@@ -631,7 +620,7 @@ if frames != None:
 			node_channels[node][2].append(s)
 	
 	times = '[' + ','.join(times) + ']'
-	for node, idx in obj_to_idx.items():
+	for node, ref in obj_to_ref.items():
 		for c in range(0,3):
 			driven = False
 			if c == 0 or c == 2:
@@ -649,7 +638,7 @@ if frames != None:
 			out.append('{\n')
 			out.append(f'\t"type":"DRIVER",\n')
 			out.append(f'\t"name":{json.dumps(node.name + "-" + channel)},\n')
-			out.append(f'\t"node":{idx},\n')
+			out.append(f'\t"node":{json.dumps(ref)},\n')
 			out.append(f'\t"channel":{json.dumps(channel)},\n')
 			out.append(f'\t"times":{times},\n')
 			values = []
