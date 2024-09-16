@@ -1267,7 +1267,7 @@ class Scene {
 				},
 				"spot":() => {
 					loaded.spot = {};
-					for (const key of ["radius", "power", "fov", "blend", "limit"]) {
+					for (const key of ["radius", "power", "fov", "blend"]) {
 						if (typeof elt.spot[key] === "number") loaded.spot[key] = elt.spot[key];
 						else throw new Error(`${elt.name}.spot.${key} should be a number.`);
 					}
