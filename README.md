@@ -132,8 +132,8 @@ Valid values are <a href="https://registry.khronos.org/vulkan/specs/1.3-extensio
 
 **Mesh attributes.**
 Mesh *attribute*s are data streams used to define the mesh vertices.
-*Attribute* stream names should follow the naming convention used by <a href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#meshes-overview">glTF</a> (e.g., using `"POSITION"` for the position stream, `"NORMAL"` for vertex normals, `"COLOR"` for vertex colors, `"TEXCOORD"` for texture coordinates, `"TANGENT"` for tangent (xyz) + bitangent sign (w), and so on).
-However, stream formats are not restricted by the glTF conventions (and, indeed, `"COLOR"` and `"TEXCOORD"` are suffixed with an index in glTF but generally not in our example files).
+*Attribute* stream names should follow the naming convention used by <a href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#meshes-overview">glTF</a> (e.g., using `"POSITION"` for the position stream, `"NORMAL"` for vertex normals, `"TEXCOORD"` for texture coordinates, `"TANGENT"` for tangent (xyz) + bitangent sign (w), and so on).
+However, stream formats are not restricted by the glTF conventions (and, indeed, `"TEXCOORD"` is suffixed with an index in glTF but not in our example files).
 
 *Attribute*s have the following properties:
 - `"src":"..."` (required) -- file to read data from. Note that the path is specified relative to the ".s72" file.
