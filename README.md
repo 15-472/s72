@@ -165,7 +165,7 @@ An scene'72 loader must support `"UINT32"` format, and may support other formats
 ```js
 /* ... */
 {
-	"type":"camera",
+	"type":"CAMERA",
 	"name":"main view",
 	"perspective":{
 		"aspect": 1.777,
@@ -208,7 +208,7 @@ If rendering through a camera that does not match the output image aspect ratio,
 ```
 *Driver* objects have their `type` property set to `"DRIVER"`.
 They include the following *driver*-specific properties:
-- <code>"node":<var>i</var></code> (required) -- reference to the node whose property should be animated by this driver.
+- <code>"node":<var>ref</var></code> (required) -- reference to the node whose property should be animated by this driver.
 - `"channel":"..."` (required) -- name of an animation channel; implies a data width (see below).
 - `"times":[...]` (required) -- array of numbers giving keyframe times.
 - `"values":[...]` (required) -- array of numbers giving keyframe values.
