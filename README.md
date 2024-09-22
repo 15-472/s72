@@ -269,8 +269,8 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ```
 *Material* objects have their `type` property set to `"MATERIAL"`.
 They include the following *material*-specific properties:
-- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
-- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. Not specifying should be the same as specifying a constant $0$ displacement map.
+- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Reconstructed normal is $TBN * (2 * (r,g,b) - 1)$, where $TBN$ is the tangent-space basis. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
+- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. (The $r$ channel of the texture stores displacement.) Not specifying should be the same as specifying a constant $0$ displacement map.
 - Exactly one of:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
@@ -279,9 +279,9 @@ They include the following *material*-specific properties:
 
 The `"pbr"` material uses a physically-based BRDF defined as per <a href="https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf">Epic Games' SIGGRAPH 2013 Talk</a> (with lambertian diffuse + ggx specular).
 The available parameters for the model are:
- - `"albedo"` (optional, default is `[1,1,1]`) -- constant albedo value or albedo map 2D *texture* (if a texture, should be three-channel).
- - `"roughness"` (optional, default is `1.0`) -- constant roughness value or roughness map 2D *texture* (if a texture, should be one-channel).
- - `"metalness"` (optional, default is `0.0`) -- constant metalness value or metalness map 2D *texture* (if a texture, should be one-channel).
+ - `"albedo"` (optional, default is `[1,1,1]`) -- constant albedo value or albedo map 2D *texture* (if a texture, uses the $(r,g,b)$ channels).
+ - `"roughness"` (optional, default is `1.0`) -- constant roughness value or roughness map 2D *texture* (if a texture, uses the $r$ channel).
+ - `"metalness"` (optional, default is `0.0`) -- constant metalness value or metalness map 2D *texture* (if a texture, uses the $r$ channel).
 
 The `"lambertian"` material is a basic Lambertian diffuse material, with one parameter:
  - `"albedo"` -- same as in `"pbr"`.
@@ -301,6 +301,8 @@ The `"environment"` material looks up the environment in the direction of the no
    - `"linear"` -- map linearly ( $rgba' \gets rgba / 255$ )
    - `"srgb"` -- map via the <a href="https://registry.khronos.org/DataFormat/specs/1.3/dataformat.1.3.html#TRANSFER_SRGB">SRGB EOTF</a>
    - `"rgbe"` -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
+
+It is an error to reference a texture that does not have a channel required by a referencing material (e.g., to supply a one-channel texture as an albedo; or to supply a texture image without an alpha channel when setting the format to `"rgbe"`).
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
 
