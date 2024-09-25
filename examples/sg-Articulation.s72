@@ -101,7 +101,7 @@
 	"type":"MESH",
 	"name":"Bracket",
 	"topology":"TRIANGLE_LIST",
-	"count":312,
+	"count":156,
 	"attributes":{
 		"POSITION":{ "src":"sg-Articulation.Bracket.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
 		"NORMAL":{ "src":"sg-Articulation.Bracket.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
