@@ -18,7 +18,7 @@
 		"POSITION": { "src":"env-cube.b72", "offset":0,  "stride":48, "format":"R32G32B32_SFLOAT" },
 		"NORMAL":   { "src":"env-cube.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
 		"TANGENT":  { "src":"env-cube.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
-		"TEXCOORD": { "src":"env-cube.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" },
+		"TEXCOORD": { "src":"env-cube.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
 	"material":"environment material"
 },
