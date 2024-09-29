@@ -380,8 +380,10 @@ def write_attribs(obj, mode):
 	mesh_mode_to_attributes[(obj.data, mode)] = val
 	return val
 
+mesh_names = set()
+
 def write_mesh(obj):
-	global out, attributes_mat_to_ref
+	global out, attributes_mat_to_ref, mesh_names
 
 	material_ref = write_material(obj.active_material)
 
@@ -390,11 +392,20 @@ def write_mesh(obj):
 	if (attributes, material_ref) in attributes_mat_to_ref:
 		return attributes_mat_to_ref[(attributes, material_ref)]
 	
-	attributes_mat_to_ref[(attributes, material_ref)] = obj.data.name
+	name = obj.data.name
+
+	index = 1
+	while name in mesh_names:
+		name = f'{obj.data.name}.{index:03d}'
+		index += 1
+	
+	mesh_names.add(name)
+	
+	attributes_mat_to_ref[(attributes, material_ref)] = name
 
 	out.append('{\n')
 	out.append(f'\t"type":"MESH",\n')
-	out.append(f'\t"name":{json.dumps(obj.data.name)},\n')
+	out.append(f'\t"name":{json.dumps(name)},\n')
 	out.append(f'\t"topology":"TRIANGLE_LIST",\n')
 	out.append(f'\t"count":{attributes.count},\n')
 	out.append(f'\t"attributes":{attributes.attributes}')
@@ -407,7 +418,7 @@ def write_mesh(obj):
 
 	out.append('},\n')
 
-	return obj.data.name
+	return name
 
 
 def write_light(obj):

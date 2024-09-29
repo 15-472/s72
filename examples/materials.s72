@@ -172,7 +172,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Complicated",
+	"name":"Complicated.001",
 	"topology":"TRIANGLE_LIST",
 	"count":5766,
 	"attributes":{
@@ -189,11 +189,11 @@
 	"translation":[-4,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Complicated"
+	"mesh":"Complicated.001"
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.001",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -210,11 +210,11 @@
 	"translation":[-5.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.001"
 },
 {
 	"type":"MESH",
-	"name":"Cube",
+	"name":"Cube.001",
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
@@ -231,7 +231,7 @@
 	"translation":[-5.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.001"
 },
 {
 	"type":"NODE",
@@ -239,7 +239,7 @@
 	"translation":[-6.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.001"
 },
 {
 	"type":"NODE",
@@ -247,7 +247,7 @@
 	"translation":[-6.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.001"
 },
 {
 	"type":"MESH",
@@ -276,7 +276,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Complicated",
+	"name":"Complicated.002",
 	"topology":"TRIANGLE_LIST",
 	"count":5766,
 	"attributes":{
@@ -293,11 +293,11 @@
 	"translation":[1,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Complicated"
+	"mesh":"Complicated.002"
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.002",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -314,11 +314,11 @@
 	"translation":[-0.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.002"
 },
 {
 	"type":"MESH",
-	"name":"Cube",
+	"name":"Cube.002",
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
@@ -335,7 +335,7 @@
 	"translation":[-0.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.002"
 },
 {
 	"type":"NODE",
@@ -343,7 +343,7 @@
 	"translation":[-1.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.002"
 },
 {
 	"type":"NODE",
@@ -351,7 +351,7 @@
 	"translation":[-1.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.002"
 },
 {
 	"type":"MESH",
@@ -382,7 +382,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Complicated",
+	"name":"Complicated.003",
 	"topology":"TRIANGLE_LIST",
 	"count":5766,
 	"attributes":{
@@ -399,11 +399,11 @@
 	"translation":[6,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Complicated"
+	"mesh":"Complicated.003"
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.003",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -420,11 +420,11 @@
 	"translation":[4.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.003"
 },
 {
 	"type":"MESH",
-	"name":"Cube",
+	"name":"Cube.003",
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
@@ -441,7 +441,7 @@
 	"translation":[4.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.003"
 },
 {
 	"type":"NODE",
@@ -449,7 +449,7 @@
 	"translation":[3.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.003"
 },
 {
 	"type":"NODE",
@@ -457,7 +457,7 @@
 	"translation":[3.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.003"
 },
 {
 	"type":"MESH",
@@ -490,7 +490,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Complicated",
+	"name":"Complicated.004",
 	"topology":"TRIANGLE_LIST",
 	"count":5766,
 	"attributes":{
@@ -507,11 +507,11 @@
 	"translation":[11,0,0],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Complicated"
+	"mesh":"Complicated.004"
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.004",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -528,11 +528,11 @@
 	"translation":[9.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.004"
 },
 {
 	"type":"MESH",
-	"name":"Cube",
+	"name":"Cube.004",
 	"topology":"TRIANGLE_LIST",
 	"count":36,
 	"attributes":{
@@ -549,7 +549,7 @@
 	"translation":[9.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.004"
 },
 {
 	"type":"NODE",
@@ -557,7 +557,7 @@
 	"translation":[8.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.004"
 },
 {
 	"type":"NODE",
@@ -565,7 +565,7 @@
 	"translation":[8.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Cube"
+	"mesh":"Cube.004"
 },
 {
 	"type":"MESH",
@@ -598,7 +598,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.005",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -615,7 +615,7 @@
 	"translation":[12.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.005"
 },
 {
 	"type":"MATERIAL",
@@ -628,7 +628,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.006",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -645,7 +645,7 @@
 	"translation":[13.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.006"
 },
 {
 	"type":"MATERIAL",
@@ -658,7 +658,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.007",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -675,7 +675,7 @@
 	"translation":[14.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.007"
 },
 {
 	"type":"MATERIAL",
@@ -688,7 +688,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.008",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -705,7 +705,7 @@
 	"translation":[15.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.008"
 },
 {
 	"type":"MATERIAL",
@@ -718,7 +718,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.009",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -735,7 +735,7 @@
 	"translation":[16.5,-0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.009"
 },
 {
 	"type":"MATERIAL",
@@ -748,7 +748,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.010",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -765,7 +765,7 @@
 	"translation":[12.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.010"
 },
 {
 	"type":"MATERIAL",
@@ -778,7 +778,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.011",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -795,7 +795,7 @@
 	"translation":[13.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.011"
 },
 {
 	"type":"MATERIAL",
@@ -808,7 +808,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.012",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -825,7 +825,7 @@
 	"translation":[14.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.012"
 },
 {
 	"type":"MATERIAL",
@@ -838,7 +838,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.013",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -855,7 +855,7 @@
 	"translation":[15.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.013"
 },
 {
 	"type":"MATERIAL",
@@ -868,7 +868,7 @@
 },
 {
 	"type":"MESH",
-	"name":"Icosphere",
+	"name":"Icosphere.014",
 	"topology":"TRIANGLE_LIST",
 	"count":2880,
 	"attributes":{
@@ -885,7 +885,7 @@
 	"translation":[16.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
-	"mesh":"Icosphere"
+	"mesh":"Icosphere.014"
 },
 {
 	"type":"SCENE",
