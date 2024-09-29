@@ -371,7 +371,7 @@ They include the following *light*-specific definitions:
 
 A `"sun"` light is a distant directional light pointing along the local $-z$ axis. Properties:
 - `"angle"` (required) -- every surface element sees the sun light as coming from a disc of this angular diameter. (`"angle"` is in radians and will be at most $\pi$. )
-- `"strength"` -- energy per area emitted by the light, in watts per square meter. (Note: multiply by the `"tint"` of the light to get actual per-primary energy.)
+- `"strength"` (required) -- energy per area emitted by the light, in watts per square meter. (Note: multiply by the `"tint"` of the light to get actual per-primary energy.)
 
 NOTE: *Sun* lights are distant directional lights, so they look the same to all surface patches (that is to say, there is no falloff in intensity).
 
