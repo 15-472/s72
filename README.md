@@ -327,6 +327,11 @@ This means that, for example, the upper-left texel in a cubemap image is at the 
 They include the following *environment*-specific properties:
  - <code>"radiance":<var>T</var></code> -- (required) -- cube map texture giving radiance (in watts per steradian per square meter in each spectral band) incoming from the environment.
 
+The lighting from an *Environment* object applies to all objects in the scene.
+
+NOTE: Given an environment cubemap named `cubemap.png`, implementations reading or writing associated cubemaps should use filenames `cubemap.1.png` ... `cubemap.N.png` for pre-convolved GGX specular mipmap levels 1..N (with level 0 as the original image) and `cubemap.lambertian.png` for the pre-convolved lambertian cubemap.
+
+NOTE: It is recommended that s72 files not include non-uniform scales in the transformation of *Environment*s. Implementations may choose to approximate non-uniform scales by a uniform scale with the same volume change. (Given that environments are distant, this effectively just ignores the scale entirely.)
 
 ### *Light* Objects
 *Light* objects specify light sources used to illuminate (and shadow) the scene:
@@ -393,7 +398,7 @@ A point between $(fov * (1-blend))/2$ and $fov/2$ radians of a *spot*'s $-z$ axi
 
 NOTE: *Spot* light power is defined as it is so that changing the `"fov"` and `"blend"` (or, for that matter, changing the type of the light to `"sphere"`) do not change the brightness of areas lit by the light.
 
-NOTE: It is recommended that s72 files not include non-uniform scales in the transformation of *Sphere* or *Spot* lights. Implementations may choose to approximate non-uniform scales by a uniform scale with the same volume change.
+NOTE: It is recommended that s72 files not include non-uniform scales in the transformation of lights. Implementations may choose to approximate non-uniform scales by a uniform scale with the same volume change.
 
 
 #### The `"limit"` Parameter.
