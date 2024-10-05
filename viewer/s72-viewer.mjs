@@ -536,6 +536,8 @@ export class Viewer {
 		this.userCamera = new UserCamera();
 		this.camera = this.userCamera;
 
+		this.backfaceCulling = true;
+
 		this.playing = false;
 		this.playRate = 1.0;
 		this.time = 0.0;
@@ -741,11 +743,13 @@ export class Viewer {
 		gl.enable(gl.DEPTH_TEST);
 		gl.useProgram(this.programs.simple);
 
-		/*
-		//backface culling likely to confuse folks, though it would be a nice debug option to have:
-		gl.enable(gl.CULL_FACE);
-		gl.cullFace(gl.BACK);
-		*/
+		if (this.backfaceCulling) {
+			//backface culling likely to confuse folks, though it would be a nice debug option to have:
+			gl.enable(gl.CULL_FACE);
+			gl.cullFace(gl.BACK);
+		} else {
+			gl.disable(gl.CULL_FACE);
+		}
 
 		const CLIP_FROM_WORLD = mul(
 			this.camera.makeCLIP_FROM_LOCAL(),
