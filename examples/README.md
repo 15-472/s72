@@ -50,3 +50,10 @@ An example scene with a mix of different light types.
 
 Created from [sources/lights.blend](sources/lights.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
 Blender file and exported products (c) 2024 Jim McCann; released under a [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/) license.
+
+
+## Origin Check
+- `origin-check.s72`/`origin-check.*.b72` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/origin-check.s72)
+
+Created from [sources/origin-check.blend](sources/origin-check.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
+Blender file, texture file, and exported products created in 2024 by Jim McCann; placed in the public domain.
