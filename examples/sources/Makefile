@@ -14,6 +14,8 @@ all : \
 	../env-cube.b72 \
 	../materials.s72 \
 	../ox_bridge_morning.png \
+	../origin-check.s72 \
+
 
 
 ../lights-Mix.s72 : lights.blend $(EXPORT_PY)
@@ -45,6 +47,9 @@ all : \
 
 ../ox_bridge_morning.png : ox_bridge_morning_8k.hdr $(CUBE_UTILITY)
 	$(CUBE_UTILITY) '$<' --latlon-to-cube '$@'
+
+../origin-check.s72 : origin-check.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' '$@'
 
 ox_bridge_morning_8k.hdr :
 	wget 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/8k/ox_bridge_morning_8k.hdr'

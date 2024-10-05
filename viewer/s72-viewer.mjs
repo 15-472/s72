@@ -78,7 +78,12 @@ function uploadTex(gl, width, height, data, mips) {
 
 	if (data instanceof Uint8ClampedArray) {
 		console.assert(data.length === 4*width*height, "RGBA data is correct length for texture.");
-		gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+		const flipped = new Uint8ClampedArray(data.length);
+		for (let row = 0; row < height; ++row) {
+			flipped.set(data.subarray((height-1-row) * width * 4, (height-1-row+1) * width * 4), row * width * 4);
+		}
+
+		gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, flipped);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);

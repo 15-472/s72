@@ -1,0 +1,100 @@
+["s72-v2",
+{
+	"type":"MATERIAL",
+	"name":"lambertian:origin-check",
+	"lambertian":{
+		"albedo":{ "src":"origin-check.png" }
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"origin-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"origin-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"origin-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"origin-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:origin-check"
+},
+{
+	"type":"NODE",
+	"name":"Plane",
+	"translation":[0,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Light",
+	"tint":[1, 1, 1],
+	"sun":{
+		"angle":0,
+		"strength":1
+	}
+},
+{
+	"type":"NODE",
+	"name":"Light",
+	"translation":[9.23949,0.467099,0.354865],
+	"rotation":[0,0.707107,0,0.707107],
+	"scale":[1,1,1],
+	"light":"Light"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Camera",
+	"perspective":{
+		"aspect":1,
+		"vfov":0.291321,
+		"near":0.1,
+		"far":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera",
+	"translation":[8.39504,0,0],
+	"rotation":[0.5,0.5,0.5,0.5],
+	"scale":[1,1,1],
+	"camera":"Camera"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:Orange",
+	"lambertian":{
+		"albedo":[ 0.800315, 0.176471, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Corner",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"origin-check.Corner.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"origin-check.Corner.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"origin-check.Corner.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"origin-check.Corner.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:Orange"
+},
+{
+	"type":"NODE",
+	"name":"Corner",
+	"translation":[0.0513123,-0.575714,-0.594966],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Corner"
+},
+{
+	"type":"SCENE",
+	"name":"origin-check.blend",
+	"roots":["Plane", "Light", "Camera", "Corner"]
+}
+]
