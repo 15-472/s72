@@ -151,10 +151,10 @@ def write_material(mat):
 	desc.append('{\n')
 	desc.append(f'\t"type":"MATERIAL",\n')
 	desc.append(f'\t"name":{json.dumps(mat.name)},\n')
-	#TODO: normal map?
-	#TODO: displacement map?
 
 	node_tree = mat.node_tree
+
+
 	def find_linked(to_node, to_socket):
 		for link in node_tree.links:
 			if link.to_node == to_node and link.to_socket == to_socket:
@@ -173,22 +173,56 @@ def write_material(mat):
 		rel_path = os.path.relpath(path, start=os.path.dirname(s72file))
 		return rel_path
 	
+	def tex_string(image_node):
+		if image_node.type != 'TEX_IMAGE':
+			print(f"Material '{mat.name}' had a non-texture image where one was expected.")
+			exit(1)
+		format = ""
+		if image_node.image.colorspace_settings.name == "sRGB":
+			format = ', "format":"srgb"'
+		elif image_node.image.colorspace_settings.name == "Non-Color":
+			format = ', "format":"linear"'
+		else:
+			print(f"WARNING: material '{mat.name}' is set to an unsupported colorspace '{image_node.image.colorspace_settings.name}' (will default to linear).")
+		path = texture_path(image_node)
+		return f'{{ "src":{json.dumps(path)}{format} }}'
+
 	def do_texture_or_constant(property, node, input, end):
 		desc.append(f'\t\t{json.dumps(property)}:')
 		if input.is_linked:
 			tex = find_linked(node, input)
-			assert tex != None
-			if tex.type != 'TEX_IMAGE':
-				print(f"Material '{mat.name}' does not have an image connected to the '{input.name}' port.")
-				exit(1)
-			path = texture_path(tex)
-			desc.append(f'{{ "src":{json.dumps(path)} }}{end}')
+			desc.append(tex_string(tex) + end)
 		else:
 			val = input.default_value
 			if type(val) is float:
 				desc.append(f"{val:.6g}{end}")
 			else:
 				desc.append(f"[ {val[0]:.6g}, {val[1]:.6g}, {val[2]:.6g} ]{end}")
+
+	#find normal map or displacement map:
+	normal_map = None
+	displacement = None
+
+	for node in node_tree.nodes:
+		if node.type == 'NORMAL_MAP':
+			if normal_map != None:
+				print(f"Material {mat.name} has two normal map nodes.")
+			normal_map = node
+		elif node.type == 'DISPLACEMENT':
+			if displacement != None:
+				print(f"Material {mat.name} has two displacement nodes.")
+			displacement = node
+	
+	if normal_map != None:
+		tex = find_linked(normal_map, normal_map.inputs['Color'])
+		assert tex != None
+		desc.append(f'\t"normalMap":' + tex_string(tex) + ',\n')
+
+	if displacement != None:
+		tex = find_linked(displacement, displacement.inputs['Height'])
+		assert tex != None
+		desc.append(f'\t"displacementMap":' + tex_string(tex) + ',\n')
+
 
 	if mat.name.startswith("pbr:"):
 		desc.append('\t"pbr":{\n')

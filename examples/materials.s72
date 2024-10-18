@@ -53,7 +53,7 @@
 	"type":"MATERIAL",
 	"name":"lambertian:Floor",
 	"lambertian":{
-		"albedo":{ "src":"checker.png" }
+		"albedo":{ "src":"checker.png", "format":"srgb" }
 	}
 },
 {
@@ -298,7 +298,7 @@
 	"type":"MATERIAL",
 	"name":"lambertian:LambertianMaterial",
 	"lambertian":{
-		"albedo":{ "src":"wood_floor_deck_diff_1k.png" }
+		"albedo":{ "src":"wood_floor_deck_diff_1k.png", "format":"srgb" }
 	}
 },
 {
@@ -404,9 +404,11 @@
 {
 	"type":"MATERIAL",
 	"name":"pbr:PBRMaterial",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
 	"pbr":{
-		"albedo":{ "src":"wood_floor_deck_diff_1k.png" },
-		"roughness":{ "src":"wood_floor_deck_rough_1k.png" },
+		"albedo":{ "src":"wood_floor_deck_diff_1k.png", "format":"srgb" },
+		"roughness":{ "src":"wood_floor_deck_rough_1k.png", "format":"linear" },
 		"metalness":0
 	}
 },

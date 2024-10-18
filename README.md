@@ -269,8 +269,8 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ```
 *Material* objects have their `type` property set to `"MATERIAL"`.
 They include the following *material*-specific properties:
-- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Reconstructed normal is $TBN * (2 * (r,g,b) - 1)$, where $TBN$ is the tangent-space basis. Not specifying should be the same as specifying a constant $(0,0,1)$ normal map.
-- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. (The $r$ channel of the texture stores displacement.) Not specifying should be the same as specifying a constant $0$ displacement map.
+- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Reconstructed normal is $TBN * (2 * (r,g,b) - 1)$, where $TBN$ is the tangent-space basis. Not specifying should be the same as specifying a constant $(0.5,0.5,1)$ normal map (i.e., all normals point along the $N$ vector of tangent space).
+- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. (The $r$ channel of the texture stores displacement, with displacement 1 at the surface of the object and displacement 0 apparently below the surface of the object by 0.35 tcus, where one tcu is the distance on the surface corresponding to the width of the texture given the current texture coordinate gradient.) Not specifying should be the same as specifying a constant-$1$ displacement map.
 - Exactly one of:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
