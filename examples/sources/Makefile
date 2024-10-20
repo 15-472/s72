@@ -40,7 +40,7 @@ all : \
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --animate 0 48 '$@'
 
 ../materials.s72 : materials.blend $(EXPORT_PY)
-	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' '$@'
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --animate 0 60 '$@'
 
 ../ox_bridge_morning.lambertian.png : ../ox_bridge_morning.png $(CUBE_UTILITY)
 	$(CUBE_UTILITY) '$<' --lambertian '$@'
