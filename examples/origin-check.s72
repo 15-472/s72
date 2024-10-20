@@ -3,7 +3,7 @@
 	"type":"MATERIAL",
 	"name":"lambertian:origin-check",
 	"lambertian":{
-		"albedo":{ "src":"origin-check.png" }
+		"albedo":{ "src":"origin-check.png", "format":"srgb" }
 	}
 },
 {
