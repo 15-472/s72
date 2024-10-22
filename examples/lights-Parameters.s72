@@ -1160,8 +1160,407 @@
 	"light":"Spot-Limit10"
 },
 {
+
+	"type":"CAMERA",
+	"name":"Spot-Fov-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.001",
+	"translation":[11,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Spot-Fov-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Blend-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.002",
+	"translation":[33,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Spot-Blend-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Radius-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.003",
+	"translation":[55,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Spot-Radius-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Limit-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.004",
+	"translation":[77,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Spot-Limit-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Height-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.005",
+	"translation":[-11,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Sphere-Height-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Radius-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.006",
+	"translation":[-33,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Sphere-Radius-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Limit-Above",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.453786,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.007",
+	"translation":[-55,0,40],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Sphere-Limit-Above"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Limit-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.008",
+	"translation":[-55,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Sphere-Limit-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Limit-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.009",
+	"translation":[-55,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Sphere-Limit-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Radius-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.010",
+	"translation":[-33,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Sphere-Radius-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Radius-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.011",
+	"translation":[-33,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Sphere-Radius-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Height-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.012",
+	"translation":[-11,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Sphere-Height-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Sphere-Height-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.013",
+	"translation":[-11,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Sphere-Height-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Fov-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.014",
+	"translation":[11,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Spot-Fov-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Fov-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.015",
+	"translation":[11,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Spot-Fov-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Blend-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.016",
+	"translation":[33,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Spot-Blend-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Blend-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.017",
+	"translation":[33,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Spot-Blend-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Radius-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.018",
+	"translation":[55,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Spot-Radius-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Radius-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.019",
+	"translation":[55,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Spot-Radius-Tile"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Limit-Stone",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.020",
+	"translation":[77,-28.4024,8.38494],
+	"rotation":[0.522499,-1.19286e-16,-2.08215e-18,0.85264],
+	"scale":[1,1,1],
+	"camera":"Spot-Limit-Stone"
+},
+{
+
+	"type":"CAMERA",
+	"name":"Spot-Limit-Tile",
+	"perspective":{
+		"aspect":1.2,
+		"vfov":0.698132,
+		"near":1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera.021",
+	"translation":[77,28.4024,8.38494],
+	"rotation":[3.94475e-08,-0.522499,-0.85264,6.43725e-08],
+	"scale":[1,1,1],
+	"camera":"Spot-Limit-Tile"
+},
+{
 	"type":"SCENE",
 	"name":"lights.blend",
-	"roots":["Tile-Floor", "Sphere1.5", "Sphere1", "Sphere0.5", "Sphere0", "Sphere-0.25", "Stone-Floor", "Tile-Floor.001", "Stone-Floor.001", "Spot", "Spot.001", "Spot.002", "Spot.003", "Spot.004", "Spot.005", "Spot.006", "Spot.007", "Spot.008", "Spot.009", "Spot.010", "Spot.011", "Tile-Floor.002", "Stone-Floor.002", "Spot.012", "Spot.013", "Spot.014", "Spot.015", "Spot.016", "Spot.017", "Spot.018", "Spot.019", "Spot.020", "Spot.021", "Spot.022", "Spot.023", "Spot.024", "Spot.025", "Spot.026", "Tile-Floor.003", "Stone-Floor.003", "Tile-Floor.004", "Stone-Floor.004", "Sphere1.001", "Sphere1.002", "Sphere1.003", "Sphere1.004", "Sphere1.006", "Spot.027", "Spot.028", "Spot.029", "Spot.030", "Spot.031", "Spot.032", "Spot.033", "Spot.034", "Spot.035", "Spot.036", "Spot.037", "Spot.038", "Spot.039", "Spot.040", "Spot.041", "Tile-Floor.005", "Stone-Floor.005", "Sphere1.017", "Sphere1.018", "Sphere1.019", "Sphere1.020", "Sphere1.021", "Sphere1.022", "Sphere1.023", "Sphere1.024", "Sphere1.025", "Sphere1.026", "Sphere1.027", "Sphere1.028", "Sphere1.029", "Sphere1.030", "Sphere1.031", "Tile-Floor.006", "Stone-Floor.006", "Spot.042", "Spot.043", "Spot.044", "Spot.045", "Spot.046", "Spot.047", "Spot.048", "Spot.049", "Spot.050", "Spot.051", "Spot.052", "Spot.053", "Spot.054", "Spot.055", "Spot.056"]
+	"roots":["Tile-Floor", "Sphere1.5", "Sphere1", "Sphere0.5", "Sphere0", "Sphere-0.25", "Stone-Floor", "Tile-Floor.001", "Stone-Floor.001", "Spot", "Spot.001", "Spot.002", "Spot.003", "Spot.004", "Spot.005", "Spot.006", "Spot.007", "Spot.008", "Spot.009", "Spot.010", "Spot.011", "Tile-Floor.002", "Stone-Floor.002", "Spot.012", "Spot.013", "Spot.014", "Spot.015", "Spot.016", "Spot.017", "Spot.018", "Spot.019", "Spot.020", "Spot.021", "Spot.022", "Spot.023", "Spot.024", "Spot.025", "Spot.026", "Tile-Floor.003", "Stone-Floor.003", "Tile-Floor.004", "Stone-Floor.004", "Sphere1.001", "Sphere1.002", "Sphere1.003", "Sphere1.004", "Sphere1.006", "Spot.027", "Spot.028", "Spot.029", "Spot.030", "Spot.031", "Spot.032", "Spot.033", "Spot.034", "Spot.035", "Spot.036", "Spot.037", "Spot.038", "Spot.039", "Spot.040", "Spot.041", "Tile-Floor.005", "Stone-Floor.005", "Sphere1.017", "Sphere1.018", "Sphere1.019", "Sphere1.020", "Sphere1.021", "Sphere1.022", "Sphere1.023", "Sphere1.024", "Sphere1.025", "Sphere1.026", "Sphere1.027", "Sphere1.028", "Sphere1.029", "Sphere1.030", "Sphere1.031", "Tile-Floor.006", "Stone-Floor.006", "Spot.042", "Spot.043", "Spot.044", "Spot.045", "Spot.046", "Spot.047", "Spot.048", "Spot.049", "Spot.050", "Spot.051", "Spot.052", "Spot.053", "Spot.054", "Spot.055", "Spot.056", "Camera.001", "Camera.002", "Camera.003", "Camera.004", "Camera.005", "Camera.006", "Camera.007", "Camera.008", "Camera.009", "Camera.010", "Camera.011", "Camera.012", "Camera.013", "Camera.014", "Camera.015", "Camera.016", "Camera.017", "Camera.018", "Camera.019", "Camera.020", "Camera.021"]
 }
 ]
