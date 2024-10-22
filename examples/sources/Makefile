@@ -5,6 +5,7 @@ CUBE_UTILITY=../../../A2-ref/bin/cube
 
 all : \
 	../lights-Mix.s72 \
+	../lights-Parameters.s72 \
 	../sg-Articulation.s72 \
 	../sg-Support.s72 \
 	../sg-Containment.s72 \
@@ -20,6 +21,9 @@ all : \
 
 ../lights-Mix.s72 : lights.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Mix '$@'
+
+../lights-Parameters.s72 : lights.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Parameters '$@'
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Articulation --animate 1 91 '$@'

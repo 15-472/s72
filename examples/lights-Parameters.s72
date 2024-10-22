@@ -1,0 +1,1167 @@
+["s72-v2",
+{
+	"type":"MATERIAL",
+	"name":"lambertian:checker",
+	"lambertian":{
+		"albedo":{ "src":"checker.png", "format":"srgb" }
+	}
+},
+{
+	"type":"MESH",
+	"name":"Tile-Floor",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"lights-Parameters.Tile-Floor.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Parameters.Tile-Floor.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Parameters.Tile-Floor.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Parameters.Tile-Floor.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:checker"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor",
+	"translation":[-11,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Rad1",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.5",
+	"translation":[-19,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Rad1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1",
+	"translation":[-15,0,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Rad1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere0.5",
+	"translation":[-11,0,0.5],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Rad1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere0",
+	"translation":[-7,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Rad1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere-0.25",
+	"translation":[-3,0,-0.25],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Rad1"
+},
+{
+	"type":"MATERIAL",
+	"name":"pbr:checker",
+	"normalMap":{ "src":"stone_tiles_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"stone_tiles_disp_1k.png", "format":"linear" },
+	"pbr":{
+		"albedo":{ "src":"stone_tiles_diff_1k.png", "format":"srgb" },
+		"roughness":{ "src":"stone_tiles_rough_1k.png", "format":"linear" },
+		"metalness":0
+	}
+},
+{
+	"type":"MESH",
+	"name":"Stone-Floor",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"lights-Parameters.Stone-Floor.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"lights-Parameters.Stone-Floor.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"lights-Parameters.Stone-Floor.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"lights-Parameters.Stone-Floor.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:checker"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor",
+	"translation":[-11,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.001",
+	"translation":[11,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.001",
+	"translation":[11,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Fov90",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":1.5708,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot",
+	"translation":[5,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Fov90"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Fov73",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":1.28699,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.001",
+	"translation":[12,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Fov73"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Fov53",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.002",
+	"translation":[17,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Fov53"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Fov28",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.489949,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.003",
+	"translation":[20,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Fov28"
+},
+{
+	"type":"NODE",
+	"name":"Spot.004",
+	"translation":[5,2,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov90"
+},
+{
+	"type":"NODE",
+	"name":"Spot.005",
+	"translation":[12,2,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov73"
+},
+{
+	"type":"NODE",
+	"name":"Spot.006",
+	"translation":[17,2,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov53"
+},
+{
+	"type":"NODE",
+	"name":"Spot.007",
+	"translation":[20,2,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov28"
+},
+{
+	"type":"NODE",
+	"name":"Spot.008",
+	"translation":[5,-2,1],
+	"rotation":[-0.642788,-1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov90"
+},
+{
+	"type":"NODE",
+	"name":"Spot.009",
+	"translation":[12,-2,1],
+	"rotation":[-0.642788,-1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov73"
+},
+{
+	"type":"NODE",
+	"name":"Spot.010",
+	"translation":[17,-2,1],
+	"rotation":[-0.642788,-1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov53"
+},
+{
+	"type":"NODE",
+	"name":"Spot.011",
+	"translation":[20,-2,1],
+	"rotation":[-0.642788,-1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Fov28"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.002",
+	"translation":[33,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.002",
+	"translation":[33,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Blend0",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.012",
+	"translation":[25,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Blend0"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Blend25",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.25
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.013",
+	"translation":[29,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Blend25"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Blend50",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.014",
+	"translation":[33,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Blend50"
+},
+{
+
+	"type":"LIGHT",
+	"name":"SpotBlend75",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.75
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.015",
+	"translation":[37,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"SpotBlend75"
+},
+{
+
+	"type":"LIGHT",
+	"name":"SpotBlend100",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":1
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.016",
+	"translation":[41,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"SpotBlend100"
+},
+{
+	"type":"NODE",
+	"name":"Spot.017",
+	"translation":[25,1,2],
+	"rotation":[0.461749,1.02529e-16,-1.8651e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend0"
+},
+{
+	"type":"NODE",
+	"name":"Spot.018",
+	"translation":[29,1,2],
+	"rotation":[0.461749,1.02529e-16,-1.8651e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend25"
+},
+{
+	"type":"NODE",
+	"name":"Spot.019",
+	"translation":[33,1,2],
+	"rotation":[0.461749,1.02529e-16,-1.8651e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend50"
+},
+{
+	"type":"NODE",
+	"name":"Spot.020",
+	"translation":[37,1,2],
+	"rotation":[0.461749,1.02529e-16,-1.8651e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"SpotBlend75"
+},
+{
+	"type":"NODE",
+	"name":"Spot.021",
+	"translation":[41,1,2],
+	"rotation":[0.461749,1.02529e-16,-1.8651e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"SpotBlend100"
+},
+{
+	"type":"NODE",
+	"name":"Spot.022",
+	"translation":[25,-1,2],
+	"rotation":[-0.461749,-1.02529e-16,7.46039e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend0"
+},
+{
+	"type":"NODE",
+	"name":"Spot.023",
+	"translation":[29,-1,2],
+	"rotation":[-0.461749,-1.02529e-16,7.46039e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend25"
+},
+{
+	"type":"NODE",
+	"name":"Spot.024",
+	"translation":[33,-1,2],
+	"rotation":[-0.461749,-1.02529e-16,7.46039e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"Spot-Blend50"
+},
+{
+	"type":"NODE",
+	"name":"Spot.025",
+	"translation":[37,-1,2],
+	"rotation":[-0.461749,-1.02529e-16,7.46039e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"SpotBlend75"
+},
+{
+	"type":"NODE",
+	"name":"Spot.026",
+	"translation":[41,-1,2],
+	"rotation":[-0.461749,-1.02529e-16,7.46039e-24,0.887011],
+	"scale":[1,1,1],
+	"light":"SpotBlend100"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.003",
+	"translation":[55,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.003",
+	"translation":[55,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.004",
+	"translation":[-55,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.004",
+	"translation":[-55,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Limit10",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":500,
+		"limit":10
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.001",
+	"translation":[-47,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Limit10"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Limit8",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":500,
+		"limit":8
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.002",
+	"translation":[-51,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Limit8"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Limit6",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":500,
+		"limit":6
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.003",
+	"translation":[-55,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Limit6"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Limit4",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":500,
+		"limit":4
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.004",
+	"translation":[-59,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Limit4"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Limit2",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":500,
+		"limit":2
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.006",
+	"translation":[-63,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Limit2"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Radius0",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.027",
+	"translation":[47,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Radius0.5",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0.5,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.028",
+	"translation":[51,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0.5"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Radius1",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":1,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.029",
+	"translation":[55,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Radius1.5",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":1.5,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.030",
+	"translation":[59,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1.5"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Radius2",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":2,
+		"power":500,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.031",
+	"translation":[63,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Spot.032",
+	"translation":[47,1,2],
+	"rotation":[0.5373,1.19304e-16,-3.92312e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0"
+},
+{
+	"type":"NODE",
+	"name":"Spot.033",
+	"translation":[51,1,2],
+	"rotation":[0.5373,1.19304e-16,-3.92312e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0.5"
+},
+{
+	"type":"NODE",
+	"name":"Spot.034",
+	"translation":[55,1,2],
+	"rotation":[0.5373,1.19304e-16,-3.92312e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1"
+},
+{
+	"type":"NODE",
+	"name":"Spot.035",
+	"translation":[59,1,2],
+	"rotation":[0.5373,1.19304e-16,-3.92312e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1.5"
+},
+{
+	"type":"NODE",
+	"name":"Spot.036",
+	"translation":[63,1,2],
+	"rotation":[0.5373,1.19304e-16,-3.92312e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Spot.037",
+	"translation":[47,-1,2],
+	"rotation":[-0.5373,-1.19304e-16,7.84623e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0"
+},
+{
+	"type":"NODE",
+	"name":"Spot.038",
+	"translation":[51,-1,2],
+	"rotation":[-0.5373,-1.19304e-16,7.84623e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius0.5"
+},
+{
+	"type":"NODE",
+	"name":"Spot.039",
+	"translation":[55,-1,2],
+	"rotation":[-0.5373,-1.19304e-16,7.84623e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1"
+},
+{
+	"type":"NODE",
+	"name":"Spot.040",
+	"translation":[59,-1,2],
+	"rotation":[-0.5373,-1.19304e-16,7.84623e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius1.5"
+},
+{
+	"type":"NODE",
+	"name":"Spot.041",
+	"translation":[63,-1,2],
+	"rotation":[-0.5373,-1.19304e-16,7.84623e-24,0.843391],
+	"scale":[1,1,1],
+	"light":"Spot-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.005",
+	"translation":[-33,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.005",
+	"translation":[-33,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Radius0",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":0,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.017",
+	"translation":[-41,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Radius0.5",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":0.5,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.018",
+	"translation":[-37,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0.5"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Radius1",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.019",
+	"translation":[-33,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Radius1.5",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":1.5,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.020",
+	"translation":[-29,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1.5"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sphere-Radius2",
+	"tint":[1, 1, 1],
+	"sphere":{
+		"radius":2,
+		"power":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.021",
+	"translation":[-25,0,2],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.022",
+	"translation":[-41,8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.023",
+	"translation":[-37,8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0.5"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.024",
+	"translation":[-33,8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.025",
+	"translation":[-29,8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1.5"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.026",
+	"translation":[-25,8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.027",
+	"translation":[-41,-8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.028",
+	"translation":[-37,-8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius0.5"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.029",
+	"translation":[-33,-8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.030",
+	"translation":[-29,-8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius1.5"
+},
+{
+	"type":"NODE",
+	"name":"Sphere1.031",
+	"translation":[-25,-8,1],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sphere-Radius2"
+},
+{
+	"type":"NODE",
+	"name":"Tile-Floor.006",
+	"translation":[77,10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Tile-Floor"
+},
+{
+	"type":"NODE",
+	"name":"Stone-Floor.006",
+	"translation":[77,-10,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Stone-Floor"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Limit2",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"limit":2,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.042",
+	"translation":[69,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Limit2"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Limit4",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"limit":4,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.043",
+	"translation":[73,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Limit4"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Limit6",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"limit":6,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.044",
+	"translation":[77,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Limit6"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Limit8",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"limit":8,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.045",
+	"translation":[81,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Limit8"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Limit10",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"limit":10,
+		"fov":0.927293,
+		"blend":0
+	}
+},
+{
+	"type":"NODE",
+	"name":"Spot.046",
+	"translation":[85,0,4],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Spot-Limit10"
+},
+{
+	"type":"NODE",
+	"name":"Spot.047",
+	"translation":[69,1,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit2"
+},
+{
+	"type":"NODE",
+	"name":"Spot.048",
+	"translation":[73,1,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit4"
+},
+{
+	"type":"NODE",
+	"name":"Spot.049",
+	"translation":[77,1,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit6"
+},
+{
+	"type":"NODE",
+	"name":"Spot.050",
+	"translation":[81,1,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit8"
+},
+{
+	"type":"NODE",
+	"name":"Spot.051",
+	"translation":[85,1,1],
+	"rotation":[0.642788,1.42728e-16,-8.63846e-24,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit10"
+},
+{
+	"type":"NODE",
+	"name":"Spot.052",
+	"translation":[69,-1,1],
+	"rotation":[-0.642788,2.47844e-17,-1.40559e-16,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit2"
+},
+{
+	"type":"NODE",
+	"name":"Spot.053",
+	"translation":[73,-1,1],
+	"rotation":[-0.642788,2.47844e-17,-1.40559e-16,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit4"
+},
+{
+	"type":"NODE",
+	"name":"Spot.054",
+	"translation":[77,-1,1],
+	"rotation":[-0.642788,2.47844e-17,-1.40559e-16,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit6"
+},
+{
+	"type":"NODE",
+	"name":"Spot.055",
+	"translation":[81,-1,1],
+	"rotation":[-0.642788,2.47844e-17,-1.40559e-16,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit8"
+},
+{
+	"type":"NODE",
+	"name":"Spot.056",
+	"translation":[85,-1,1],
+	"rotation":[-0.642788,2.47844e-17,-1.40559e-16,0.766044],
+	"scale":[1,1,1],
+	"light":"Spot-Limit10"
+},
+{
+	"type":"SCENE",
+	"name":"lights.blend",
+	"roots":["Tile-Floor", "Sphere1.5", "Sphere1", "Sphere0.5", "Sphere0", "Sphere-0.25", "Stone-Floor", "Tile-Floor.001", "Stone-Floor.001", "Spot", "Spot.001", "Spot.002", "Spot.003", "Spot.004", "Spot.005", "Spot.006", "Spot.007", "Spot.008", "Spot.009", "Spot.010", "Spot.011", "Tile-Floor.002", "Stone-Floor.002", "Spot.012", "Spot.013", "Spot.014", "Spot.015", "Spot.016", "Spot.017", "Spot.018", "Spot.019", "Spot.020", "Spot.021", "Spot.022", "Spot.023", "Spot.024", "Spot.025", "Spot.026", "Tile-Floor.003", "Stone-Floor.003", "Tile-Floor.004", "Stone-Floor.004", "Sphere1.001", "Sphere1.002", "Sphere1.003", "Sphere1.004", "Sphere1.006", "Spot.027", "Spot.028", "Spot.029", "Spot.030", "Spot.031", "Spot.032", "Spot.033", "Spot.034", "Spot.035", "Spot.036", "Spot.037", "Spot.038", "Spot.039", "Spot.040", "Spot.041", "Tile-Floor.005", "Stone-Floor.005", "Sphere1.017", "Sphere1.018", "Sphere1.019", "Sphere1.020", "Sphere1.021", "Sphere1.022", "Sphere1.023", "Sphere1.024", "Sphere1.025", "Sphere1.026", "Sphere1.027", "Sphere1.028", "Sphere1.029", "Sphere1.030", "Sphere1.031", "Tile-Floor.006", "Stone-Floor.006", "Spot.042", "Spot.043", "Spot.044", "Spot.045", "Spot.046", "Spot.047", "Spot.048", "Spot.049", "Spot.050", "Spot.051", "Spot.052", "Spot.053", "Spot.054", "Spot.055", "Spot.056"]
+}
+]

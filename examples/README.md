@@ -45,8 +45,9 @@ Uses HDRI [Ox Bridge Morning](https://polyhaven.com/a/ox_bridge_morning) by Dimi
 
 ## Lights Tests
 - `lights-Mix.s72`/`lights-Mix.*.b72` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/lights-Mix.s72)
+- `lights-Parameters.s72`/`lights-Parameters.*.b72` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/lights-Parameters.s72)
 
-An example scene with a mix of different light types.
+An example scene with a mix of different light types, along with a scene with specific light parameter sweeps for sphere and spot lights.
 
 Created from [sources/lights.blend](sources/lights.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
 Blender file and exported products (c) 2024 Jim McCann; released under a [CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/) license.
