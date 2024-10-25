@@ -1,26 +1,5 @@
 ["s72-v2",
 {
-
-	"type":"LIGHT",
-	"name":"Spot-Shadow128",
-	"tint":[1, 1, 1],
-	"spot":{
-		"radius":0,
-		"power":500,
-		"fov":0.927293,
-		"blend":0.5
-	},
-	"shadow":128
-},
-{
-	"type":"NODE",
-	"name":"Spot-Shadow128",
-	"translation":[-6,0,7.65133],
-	"rotation":[0,-0.382683,0,0.92388],
-	"scale":[1,1,1],
-	"light":"Spot-Shadow128"
-},
-{
 	"type":"MATERIAL",
 	"name":"lambertian:checker",
 	"lambertian":{
@@ -81,27 +60,6 @@
 	"mesh":"Stone-Floor-Small"
 },
 {
-
-	"type":"LIGHT",
-	"name":"Spot-Shadow512",
-	"tint":[1, 1, 1],
-	"spot":{
-		"radius":0,
-		"power":500,
-		"fov":0.927293,
-		"blend":0.5
-	},
-	"shadow":512
-},
-{
-	"type":"NODE",
-	"name":"Spot-Shadow512",
-	"translation":[-6,-16,7.65133],
-	"rotation":[0,-0.382683,0,0.92388],
-	"scale":[1,1,1],
-	"light":"Spot-Shadow512"
-},
-{
 	"type":"NODE",
 	"name":"Tile-Floor.008",
 	"translation":[0,-12,0],
@@ -118,27 +76,6 @@
 	"mesh":"Stone-Floor-Small"
 },
 {
-
-	"type":"LIGHT",
-	"name":"Spot-Shadow32",
-	"tint":[1, 1, 1],
-	"spot":{
-		"radius":0,
-		"power":500,
-		"fov":0.927293,
-		"blend":0.5
-	},
-	"shadow":32
-},
-{
-	"type":"NODE",
-	"name":"Spot-Shadow32",
-	"translation":[-6,16,7.65133],
-	"rotation":[0,-0.382683,0,0.92388],
-	"scale":[1,1,1],
-	"light":"Spot-Shadow32"
-},
-{
 	"type":"NODE",
 	"name":"Tile-Floor.010",
 	"translation":[0,20,0],
@@ -153,48 +90,6 @@
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Stone-Floor-Small"
-},
-{
-
-	"type":"LIGHT",
-	"name":"Spot-Shadow64",
-	"tint":[1, 1, 1],
-	"spot":{
-		"radius":0,
-		"power":500,
-		"fov":0.927293,
-		"blend":0.5
-	},
-	"shadow":64
-},
-{
-	"type":"NODE",
-	"name":"Spot-Shadow64",
-	"translation":[-6,8,7.65133],
-	"rotation":[0,-0.382683,0,0.92388],
-	"scale":[1,1,1],
-	"light":"Spot-Shadow64"
-},
-{
-
-	"type":"LIGHT",
-	"name":"Spot-Shadow256",
-	"tint":[1, 1, 1],
-	"spot":{
-		"radius":0,
-		"power":500,
-		"fov":0.927293,
-		"blend":0.5
-	},
-	"shadow":256
-},
-{
-	"type":"NODE",
-	"name":"Spot-Shadow256",
-	"translation":[-6,-8,7.65133],
-	"rotation":[0,-0.382683,0,0.92388],
-	"scale":[1,1,1],
-	"light":"Spot-Shadow256"
 },
 {
 	"type":"MESH",
@@ -451,8 +346,121 @@
 	"camera":"Camera-Shadow512"
 },
 {
+
+	"type":"LIGHT",
+	"name":"Spot-Shadow128",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	},
+	"shadow":128
+},
+{
+	"type":"NODE",
+	"name":"Spot-Shadow128",
+	"translation":[-6,0,7.65133],
+	"rotation":[0,-0.382683,0,0.92388],
+	"scale":[1,1,1],
+	"light":"Spot-Shadow128"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Shadow256",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	},
+	"shadow":256
+},
+{
+	"type":"NODE",
+	"name":"Spot-Shadow256",
+	"translation":[-6,-8,7.65133],
+	"rotation":[0,-0.382683,0,0.92388],
+	"scale":[1,1,1],
+	"light":"Spot-Shadow256"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Shadow32",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	},
+	"shadow":32
+},
+{
+	"type":"NODE",
+	"name":"Spot-Shadow32",
+	"translation":[-6,16,7.65133],
+	"rotation":[0,-0.382683,0,0.92388],
+	"scale":[1,1,1],
+	"light":"Spot-Shadow32"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Shadow512",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	},
+	"shadow":512
+},
+{
+	"type":"NODE",
+	"name":"Spot-Shadow512",
+	"translation":[-6,-16,7.65133],
+	"rotation":[0,-0.382683,0,0.92388],
+	"scale":[1,1,1],
+	"light":"Spot-Shadow512"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Spot-Shadow64",
+	"tint":[1, 1, 1],
+	"spot":{
+		"radius":0,
+		"power":500,
+		"fov":0.927293,
+		"blend":0.5
+	},
+	"shadow":64
+},
+{
+	"type":"NODE",
+	"name":"Spot-Shadow64",
+	"translation":[-6,8,7.65133],
+	"rotation":[0,-0.382683,0,0.92388],
+	"scale":[1,1,1],
+	"light":"Spot-Shadow64"
+},
+{
+	"type":"NODE",
+	"name":"Empty",
+	"translation":[-2.26667,0,0],
+	"rotation":[0,0.608761,0,0.793353],
+	"scale":[1,1,1],
+	"children":["Spot-Shadow128", "Spot-Shadow256", "Spot-Shadow32", "Spot-Shadow512", "Spot-Shadow64"]
+},
+{
 	"type":"SCENE",
 	"name":"lights.blend",
-	"roots":["Spot-Shadow128", "Tile-Floor.007", "Stone-Floor.007", "Spot-Shadow512", "Tile-Floor.008", "Stone-Floor.008", "Spot-Shadow32", "Tile-Floor.010", "Stone-Floor.010", "Spot-Shadow64", "Spot-Shadow256", "Sphere", "Cube", "Sphere.001", "Sphere.002", "Cube.001", "Sphere.003", "Sphere.006", "Cube.003", "Sphere.007", "Sphere.004", "Cube.002", "Sphere.005", "Sphere.008", "Cube.004", "Sphere.009", "Camera-Shadow128", "Camera-Shadow64", "Camera-Shadow32", "Camera-Shadow256", "Camera-Shadow512"]
+	"roots":["Tile-Floor.007", "Stone-Floor.007", "Tile-Floor.008", "Stone-Floor.008", "Tile-Floor.010", "Stone-Floor.010", "Sphere", "Cube", "Sphere.001", "Sphere.002", "Cube.001", "Sphere.003", "Sphere.006", "Cube.003", "Sphere.007", "Sphere.004", "Cube.002", "Sphere.005", "Sphere.008", "Cube.004", "Sphere.009", "Camera-Shadow128", "Camera-Shadow64", "Camera-Shadow32", "Camera-Shadow256", "Camera-Shadow512", "Empty"]
 }
 ]
