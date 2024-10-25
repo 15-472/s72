@@ -1,11 +1,17 @@
 BLENDER=~/blender-4.2.1-linux-x64/blender
 EXPORT_PY=../../exporters/blender/export-s72.py
 A72_TO_B72_JS=a72-to-b72.mjs
-CUBE_UTILITY=../../../A2-ref/bin/cube
+CUBE_UTILITY=../../../f24-ref/bin/cube
+
+HOSTNAME := $(shell hostname -s)
+ifeq ($(HOSTNAME),xvichow)
+	BLENDER=/Applications/Blender.app/Contents/MacOS/Blender
+endif
 
 all : \
 	../lights-Mix.s72 \
 	../lights-Parameters.s72 \
+	../lights-Spot-Shadows.s72 \
 	../sg-Articulation.s72 \
 	../sg-Support.s72 \
 	../sg-Containment.s72 \
@@ -24,6 +30,9 @@ all : \
 
 ../lights-Parameters.s72 : lights.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Parameters '$@'
+
+../lights-Spot-Shadows.s72 : lights.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Spot-Shadows '$@'
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Articulation --animate 1 91 '$@'
