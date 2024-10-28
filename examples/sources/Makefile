@@ -32,7 +32,7 @@ all : \
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Parameters '$@'
 
 ../lights-Spot-Shadows.s72 : lights.blend $(EXPORT_PY)
-	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Spot-Shadows '$@' --animate 0 60 '$@'
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Spot-Shadows --animate 0 60 '$@'
 
 ../sg-Articulation.s72 : scene-graphs.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' --collection Articulation --animate 1 91 '$@'
