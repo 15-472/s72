@@ -94,8 +94,8 @@ function uploadTex(gl, width, height, data, mips) {
 		}
 
 		gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, flipped);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 		gl.generateMipmap(gl.TEXTURE_2D); //ignore mips(!)
@@ -364,7 +364,7 @@ void main() {
 }
 `;
 
-const MAX_LIGHTS = 20;
+const MAX_LIGHTS = 100;
 
 const frag_common = `#version 300 es
 in highp vec3 position;
@@ -410,24 +410,7 @@ mediump vec3 linear_from_srgb(mediump vec3 v) {
 	mediump vec3 lower = v / vec3(12.92);
 	return mix(higher, lower, vec3(cutoff));
 }
-
-`
-
-SOURCES.environment = {
-vertex:vert_common,
-fragment:`${frag_common}
-
-void main() {
-	highp vec3 n = normalize(normal);
-	highp vec3 t = normalize(tangent);
-	highp vec3 b = normalize(bitangent);
-
-	mediump vec4 e = texture(RADIANCE, n);
-	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
-}
-`
-};
-
+`;
 
 SOURCES.environment = {
 vertex:vert_common,
@@ -466,6 +449,20 @@ SOURCES.lambertian = {
 vertex:vert_common,
 fragment:`${frag_common}
 
+//approximate contribution from a light with angular radius sa given dot(n,l):
+// uses n.l when fully above the horizon, 0 when fully below, and a linear blend otherwise
+highp float horizon_approx(in highp float nl, in highp float sa) {
+	highp float fac;
+	if (nl > sa) {
+		fac = nl;
+	} else if (nl > -sa) {
+		fac = mix(sa, 0.0, (nl - sa) / (-sa - sa));
+	} else {
+		fac = 0.0;
+	}
+	return fac;
+}
+
 void main() {
 	highp vec3 n = normalize(normal);
 	highp vec3 t = normalize(tangent);
@@ -482,8 +479,27 @@ void main() {
 			mediump float e0 = max(0.0, amt); //distant point light
 			mediump float ePI = 0.5 * amt + 0.5; //hemisphere light
 			e += LIGHT_ENERGY[i] * mix(e0, ePI, LIGHT_PARAMS[i].x / 3.1415926);
+
 		} else if (LIGHT_TYPE[i] == 1) { //sphere
-			//TODO
+			highp vec3 to = LIGHT_POSITION[i] - position;
+			highp vec3 l = normalize(to);
+			highp float d = length(to);
+			highp float r = max(0.001, LIGHT_PARAMS[i].x);
+
+			//inverse square falloff:
+			highp float att = pow(1.0 / max(d,r), 2.0);
+
+			//limit-based attenuation:
+			att *= max(0.0, 1.0 - pow(d / LIGHT_PARAMS[i].y, 4.0));
+
+			//sine of angular radius:
+			highp float sa = (d <= r ? 1.0 : r / d);
+
+			highp float nl = dot(n, l);
+			highp float fac = horizon_approx(nl, sa);
+
+			e += fac * att * LIGHT_ENERGY[i];
+
 		} else if (LIGHT_TYPE[i] == 2) { //spot
 			//TODO
 		}
@@ -526,7 +542,7 @@ void main() {
 	highp vec3 v = normalize(view);
 	highp vec3 r = reflect(-v, n);
 
-	mediump vec3 albedo = linear_from_srgb(texture(ALBEDO, texCoord).rgb);
+	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb;
 	mediump float roughness = texture(ROUGHNESS, texCoord).r;
 	mediump float metalness = texture(METALNESS, texCoord).r;
 
@@ -820,14 +836,22 @@ export class Viewer {
 				this.scene.noLightsWarning = true;
 				console.warn("Scene has no lights; will draw with a hemisphere in the +z direction.");
 			}
-		} else {
-			console.log(LIGHT_TYPE.length + " lights"); //DEBUG
 		}
-
+		
 		console.assert(LIGHT_TYPE.length * 3 === LIGHT_POSITION.length, "Correct number of light position entries.");
 		console.assert(LIGHT_TYPE.length * 3 === LIGHT_DIRECTION.length, "Correct number of light direction entries.");
 		console.assert(LIGHT_TYPE.length * 3 === LIGHT_ENERGY.length, "Correct number of light energy entries.");
 		console.assert(LIGHT_TYPE.length * 4 === LIGHT_PARAMS.length, "Correct number of light params entries.");
+
+		if (LIGHT_TYPE.length > MAX_LIGHTS) {
+			console.warn(`Too many lights (${LIGHT_TYPE.length}); trimming to ${MAX_LIGHTS}.`);
+			LIGHT_TYPE.splice(MAX_LIGHTS);
+			LIGHT_POSITION.splice(MAX_LIGHTS * 3);
+			LIGHT_DIRECTION.splice(MAX_LIGHTS * 3);
+			LIGHT_ENERGY.splice(MAX_LIGHTS * 3);
+			LIGHT_PARAMS.splice(MAX_LIGHTS * 4);
+		}
+
 
 		u.LIGHTS = [LIGHT_TYPE.length];
 
@@ -1811,7 +1835,30 @@ class Light {
 			lu.LIGHT_PARAMS.push( this.sun.angle, 0, 0, 0 );
 		}
 		if (this.sphere) {
-			//TODO
+			lu.LIGHT_TYPE.push(1);
+
+			lu.LIGHT_DIRECTION.push(0, 0, 0);
+			lu.LIGHT_POSITION.push(
+				LIGHT_FROM_LOCAL[4*3+0],
+				LIGHT_FROM_LOCAL[4*3+1],
+				LIGHT_FROM_LOCAL[4*3+2]
+			);
+			lu.LIGHT_ENERGY.push(
+				this.tint[0] * this.sphere.power / (4.0 * Math.PI),
+				this.tint[1] * this.sphere.power / (4.0 * Math.PI),
+				this.tint[2] * this.sphere.power / (4.0 * Math.PI)
+			);
+			let limit;
+			if (this.sphere.limit) {
+				limit = this.sphere.limit;
+			} else {
+				//assuming inverse square falloff, when does power / d^2 < 1 / 256?
+				limit = Math.sqrt( this.sphere.power / (4.0 * Math.PI) * 256.0);
+				limit *= 2.0; //conservative :)
+				console.log(limit);
+			}
+			lu.LIGHT_PARAMS.push( this.sphere.radius, limit, 0, 0 );
+
 		}
 		if (this.spot) {
 			//TODO
