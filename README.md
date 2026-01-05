@@ -295,7 +295,7 @@ The `"environment"` material looks up the environment in the direction of the no
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
  - `"type"` (optional default value is `"2D"`) -- the texture type
-   - `"2D"` -- simple 2D texture (access outside of bounds should repeat texture contents)
+   - `"2D"` -- simple 2D texture; set wrap mode to repeat (texture tiles if accessed with coords outside $[0,1]^2$)
    - `"cube"` -- cube map texture, stored as a vertical stack of faces (from top to bottom in the image: $+x$, $-x$, $+y$, $-y$, $+z$, $-z$)
  - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$ (note that `"format"` has priority over any metadata present in an image file)
    - `"linear"` -- map linearly ( $rgba' \gets rgba / 255$ )
