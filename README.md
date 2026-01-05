@@ -295,7 +295,7 @@ The `"environment"` material looks up the environment in the direction of the no
 *Texture*s have the following properties:
  - `"src"` (required) -- location (relative to the `.s72` file) from which to load the texture. ".png" and ".jpg" textures are supported.
  - `"type"` (optional default value is `"2D"`) -- the texture type
-   - `"2D"` -- simple 2D texture; set wrap mode to repeat (texture tiles if accessed with coords outside $[0,1]^2$)
+   - `"2D"` -- simple 2D texture
    - `"cube"` -- cube map texture, stored as a vertical stack of faces (from top to bottom in the image: $+x$, $-x$, $+y$, $-y$, $+z$, $-z$)
  - `"format":...` (optional, default value is `"linear"`) -- how to map image byte values $c \in [0,255]$ to texture values $c'$ (note that `"format"` has priority over any metadata present in an image file)
    - `"linear"` -- map linearly ( $rgba' \gets rgba / 255$ )
@@ -303,6 +303,8 @@ The `"environment"` material looks up the environment in the direction of the no
    - `"rgbe"` -- use shared-exponent RGBE as per <a href="https://www.radiance-online.org/cgi-bin/viewcvs.cgi/ray/src/common/color.c?revision=2.33&view=markup#l188">radiance</a>'s HDR format. ( $rgb' \gets 2^{a - 128}*\frac{ rgb + 0.5 }{ 256 }$ )
 
 It is an error to reference a texture that does not have a channel required by a referencing material (e.g., to supply a one-channel texture as an albedo; or to supply a texture image without an alpha channel when setting the format to `"rgbe"`).
+
+2D textures should always have their wrap mode set to repeat to allow for tiling.
 
 The sense of the faces of the cube map is as described in both <a href="https://registry.khronos.org/vulkan/specs/1.3/html/chap16.html#_cube_map_face_selection_and_transformations">the Vulkan specification</a> and <a href="https://www.khronos.org/opengl/wiki/Cubemap_Texture">the OpenGL Wiki</a>. Note also that the order of the faces matches the layer number order of the images in the Vulkan specification.
 
