@@ -74,7 +74,17 @@ function uploadTex(gl, width, height, data, mips) {
 	const tex = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, tex);
 
-	const internalFormat = gl.RGBA8;
+	let internalFormat = gl.RGBA8;
+
+	if ('format' in data) {
+		if (data.format === "srgb") {
+			internalFormat = gl.SRGB8_ALPHA8;
+		} else if (data.format === "linear") {
+			internalFormat = gl.RGBA8;
+		} else {
+			console.warn(`Unrecognized format: ${data.format}`);
+		}
+	}
 
 	if (data instanceof Uint8ClampedArray) {
 		console.assert(data.length === 4*width*height, "RGBA data is correct length for texture.");
@@ -1520,9 +1530,11 @@ class Scene {
 						rgb[3*px+2] = b;
 					}
 					texture.rgb = rgb;
-				} else if (texture.format === "linear") {
+				} else if (texture.format === "linear" || texture.format === "srgb") {
 					//leave data as-is
 					texture.rgba = rgba;
+					//but remember if it should be read as srgb or linear color data:
+					texture.rgba.format = texture.format;
 				} else {
 					throw new Error(`Unknown texture format "${texture.format}".`);
 				}
@@ -1533,6 +1545,7 @@ class Scene {
 				for (let level = 1; ; ++level) {
 					try {
 						const response = await fetch(texture.mipUrl(level));
+						if (!response.ok) throw new Error(`Fetch returned ${response.status}: ${response.statusText}.`);
 						const blob = await response.blob();
 						const bitmap = await createImageBitmap(blob, {colorSpaceConversion:"none"});
 						const width = bitmap.width;
@@ -1553,9 +1566,10 @@ class Scene {
 								rgb[3*px+2] = b;
 							}
 							texture.mips.push(rgb);
-						} else if (texture.format === "linear") {
+						} else if (texture.format === "linear" || texture.format === "srgb") {
 							//leave data as-is
-							texture.mips.push(data);
+							rgba.format = texture.format;
+							texture.mips.push(rgba);
 						}
 					} catch (e) {
 						if (level === 1) console.error(`FAILED to read any mip levels:\n${e}`);
