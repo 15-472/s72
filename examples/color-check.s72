@@ -1,0 +1,380 @@
+["s72-v2",
+{
+
+	"type":"CAMERA",
+	"name":"Camera",
+	"perspective":{
+		"aspect":1.33333,
+		"vfov":1.17601,
+		"near":0.1,
+		"far":100
+	}
+},
+{
+	"type":"NODE",
+	"name":"Camera",
+	"translation":[0,0,4.5],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"camera":"Camera"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:G0.5",
+	"lambertian":{
+		"albedo":[ 0, 0.5, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:G0.5"
+},
+{
+	"type":"NODE",
+	"name":"G0.5",
+	"translation":[-1,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:G1.0",
+	"lambertian":{
+		"albedo":[ 0, 1, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.001",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:G1.0"
+},
+{
+	"type":"NODE",
+	"name":"G1.0",
+	"translation":[-1,2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.001"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:B1.0",
+	"lambertian":{
+		"albedo":[ 0, 0, 1 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.002",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:B1.0"
+},
+{
+	"type":"NODE",
+	"name":"B1.0",
+	"translation":[1,2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.002"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:B0.5",
+	"lambertian":{
+		"albedo":[ 0, 0, 0.5 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.003",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:B0.5"
+},
+{
+	"type":"NODE",
+	"name":"B0.5",
+	"translation":[1,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.003"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:B0.1",
+	"lambertian":{
+		"albedo":[ 0, 0, 0.1 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.004",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:B0.1"
+},
+{
+	"type":"NODE",
+	"name":"B0.1",
+	"translation":[1,-2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.004"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:G0.1",
+	"lambertian":{
+		"albedo":[ 0, 0.1, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.005",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:G0.1"
+},
+{
+	"type":"NODE",
+	"name":"G0.1",
+	"translation":[-1,-2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.005"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:R0.1",
+	"lambertian":{
+		"albedo":[ 0.1, 0, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.006",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:R0.1"
+},
+{
+	"type":"NODE",
+	"name":"R0.1",
+	"translation":[-3,-2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.006"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:R0.5",
+	"lambertian":{
+		"albedo":[ 0.5, 0, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.007",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:R0.5"
+},
+{
+	"type":"NODE",
+	"name":"R0.5",
+	"translation":[-3,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.007"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:R1.0",
+	"lambertian":{
+		"albedo":[ 1, 0, 0 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.008",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:R1.0"
+},
+{
+	"type":"NODE",
+	"name":"R1.0",
+	"translation":[-3,2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.008"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:W1.0",
+	"lambertian":{
+		"albedo":[ 1, 1, 1 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.009",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:W1.0"
+},
+{
+	"type":"NODE",
+	"name":"W1.0",
+	"translation":[3,2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.009"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:W0.5",
+	"lambertian":{
+		"albedo":[ 0.5, 0.5, 0.5 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.010",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:W0.5"
+},
+{
+	"type":"NODE",
+	"name":"W0.5",
+	"translation":[3,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.010"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:W0.1",
+	"lambertian":{
+		"albedo":[ 0.1, 0.1, 0.1 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Plane.011",
+	"topology":"TRIANGLE_LIST",
+	"count":6,
+	"attributes":{
+		"POSITION":{ "src":"color-check.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"color-check.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"color-check.Plane.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"color-check.Plane.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:W0.1"
+},
+{
+	"type":"NODE",
+	"name":"W0.1",
+	"translation":[3,-2,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Plane.011"
+},
+{
+
+	"type":"LIGHT",
+	"name":"Sun",
+	"tint":[1, 1, 1],
+	"sun":{
+		"angle":0,
+		"strength":3.14159
+	}
+},
+{
+	"type":"NODE",
+	"name":"Sun",
+	"translation":[0,0,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"light":"Sun"
+},
+{
+	"type":"SCENE",
+	"name":"color-check.blend",
+	"roots":["Camera", "G0.5", "G1.0", "B1.0", "B0.5", "B0.1", "G0.1", "R0.1", "R0.5", "R1.0", "W1.0", "W0.5", "W0.1", "Sun"]
+}
+]

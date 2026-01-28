@@ -59,3 +59,12 @@ Blender file and exported products (c) 2024 Jim McCann; released under a [CC BY-
 
 Created from [sources/origin-check.blend](sources/origin-check.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
 Blender file, texture file, and exported products created in 2024 by Jim McCann; placed in the public domain.
+
+
+## Color Check
+- `color-check.s72`/`color-check.*.b72` [open in viewer](https://15-472.github.io/s72/?https://raw.githubusercontent.com/15-472/s72/main/examples/color-check.s72)
+
+A grid of color chips meant to check color and lighting for lambertian materials. In linear color, should be 1.0, 0.5, 0.1 (rows) and R,G,B,Grey (columns). The lighting is a distant point light with power 3.1415926 (i.e., the 1.0 materials should be exactly full-scale if no tone mapping is applied).
+
+Created from [sources/color-check.blend](sources/color-check.blend) by [sources/Makefile](sources/Makefile) using [../exporters/blender/export-s72.py](../exporters/blender/export-s72.py).
+Blender file, texture file, and exported products created in 2026 by Jim McCann; placed in the public domain.

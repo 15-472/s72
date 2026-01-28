@@ -1,4 +1,4 @@
-BLENDER=~/blender-4.2.1-linux-x64/blender
+BLENDER=~/blender-5.0.1-linux-x64/blender
 EXPORT_PY=../../exporters/blender/export-s72.py
 A72_TO_B72_JS=a72-to-b72.mjs
 CUBE_UTILITY=../../../f24-ref/bin/cube
@@ -22,6 +22,7 @@ all : \
 	../materials.s72 \
 	../ox_bridge_morning.png \
 	../origin-check.s72 \
+	../lambertian-color-check.s72 \
 
 
 
@@ -62,6 +63,9 @@ all : \
 	$(CUBE_UTILITY) '$<' --latlon-to-cube '$@'
 
 ../origin-check.s72 : origin-check.blend $(EXPORT_PY)
+	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' '$@'
+
+../color-check.s72 : color-check.blend $(EXPORT_PY)
 	$(BLENDER) --background --python '$(EXPORT_PY)' -- '$<' '$@'
 
 ox_bridge_morning_8k.hdr :
