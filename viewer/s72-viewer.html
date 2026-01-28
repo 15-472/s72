@@ -111,6 +111,7 @@ function afterLoading(err) {
 		const opt = document.createElement('option');
 		opt.innerText = name;
 		opt.camera = camera;
+		opt.selected = (VIEWER.camera === camera);
 		CAMERAS.appendChild(opt);
 	}
 	add('USER', VIEWER.userCamera);

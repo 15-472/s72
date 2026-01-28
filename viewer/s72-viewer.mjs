@@ -469,7 +469,7 @@ void main() {
 	highp vec3 b = normalize(bitangent);
 	highp vec3 v = normalize(view);
 
-	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb;
+	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb / 3.1415926;
 
 	mediump vec3 e = texture(LAMBERTIAN, n).rgb;
 	for (uint i = 0u; i < LIGHTS; ++i) {
@@ -712,6 +712,9 @@ export class Viewer {
 				delete this.prevTs;
 				this.time = this.scene.minTime;
 				this.scene.drive(this.time);
+				if (this.scene.cameras.length) {
+					this.camera = this.scene.cameras[0];
+				}
 	
 				this.redraw();
 	
