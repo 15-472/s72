@@ -35,6 +35,7 @@ The remainder of the array is filled with JSON objects with (at least) a `"type"
 	"type":"...",
 	"name":"first object",
 	/* ... */
+}
 /* ... */
 ```
 
