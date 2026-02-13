@@ -242,6 +242,7 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 	"name":"boring blue",
 	"normalMap":{ "src":"normal.png" },
 	"displacementMap":{ "src":"displacement.png" },
+	"displacementScale":1.0,
 	"pbr":{
 		"albedo": [0.5, 0.5, 0.85],
 		/* xor */
@@ -270,8 +271,9 @@ I.e., later *driver* objects may override earlier *driver* objects that drive th
 ```
 *Material* objects have their `type` property set to `"MATERIAL"`.
 They include the following *material*-specific properties:
-- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Reconstructed normal is $TBN * (2 * (r,g,b) - 1)$, where $TBN$ is the tangent-space basis. Not specifying should be the same as specifying a constant $(0.5,0.5,1)$ normal map (i.e., all normals point along the $N$ vector of tangent space).
-- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. (The $r$ channel of the texture stores displacement, with displacement 1 at the surface of the object and displacement 0 apparently below the surface of the object by 0.035 tcus, where one tcu is the distance on the surface corresponding to the width of the texture given the current texture coordinate gradient.) Not specifying should be the same as specifying a constant $1$ displacement map.
+- <code>"normalMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a tangent-space normal map. Reconstructed normal is $TBN * (2 * (r,g,b) - 1)$, where $TBN$ is the tangent-space basis. Not specifying this map is the same as specifying a constant $(0.5,0.5,1)$ normal map (i.e., all normals point along the $N$ vector of tangent space).
+- <code>"displacementMap":<var>T</var></code> (optional) -- reference to a 2D texture to use as a displacement map. (The $r$ channel of the texture stores displacement, with displacement 1 at the surface of the object and displacement 0 apparently below the surface of the object by 0.035 tcus, where one tcu is the distance on the surface corresponding to the width of the texture given the current texture coordinate gradient.) Not specifying this map is the same as specifying a constant $1$ displacement map.
+- <code>"displacementScale":<var>S</var></code> (optional, default value is 1.0) -- scale value applied to displacement map values, default of 1.0.
 - Exactly one of:
   - `"pbr"` -- a physically-based metallic/roughness material,
   - `"lambertian"` -- a lambertian (diffuse) material,
