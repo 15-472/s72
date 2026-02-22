@@ -14,7 +14,7 @@ function rgbe_to_rgb(r,g,b,e) {
 	}
 }
 
-function uploadCube(gl, size, data, mips) {
+function uploadCube(gl, size, data, mips, generateMipmap) {
 	console.assert(typeof size === 'number', "Cube size should be a number.");
 
 	const cube = gl.createTexture();
@@ -31,7 +31,52 @@ function uploadCube(gl, size, data, mips) {
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(3*pageSize, 4*pageSize));
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(4*pageSize, 5*pageSize));
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, internalFormat, size, size, 0, gl.RGB, gl.FLOAT, data.subarray(5*pageSize, 6*pageSize));
-		gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAX_LEVEL, 0);
+
+		if (typeof mips === 'undefined' && generateMipmap) {
+			mips = [];
+			const before = performance.now();
+			console.log(`Generaing mipmaps for size-${size} cubemap in javascript.`);
+			//generate some not-that-great (box-filtered) mipmap levels -- since genrateMipmap doesn't work on weird formats in webGL
+			let prevData = data;
+			let prevSize = size;
+			while (prevSize > 1) {
+				const levelSize = Math.max(1, Math.floor(prevSize / 2));
+				const levelData = new Float32Array(6 * levelSize*levelSize * 3);
+				mips.push(levelData);
+
+				for (let page = 0; page < 6; ++page) {
+					const prevPage = prevData.subarray(page * prevSize*prevSize * 3, (page + 1) * prevSize*prevSize * 3);
+					const levelPage = levelData.subarray(page * levelSize*levelSize * 3, (page + 1) * levelSize*levelSize * 3);
+					for (let y = 0; y < levelSize; ++y) {
+						const py = (y + 0.5) / levelSize * prevSize - 0.5;
+						const py0 = Math.floor(py);
+						const pyf = py - py0;
+						//console.assert(0 <= py0 && py0 + 1 < prevSize, `linear scaling should lie in-bounds ${py} (${levelSize}) -> ${py0} (${prevSize}) + ${pyf}`);
+						for (let x = 0; x < levelSize; ++x) {
+							const px = (x + 0.5) / levelSize * prevSize - 0.5;
+							const px0 = Math.floor(px);
+							const pxf = px - px0;
+							//console.assert(0 <= px0 && px0 + 1 < prevSize, "linear scaling should lie in-bounds");
+							for (let c = 0; c < 3; ++c) {
+								//linearly interpolate -- this should end up being a box filter unless levels are some weird size:
+								const c00 = prevPage[(py0*prevSize+px0)*3+c];
+								const c10 = prevPage[(py0*prevSize+px0+1)*3+c];
+								const c01 = prevPage[((py0+1)*prevSize+px0)*3+c];
+								const c11 = prevPage[((py0+1)*prevSize+px0+1)*3+c];
+								const c0 = (c01 - c00) * pyf + c00;
+								const c1 = (c11 - c10) * pyf + c10;
+								levelPage[(y*levelSize+x)*3+c] = (c1 - c0) * pxf + c0;
+							}
+						}
+					}
+				}
+
+				prevData = levelData;
+				prevSize = levelSize;
+			}
+			const after = performance.now();
+			console.log(`  generated  ${mips.length} mips for cube of size ${size} in ${(after - before)}ms.`);
+		}
 
 		if (typeof mips !== 'undefined') {
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAX_LEVEL, mips.length);
@@ -49,6 +94,9 @@ function uploadCube(gl, size, data, mips) {
 				gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(4*mipPageSize, 5*mipPageSize));
 				gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, level, internalFormat, mipSize, mipSize, 0, gl.RGB, gl.FLOAT, mipData.subarray(5*mipPageSize, 6*mipPageSize));
 			}
+		} else {
+			//no mipmaps:
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAX_LEVEL, 0);
 		}
 
 		if (gl.OES_texture_float_linear) {
@@ -67,7 +115,7 @@ function uploadCube(gl, size, data, mips) {
 	return cube;
 }
 
-function uploadTex(gl, width, height, data, mips) {
+function uploadTex(gl, width, height, data, mips, generateMipmaps) {
 	console.assert(typeof width === 'number', "Texture width should be a number.");
 	console.assert(typeof height === 'number', "Texture height should be a number.");
 
@@ -97,8 +145,15 @@ function uploadTex(gl, width, height, data, mips) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-		gl.generateMipmap(gl.TEXTURE_2D); //ignore mips(!)
+		if (typeof mips !== 'undefined') {
+			console.warn("2D texture code always ignores passed mips!");
+		}
+		if (generateMipmaps) {
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+			gl.generateMipmap(gl.TEXTURE_2D);
+		} else {
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		}
 	} else {
 		console.log("TODO: support other texture types for texture map!");
 	}
@@ -410,6 +465,19 @@ mediump vec3 linear_from_srgb(mediump vec3 v) {
 	mediump vec3 lower = v / vec3(12.92);
 	return mix(higher, lower, vec3(cutoff));
 }
+
+void fetch_normal_map(out highp vec3 n) {
+	//normal map space (tangent, bitangent, normal) to object space:
+	highp mat3 light_from_tbn = mat3(
+		normalize(tangent),
+		normalize(bitangent),
+		normalize(normal)
+	);
+
+	//sample normal map and convert into light space:
+	// normalize() call provides only minor benefit here
+	n = normalize(light_from_tbn * (2.0 * texture(NORMAL, texCoord).rgb - 1.0));
+}
 `;
 
 SOURCES.environment = {
@@ -417,11 +485,10 @@ vertex:vert_common,
 fragment:`${frag_common}
 
 void main() {
-	highp vec3 n = normalize(normal);
-	highp vec3 t = normalize(tangent);
-	highp vec3 b = normalize(bitangent);
+	highp vec3 n;
+	fetch_normal_map(n);
 
-	mediump vec4 e = texture(RADIANCE, n);
+	mediump vec4 e = textureLod(RADIANCE, n, 0.0);
 	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
 }
 `
@@ -433,12 +500,11 @@ vertex:vert_common,
 fragment:`${frag_common}
 
 void main() {
-	highp vec3 n = normalize(normal);
-	highp vec3 t = normalize(tangent);
-	highp vec3 b = normalize(bitangent);
+	highp vec3 n;
+	fetch_normal_map(n);
 	highp vec3 v = normalize(view);
 
-	mediump vec4 e = texture(RADIANCE, reflect(-v, n));
+	mediump vec4 e = textureLod(RADIANCE, reflect(-v, n), 0.0);
 	fragColor = vec4(srgb_from_linear(e.rgb), 1.0);
 }
 `
@@ -464,9 +530,8 @@ highp float horizon_approx(in highp float nl, in highp float sa) {
 }
 
 void main() {
-	highp vec3 n = normalize(normal);
-	highp vec3 t = normalize(tangent);
-	highp vec3 b = normalize(bitangent);
+	highp vec3 n;
+	fetch_normal_map(n);
 	highp vec3 v = normalize(view);
 
 	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb / 3.1415926;
@@ -506,8 +571,6 @@ void main() {
 	}
 
 	fragColor = vec4(srgb_from_linear(e * albedo), 1.0);
-	//fragColor = vec4(1.0, 0.0, 1.0, 1.0);
-	//fragColor = vec4(albedo, 1.0);
 }
 `
 };
@@ -518,7 +581,6 @@ void main() {
 SOURCES.pbr = {
 	vertex:vert_common,
 fragment:`${frag_common}
-
 
 //Hammersley sample generation from:
 // https://www.shadertoy.com/view/4lscWj
@@ -534,22 +596,156 @@ highp vec2 Hammersley( uint i, uint NumSamples ) {
 	return vec2( float(i) / float(NumSamples), float(b) * 2.3283064370807973754314699618684756481e-10);
 }
 
+const highp float PI = acos(-1.0);
+
+//from https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf :
+highp vec3 ImportanceSampleGGX( highp vec2 Xi, highp float Roughness, highp vec3 N ) {
+	highp float a = Roughness * Roughness;
+	highp float Phi = 2.0 * PI * Xi.x;
+	highp float CosTheta = sqrt( (1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y ) );
+	highp float SinTheta = sqrt( 1.0 - CosTheta * CosTheta );
+
+	highp vec3 H;
+	H.x = SinTheta * cos( Phi );
+	H.y = SinTheta * sin( Phi );
+	H.z = CosTheta;
+
+	highp vec3 UpVector = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+	highp vec3 TangentX = normalize( cross( UpVector, N ) );
+	highp vec3 TangentY = cross( N, TangentX );
+
+	return TangentX * H.x + TangentY * H.y + N * H.z;
+}
+
+//implied by math in https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf 
+highp float G_1( highp float NoX, highp float k ) {
+	return NoX / (NoX * (1.0 - k) + k);
+}
+
+highp float G_Smith( highp float Roughness, highp float NoV, highp float NoL ) {
+	highp float k = Roughness*Roughness / 4.0;
+	return G_1(NoL, k) * G_1(NoV, k);
+}
+
+highp float D( highp float Roughness, highp float NoH ) {
+	highp float a = Roughness*Roughness;
+	highp float a2 = a*a;
+	return a2 / (PI * (NoH*NoH*(a2-1.0) + 1.0)*(NoH*NoH*(a2-1.0) + 1.0) );
+}
+
+//also from https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf :
+//...with modifications to record how much possible diffuse is slipping through
+highp vec3 SpecularIBL( highp vec3 SpecularColor, highp float Roughness, highp vec3 N, highp vec3 V ) {
+	highp vec3 SpecularLighting = vec3(0.0, 0.0, 0.0);
+	const highp uint NumSamples = 64u;
+
+	//shift hammersley sequence based on fragment position to make samples less coherent between pixels:
+	highp vec2 shift = vec2(0.0);
+	/*
+	{
+		highp uint ix = uint(gl_FragCoord.x);
+		highp uint iy = uint(gl_FragCoord.y);
+		shift.x = float( (ix & 0xAAAAAAAAu) | (iy & 0x55555555u) );
+		shift.y = float( (ix & 0x55555555u) | (iy & 0xAAAAAAAAu) );
+		shift.x = fract(shift.x * PI);
+		shift.y = fract(shift.y * PI);
+	}
+	*/
+
+	for (highp uint i = 0u; i < NumSamples; ++i) {
+		highp vec2 Xi = Hammersley(i, NumSamples);
+
+		Xi = fract(Xi + shift);
+
+		highp vec3 H = ImportanceSampleGGX( Xi, Roughness, N );
+		highp vec3 L = 2.0 * dot( V, H ) * H - V;
+
+		highp float NoV = clamp( dot(N, V), 0.0, 1.0 );
+		highp float NoL = clamp( dot(N, L), 0.0, 1.0 );
+		highp float NoH = clamp( dot(N, H), 0.0, 1.0 );
+		highp float VoH = clamp( dot(V, H), 0.0, 1.0 );
+
+		if (NoL > 0.0 && NoV > 0.0 && NoH > 0.0) {
+			//adding mipmap biasing as per:
+			// https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
+			highp float p = NoH * D( Roughness, NoH );
+
+			//expected samples generated in this direction among N samples:
+			// N * p
+			//amount of area (solid angle) needed around this direction to capture "one sample" worth of hemisphere:
+			// 2 * PI / (N * p)
+			//solid angle "in pixels": (disregarding sampling density changes at the corners)
+			// (3*size*size) / (2*PI) * (2 * PI / (N * p)) = (3*size*size / (N * p))
+			//area -> diameter:
+			// sqrt( 3*size*size / (N * p) )
+			//diameter -> mip level:
+			// log2( sqrt( 3*size*size / (N * p) ) )
+			// = 0.5 * log2( 3*size*size ) - 0.5 * log2( N * p )
+
+			//if we do the solid angle taking into account local sampling density:
+			// (2 * PI / (N * p)) / ( 4.0 / (size*size) / (x^2+y^2+z^2)^1.5 )
+			// = 0.5 * (PI / (N * p)) * (size*size) * (x^2+y^2+z^2)^1.5
+			//area -> diameter:
+			// sqrt( 0.5 * (PI / (N * p)) * (size*size) * (x^2+y^2+z^2)^1.5 )
+			//diameter -> mip level:
+			// log2( sqrt( 0.5 * (PI / (N * p)) * (size*size) * (x^2+y^2+z^2)^1.5 ) )
+			// = 0.5 * log2( 0.5 * PI * (size*size) ) - 0.5 * log2( N * p ) + 0.75 * log2( x^2+y^2+z^2 ) )
+
+			int size = textureSize(RADIANCE, 0).x;
+			//"ignore distortion" version:
+			highp float l = 0.5 * log2( 3.0*float(size)*float(size) ) - 0.5 * log2( float(NumSamples) * p );
+
+			//"account for distortion" version:
+			//highp vec3 onCube = L / max(max(abs(L.x), abs(L.y)), abs(L.z));
+			//highp float l = 0.5 * log2( 0.5 * PI * float(size)*float(size) ) - 0.5 * log2( float(NumSamples) * p ) + 0.75 * log2( dot(onCube,onCube) );
+
+			l += 1.0; //let's go ahead and make the areas bigger to smooth things out a bit more
+
+			//fade out mipmap bias for very smooth materials since p estimate becomes not-great
+			if (Roughness < 0.01) l *= (Roughness / 0.01);
+
+			highp vec3 SampleColor = textureLod( RADIANCE, L, l).rgb;
+
+			highp float G = G_Smith( Roughness, NoV, NoL );
+			highp float Fc = pow(1.0 - VoH, 5.0);
+			highp vec3 F = (1.0 - Fc) * SpecularColor + Fc;
+
+			SpecularLighting += SampleColor * F * G * VoH / (NoH * NoV);
+		}
+
+	}
+
+	return SpecularLighting / float(NumSamples);
+}
+
+
 
 void main() {
-	highp vec3 n = normalize(normal);
-	highp vec3 t = normalize(tangent);
-	highp vec3 b = normalize(bitangent);
+	highp vec3 n;
+	fetch_normal_map(n);
 	highp vec3 v = normalize(view);
-	highp vec3 r = reflect(-v, n);
 
 	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb;
 	mediump float roughness = texture(ROUGHNESS, texCoord).r;
 	mediump float metalness = texture(METALNESS, texCoord).r;
 
-	mediump vec3 e = textureLod(GGX, r, roughness*5.0).rgb;
-	e += albedo * texture(LAMBERTIAN, n).rgb;
+	mediump vec3 specTint = mix( vec3(0.04), albedo, metalness );
+
+	highp vec3 spec = SpecularIBL( specTint, roughness, n, v );
+
+
+	highp vec3 diffAlbedo = mix( albedo, vec3(0.0), metalness );
+
+	/*
+	//bad approximation for specular masking of diffuse light:
+	highp float Fc = pow(1.0 - max(0.0, dot(v,n)), 5.0);
+	highp float diffFactor = (1.0 - ((1.0 - Fc) * 0.04 + Fc));
+	diffAlbedo *= diffFactor;
+	*/
+
+	highp vec3 e = spec + diffAlbedo * texture( LAMBERTIAN, n ).rgb;
+
 	fragColor = vec4(srgb_from_linear(e), 1.0);
-	//fragColor = vec4(srgb_from_linear(vec3(roughness,metalness,0.0)), 1.0);
 }
 `
 };
@@ -938,6 +1134,7 @@ export class Viewer {
 class Scene {
 	constructor() {
 		this.roots = [];
+		this.meshes = []; //direct access to meshes
 		this.cameras = []; //direct access to cameras
 		this.drivers = []; //direct access to drivers
 		this.environments = []; //direct access to environments
@@ -1015,6 +1212,8 @@ class Scene {
 			}
 		}
 
+		let scene = null;
+
 		function resolveReference(type, name) {
 			const key = `${type}:${name}`;
 			if (!(key in byTypeName)) {
@@ -1058,12 +1257,13 @@ class Scene {
 			}
 
 			//check cache:
-			let key = `${src}|${type}|${format}|`;
+			let key = `${src}|${type}|${format}|${desc.generateMipmap ? "MIP/" : ""}`;
 			if (desc.mipSrc) key += desc.mipSrc(0);
 
 			if (!(key in textures)) {
 				textures[key] = { url: srcURL(src), type, format };
 				if (desc.mipSrc) textures[key].mipUrl = srcURL(desc.mipSrc);
+				if (desc.generateMipmap) textures[key].generateMipmap = true;
 			}
 			return textures[key];
 		};
@@ -1100,9 +1300,13 @@ class Scene {
 
 			if ("normalMap" in elt) {
 				loaded.normalMap = loadTexture(elt.normalMap, "2D");
+			} else {
+				loaded.normalMap = makeTexture([0.5,0.5,1]);
 			}
 			if ("displacementMap" in elt) {
 				loaded.displacementMap = loadTexture(elt.displacementMap, "2D");
+			} else {
+				loaded.displacementMap = makeTexture(1.0);
 			}
 
 			const MATERIALS = {
@@ -1160,6 +1364,9 @@ class Scene {
 
 			const loaded = elt.LOADED = new Mesh();
 			loaded.name = elt.name;
+
+			console.assert(scene !== null, "loadMesh should always be called recusrively from loadScene");
+			scene.meshes.push(loaded);
 
 			const TOPOLOGIES = {
 				"POINT_LIST":gl.POINTS,
@@ -1270,7 +1477,9 @@ class Scene {
 				loaded.ggx = loadTexture({src:elt.radiance.src, mipSrc:GGXSrc, type:'cube', format:'rgbe'});
 			}
 
-			loaded.radiance = loadTexture(elt.radiance, "cube");
+			const src = Object.assign({}, elt.radiance);
+			src.generateMipmap = true;
+			loaded.radiance = loadTexture(src, "cube");
 
 			return loaded;
 		};
@@ -1379,7 +1588,9 @@ class Scene {
 			const elt = json[index];
 			if (elt.type !== "SCENE") throw new Error(`Trying to load a scene from a type:"${elt.type}" element.`);
 
-			const loaded = new Scene();
+			console.assert(scene === null, "loadScene should be called once");
+
+			const loaded = scene = new Scene();
 			loaded.name = elt.name;
 
 			for (let root of elt.roots) {
@@ -1420,7 +1631,6 @@ class Scene {
 			return loaded;
 		};
 
-		let scene = null;
 		let driverIndices = [];
 
 		//load top-level objects ("SCENE" + "DRIVER"):
@@ -1431,7 +1641,7 @@ class Scene {
 					console.warn(`Multiple "SCENE" elements found; ignoring all but the first.`);
 					continue;
 				}
-				scene = loadScene(i);
+				loadScene(i); //will set 'scene' as a side effect
 			} else if (type === "NODE") {
 				//loaded recursively by scene and (maybe) driver?
 			} else if (type === "MESH") {
@@ -1614,16 +1824,16 @@ class Scene {
 				delete texture.height;
 
 				if ("rgb" in texture) {
-					texture.cube = uploadCube(gl, texture.size, texture.rgb, texture.mips);
+					texture.cube = uploadCube(gl, texture.size, texture.rgb, texture.mips, texture.generateMipmap);
 				} else {
-					texture.cube = uploadCube(gl, texture.size, texture.rgba, texture.mips);
+					texture.cube = uploadCube(gl, texture.size, texture.rgba, texture.mips, texture.generateMipmap);
 				}
 
 			} else if (texture.type === "2D") {
 				if ("rgb" in texture) {
-					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgb, texture.mips);
+					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgb, texture.mips, texture.generateMipmap);
 				} else {
-					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgba, texture.mips);
+					texture.tex = uploadTex(gl, texture.width, texture.height, texture.rgba, texture.mips, texture.generateMipmap);
 				}
 			} else {
 				throw new Error(`Unknown texture type "${texture.type}".`);
@@ -1728,6 +1938,14 @@ class Mesh {
 		if (this.count === 0) return;
 		gl.useProgram(this.material.program);
 
+		if (this.material.normalMap) {
+			gl.activeTexture(gl.TEXTURE0 + u.NORMAL[0]);
+			gl.bindTexture(gl.TEXTURE_2D, this.material.normalMap.tex);
+		}
+		if (this.material.displacementMap) {
+			gl.activeTexture(gl.TEXTURE0 + u.DISPLACEMENT[0]);
+			gl.bindTexture(gl.TEXTURE_2D, this.material.displacementMap.tex);
+		}
 		if (this.material.albedo) {
 			gl.activeTexture(gl.TEXTURE0 + u.ALBEDO[0]);
 			gl.bindTexture(gl.TEXTURE_2D, this.material.albedo.tex);
@@ -1858,7 +2076,7 @@ class Light {
 				//assuming inverse square falloff, when does power / d^2 < 1 / 256?
 				limit = Math.sqrt( this.sphere.power / (4.0 * Math.PI) * 256.0);
 				limit *= 2.0; //conservative :)
-				console.log(limit);
+				//DEBUG: console.log(limit);
 			}
 			lu.LIGHT_PARAMS.push( this.sphere.radius, limit, 0, 0 );
 
