@@ -15,7 +15,7 @@
 {
 
 	"type":"CAMERA",
-	"name":"Camera",
+	"name":"WideCamera",
 	"perspective":{
 		"aspect":1.77778,
 		"vfov":0.47109,
@@ -25,11 +25,11 @@
 },
 {
 	"type":"NODE",
-	"name":"Camera",
+	"name":"WideCamera",
 	"translation":[2,-34.7317,22.0284],
 	"rotation":[0.491617,0,0,0.870811],
 	"scale":[1,1,1],
-	"camera":"Camera"
+	"camera":"WideCamera"
 },
 {
 
@@ -60,7 +60,7 @@
 	"type":"MESH",
 	"name":"Plane",
 	"topology":"TRIANGLE_LIST",
-	"count":1152,
+	"count":1272,
 	"attributes":{
 		"POSITION":{ "src":"materials.Plane.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
 		"NORMAL":{ "src":"materials.Plane.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
@@ -79,7 +79,9 @@
 },
 {
 	"type":"MATERIAL",
-	"name":"environment:EnvironmentMaterial",
+	"name":"environment:EnvironmentMaterialNorDisp",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
 	"environment":{}
 },
 {
@@ -93,7 +95,7 @@
 		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
 		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":"environment:EnvironmentMaterial"
+	"material":"environment:EnvironmentMaterialNorDisp"
 },
 {
 	"type":"NODE",
@@ -102,6 +104,11 @@
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Complicated"
+},
+{
+	"type":"MATERIAL",
+	"name":"environment:EnvironmentMaterial",
+	"environment":{}
 },
 {
 	"type":"MESH",
@@ -119,7 +126,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.002",
-	"translation":[-8.5,-0.5,0.366],
+	"translation":[-9.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Icosphere"
@@ -140,7 +147,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.002",
-	"translation":[-8.5,0.5,0.365501],
+	"translation":[-9.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Cube"
@@ -148,7 +155,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.003",
-	"translation":[-9.5,0.5,0.365501],
+	"translation":[-10.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Icosphere"
@@ -156,7 +163,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.003",
-	"translation":[-9.5,-0.5,0.366],
+	"translation":[-10.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Cube"
@@ -191,7 +198,9 @@
 },
 {
 	"type":"MATERIAL",
-	"name":"mirror:MirrorMaterial",
+	"name":"mirror:MirrorMaterialNorDisp",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
 	"mirror":{}
 },
 {
@@ -205,7 +214,7 @@
 		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
 		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":"mirror:MirrorMaterial"
+	"material":"mirror:MirrorMaterialNorDisp"
 },
 {
 	"type":"NODE",
@@ -214,6 +223,11 @@
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Complicated.001"
+},
+{
+	"type":"MATERIAL",
+	"name":"mirror:MirrorMaterial",
+	"mirror":{}
 },
 {
 	"type":"MESH",
@@ -231,7 +245,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.004",
-	"translation":[-2.5,-0.5,0.366],
+	"translation":[-3.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.001"
@@ -252,7 +266,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.004",
-	"translation":[-2.5,0.5,0.365501],
+	"translation":[-3.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Cube.001"
@@ -260,7 +274,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.005",
-	"translation":[-3.5,0.5,0.365501],
+	"translation":[-4.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.001"
@@ -268,7 +282,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.005",
-	"translation":[-3.5,-0.5,0.366],
+	"translation":[-4.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Cube.001"
@@ -296,7 +310,9 @@
 },
 {
 	"type":"MATERIAL",
-	"name":"lambertian:LambertianMaterial",
+	"name":"lambertian:LambertianMaterialNorDisp",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
 	"lambertian":{
 		"albedo":{ "src":"wood_floor_deck_diff_1k.png", "format":"srgb" }
 	}
@@ -312,7 +328,7 @@
 		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
 		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":"lambertian:LambertianMaterial"
+	"material":"lambertian:LambertianMaterialNorDisp"
 },
 {
 	"type":"NODE",
@@ -321,6 +337,13 @@
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Complicated.002"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:LambertianMaterial",
+	"lambertian":{
+		"albedo":{ "src":"wood_floor_deck_diff_1k.png", "format":"srgb" }
+	}
 },
 {
 	"type":"MESH",
@@ -338,7 +361,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.006",
-	"translation":[3.5,-0.5,0.366],
+	"translation":[2.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.002"
@@ -359,7 +382,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.006",
-	"translation":[3.5,0.5,0.365501],
+	"translation":[2.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Cube.002"
@@ -367,7 +390,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.007",
-	"translation":[2.5,0.5,0.365501],
+	"translation":[1.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.002"
@@ -375,7 +398,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.007",
-	"translation":[2.5,-0.5,0.366],
+	"translation":[1.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Cube.002"
@@ -403,7 +426,7 @@
 },
 {
 	"type":"MATERIAL",
-	"name":"pbr:PBRMaterial",
+	"name":"pbr:PBRMaterialNorDisp",
 	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
 	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
 	"pbr":{
@@ -423,7 +446,7 @@
 		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
 		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
 	},
-	"material":"pbr:PBRMaterial"
+	"material":"pbr:PBRMaterialNorDisp"
 },
 {
 	"type":"NODE",
@@ -432,6 +455,15 @@
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Complicated.003"
+},
+{
+	"type":"MATERIAL",
+	"name":"pbr:PBRMaterial",
+	"pbr":{
+		"albedo":{ "src":"wood_floor_deck_diff_1k.png", "format":"srgb" },
+		"roughness":{ "src":"wood_floor_deck_rough_1k.png", "format":"linear" },
+		"metalness":0
+	}
 },
 {
 	"type":"MESH",
@@ -449,7 +481,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.008",
-	"translation":[9.5,-0.5,0.366],
+	"translation":[8.5,-0.5,0.366],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.003"
@@ -470,7 +502,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.008",
-	"translation":[9.5,0.5,0.365501],
+	"translation":[8.5,0.5,0.365501],
 	"rotation":[0,0,0,1],
 	"scale":[1,1,1],
 	"mesh":"Cube.003"
@@ -478,7 +510,7 @@
 {
 	"type":"NODE",
 	"name":"Sphere.009",
-	"translation":[8.5,0.5,0.365501],
+	"translation":[7.5,0.5,0.365501],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Icosphere.003"
@@ -486,7 +518,7 @@
 {
 	"type":"NODE",
 	"name":"Cube.009",
-	"translation":[8.5,-0.5,0.366],
+	"translation":[7.5,-0.5,0.366],
 	"rotation":[-1,-7.54979e-08,-2.8213e-07,2.13002e-14],
 	"scale":[1,1,1],
 	"mesh":"Cube.003"
@@ -813,6 +845,339 @@
 	"mesh":"Icosphere.013"
 },
 {
+	"type":"MESH",
+	"name":"Icosphere.014",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:PBRMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.001",
+	"translation":[9.5,-0.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.014"
+},
+{
+	"type":"MESH",
+	"name":"Cube.004",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:PBRMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.001",
+	"translation":[9.5,0.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.004"
+},
+{
+	"type":"MESH",
+	"name":"Icosphere.015",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:LambertianMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.020",
+	"translation":[3.5,-0.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.015"
+},
+{
+	"type":"MESH",
+	"name":"Cube.005",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:LambertianMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.010",
+	"translation":[3.5,0.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.005"
+},
+{
+	"type":"MESH",
+	"name":"Icosphere.016",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"mirror:MirrorMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.021",
+	"translation":[-2.5,-0.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.016"
+},
+{
+	"type":"MESH",
+	"name":"Cube.006",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"mirror:MirrorMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.011",
+	"translation":[-2.5,0.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.006"
+},
+{
+	"type":"MESH",
+	"name":"Icosphere.017",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"environment:EnvironmentMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.022",
+	"translation":[-8.5,-0.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.017"
+},
+{
+	"type":"MESH",
+	"name":"Cube.007",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"environment:EnvironmentMaterialNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.012",
+	"translation":[-8.5,0.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.007"
+},
+{
+	"type":"MATERIAL",
+	"name":"pbr:GreyNorDisp",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
+	"pbr":{
+		"albedo":[ 0.5, 0.5, 0.5 ],
+		"roughness":{ "src":"wood_floor_deck_rough_1k.png", "format":"linear" },
+		"metalness":0
+	}
+},
+{
+	"type":"MESH",
+	"name":"Cube.008",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.013",
+	"translation":[9.5,3.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.008"
+},
+{
+	"type":"MESH",
+	"name":"Icosphere.018",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.023",
+	"translation":[9.5,2.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.018"
+},
+{
+	"type":"MATERIAL",
+	"name":"lambertian:GreyNorDisp",
+	"normalMap":{ "src":"wood_floor_deck_nor_gl_1k.png", "format":"linear" },
+	"displacementMap":{ "src":"wood_floor_deck_disp_1k.png", "format":"linear" },
+	"lambertian":{
+		"albedo":[ 0.5, 0.5, 0.5 ]
+	}
+},
+{
+	"type":"MESH",
+	"name":"Cube.009",
+	"topology":"TRIANGLE_LIST",
+	"count":36,
+	"attributes":{
+		"POSITION":{ "src":"materials.Cube.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Cube.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Cube.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Cube.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Cube.014",
+	"translation":[3.5,3.5,0.365501],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Cube.009"
+},
+{
+	"type":"MESH",
+	"name":"Icosphere.019",
+	"topology":"TRIANGLE_LIST",
+	"count":2880,
+	"attributes":{
+		"POSITION":{ "src":"materials.Icosphere.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Icosphere.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Icosphere.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Icosphere.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Sphere.024",
+	"translation":[3.5,2.5,0.366],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Icosphere.019"
+},
+{
+	"type":"MESH",
+	"name":"Complicated.004",
+	"topology":"TRIANGLE_LIST",
+	"count":5766,
+	"attributes":{
+		"POSITION":{ "src":"materials.Complicated.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Complicated.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"lambertian:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Complicated-Lambertian.001",
+	"translation":[5,3,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Complicated.004"
+},
+{
+	"type":"MESH",
+	"name":"Complicated.005",
+	"topology":"TRIANGLE_LIST",
+	"count":5766,
+	"attributes":{
+		"POSITION":{ "src":"materials.Complicated.pnTt.b72", "offset":0, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"NORMAL":{ "src":"materials.Complicated.pnTt.b72", "offset":12, "stride":48, "format":"R32G32B32_SFLOAT" },
+		"TANGENT":{ "src":"materials.Complicated.pnTt.b72", "offset":24, "stride":48, "format":"R32G32B32A32_SFLOAT" },
+		"TEXCOORD":{ "src":"materials.Complicated.pnTt.b72", "offset":40, "stride":48, "format":"R32G32_SFLOAT" }
+	},
+	"material":"pbr:GreyNorDisp"
+},
+{
+	"type":"NODE",
+	"name":"Complicated-PBR.001",
+	"translation":[11,3,0],
+	"rotation":[0,0,0,1],
+	"scale":[1,1,1],
+	"mesh":"Complicated.005"
+},
+{
+
+	"type":"CAMERA",
+	"name":"PBRCamera",
+	"perspective":{
+		"aspect":1.77778,
+		"vfov":0.253946,
+		"near":0.1,
+		"far":1000
+	}
+},
+{
+	"type":"NODE",
+	"name":"PBRCamera",
+	"translation":[14.5495,-9.66881,10.0392],
+	"rotation":[0.382683,0,0,0.92388],
+	"scale":[1,1,1],
+	"camera":"PBRCamera"
+},
+{
 	"type":"DRIVER",
 	"name":"!environment:ox_bridge_morning.png-rotation",
 	"node":"!environment:ox_bridge_morning.png",
@@ -824,6 +1189,6 @@
 {
 	"type":"SCENE",
 	"name":"materials.blend",
-	"roots":["!environment:ox_bridge_morning.png", "Camera", "Light.001", "Plane", "Complicated-Environment", "Sphere.002", "Cube.002", "Sphere.003", "Cube.003", "EnvironmentLabel", "Complicated-Mirror", "Sphere.004", "Cube.004", "Sphere.005", "Cube.005", "MirrorLabel", "Complicated-Lambertian", "Sphere.006", "Cube.006", "Sphere.007", "Cube.007", "LambertianLabel", "Complicated-PBR", "Sphere.008", "Cube.008", "Sphere.009", "Cube.009", "PBRLabel", "Sphere.010", "Sphere.011", "Sphere.012", "Sphere.013", "Sphere.014", "Sphere.015", "Sphere.016", "Sphere.017", "Sphere.018", "Sphere.019"]
+	"roots":["!environment:ox_bridge_morning.png", "WideCamera", "Light.001", "Plane", "Complicated-Environment", "Sphere.002", "Cube.002", "Sphere.003", "Cube.003", "EnvironmentLabel", "Complicated-Mirror", "Sphere.004", "Cube.004", "Sphere.005", "Cube.005", "MirrorLabel", "Complicated-Lambertian", "Sphere.006", "Cube.006", "Sphere.007", "Cube.007", "LambertianLabel", "Complicated-PBR", "Sphere.008", "Cube.008", "Sphere.009", "Cube.009", "PBRLabel", "Sphere.010", "Sphere.011", "Sphere.012", "Sphere.013", "Sphere.014", "Sphere.015", "Sphere.016", "Sphere.017", "Sphere.018", "Sphere.019", "Sphere.001", "Cube.001", "Sphere.020", "Cube.010", "Sphere.021", "Cube.011", "Sphere.022", "Cube.012", "Cube.013", "Sphere.023", "Cube.014", "Sphere.024", "Complicated-Lambertian.001", "Complicated-PBR.001", "PBRCamera"]
 }
 ]
