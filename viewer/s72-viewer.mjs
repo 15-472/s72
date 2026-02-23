@@ -529,21 +529,23 @@ highp float horizon_approx(in highp float nl, in highp float sa) {
 	return fac;
 }
 
+const highp float PI = acos(-1.0);
+
 void main() {
 	highp vec3 n;
 	fetch_normal_map(n);
 	highp vec3 v = normalize(view);
 
-	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb / 3.1415926;
+	mediump vec3 albedo = texture(ALBEDO, texCoord).rgb / PI;
 
-	mediump vec3 e = texture(LAMBERTIAN, n).rgb;
+	mediump vec3 e = texture(LAMBERTIAN, n).rgb * PI; //since we're eventually weighting energy by albedo / PI need to remove the PI factor baked into the map
 	for (uint i = 0u; i < LIGHTS; ++i) {
 		if (LIGHT_TYPE[i] == 0) { //sun
 			mediump float amt = dot(LIGHT_DIRECTION[i], n);
 			//this approximation is correct only for lights with zero and pi angular diameter:
 			mediump float e0 = max(0.0, amt); //distant point light
 			mediump float ePI = 0.5 * amt + 0.5; //hemisphere light
-			e += LIGHT_ENERGY[i] * mix(e0, ePI, LIGHT_PARAMS[i].x / 3.1415926);
+			e += LIGHT_ENERGY[i] * mix(e0, ePI, LIGHT_PARAMS[i].x / PI);
 
 		} else if (LIGHT_TYPE[i] == 1) { //sphere
 			highp vec3 to = LIGHT_POSITION[i] - position;
