@@ -667,10 +667,10 @@ highp vec3 SpecularIBL( highp vec3 SpecularColor, highp float Roughness, highp v
 		highp float NoH = clamp( dot(N, H), 0.0, 1.0 );
 		highp float VoH = clamp( dot(V, H), 0.0, 1.0 );
 
-		if (NoL > 0.0 && NoV > 0.0 && NoH > 0.0) {
+		if (NoL > 0.0 && NoV > 0.0 && NoH > 0.0 && VoH > 0.0) {
 			//adding mipmap biasing as per:
 			// https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
-			highp float p = NoH * D( Roughness, NoH );
+			highp float p = NoH * D( Roughness, NoH ) / (4.0 * VoH); //as per comment in Karis' notes
 
 			//expected samples generated in this direction among N samples:
 			// N * p
@@ -701,7 +701,7 @@ highp vec3 SpecularIBL( highp vec3 SpecularColor, highp float Roughness, highp v
 			//highp vec3 onCube = L / max(max(abs(L.x), abs(L.y)), abs(L.z));
 			//highp float l = 0.5 * log2( 0.5 * PI * float(size)*float(size) ) - 0.5 * log2( float(NumSamples) * p ) + 0.75 * log2( dot(onCube,onCube) );
 
-			l += 1.0; //let's go ahead and make the areas bigger to smooth things out a bit more
+			l += 0.25; //smooth things out just a *smidge* more
 
 			//fade out mipmap bias for very smooth materials since p estimate becomes not-great
 			if (Roughness < 0.01) l *= (Roughness / 0.01);
