@@ -625,7 +625,7 @@ highp float G_1( highp float NoX, highp float k ) {
 }
 
 highp float G_Smith( highp float Roughness, highp float NoV, highp float NoL ) {
-	highp float k = Roughness*Roughness / 4.0;
+	highp float k = Roughness*Roughness / 2.0;
 	return G_1(NoL, k) * G_1(NoV, k);
 }
 
